@@ -31,6 +31,9 @@ interface Props {
 }
 
 const SettingVergeAdvanced = ({ onError }: Props) => {
+  return (<div></div>) // 貌似没有需要的项目
+
+  /*
   const { t } = useTranslation();
 
   const { verge, patchVerge, mutateVerge } = useVerge();
@@ -139,7 +142,7 @@ const SettingVergeAdvanced = ({ onError }: Props) => {
         <Typography sx={{ py: "7px", pr: 1 }}>v{version}</Typography>
       </SettingItem>
     </SettingList>
-  );
+  );*/
 };
 
 export default SettingVergeAdvanced;
