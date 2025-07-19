@@ -5,10 +5,12 @@ import SettingsPage from "./settings";
 import ConnectionsPage from "./connections";
 import RulesPage from "./rules";
 import HomePage from "./home";
+import EasyPage from "./easy";
 import UnlockPage from "./unlock";
 import { BaseErrorBoundary } from "@/components/base";
 
 import HomeSvg from "@/assets/image/itemicon/home.svg?react";
+import EasySvg from "@/assets/image/itemicon/easy.svg?react";
 import ProxiesSvg from "@/assets/image/itemicon/proxies.svg?react";
 import ProfilesSvg from "@/assets/image/itemicon/profiles.svg?react";
 import ConnectionsSvg from "@/assets/image/itemicon/connections.svg?react";
@@ -24,9 +26,16 @@ import ForkRightRoundedIcon from "@mui/icons-material/ForkRightRounded";
 import SubjectRoundedIcon from "@mui/icons-material/SubjectRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import LockOpenRoundedIcon from "@mui/icons-material/LockOpenRounded";
 
 export const routers = [
+  {
+    label: "Label-Easy",
+    path: "/easy",
+    icon: [<InsertEmoticonIcon />, <EasySvg />],
+    element: <EasyPage />,
+  },
   {
     label: "Label-Home",
     path: "/home",
