@@ -1,3 +1,13 @@
+## v2.4.0
+
+### 🐞 修复问题
+
+- 修复系统主题窗口颜色不一致问题
+
+### ✨ 新增功能
+
+- 增加 `Verge Version` 复制按钮
+
 ## v2.3.2
 
 ### 🐞 修复问题
@@ -10,7 +20,11 @@
 - 修复导入订阅时非 http 协议链接被错误尝试导入
 - 修复切换节点后页面长时间 loading 及缓存过期导致的数据不同步问题
 - 修复将快捷键名称更名为 `Clash Verge`之后无法删除图标和无法删除注册表
-- 修复`DNS`覆写服务器支持默认留空
+- 修复`DNS`覆写 `fallback` `proxy server` `nameserver` `direct Nameserver` 字段支持留空
+- 修复`DNS`覆写 `nameserver-policy` 字段无法正确识别 `geo` 库
+- 修复搜索框输入特殊字符崩溃
+- 修复 Windows 下 Start UP 名称与 exe 名称不统一
+- 修复显示 Mihomo 内核日志等级应该大于设置等级
 
 ### ✨ 新增功能
 
