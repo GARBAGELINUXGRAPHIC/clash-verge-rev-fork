@@ -131,7 +131,7 @@ const SettingSystem = ({ onError }: Props) => {
     if (!enable_silent_start) {
       await patchVerge({ enable_silent_start: true });
     }
-  };
+  }
 
   return (
     <SettingList title={t("System Setting")}>
