@@ -48,7 +48,7 @@ const SettingPage = () => {
       } else {
         throw new Error("settingClashRef doesn't have function 'Setup'");
       }
-      restartApp()
+      //restartApp()
     } catch (error) {
       console.error(error);
     }
