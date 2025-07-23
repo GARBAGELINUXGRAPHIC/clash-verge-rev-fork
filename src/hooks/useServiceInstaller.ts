@@ -21,7 +21,7 @@ export function useServiceInstaller() {
 
       showNotice("info", t("Waiting for service to be ready..."));
       let serviceReady = false;
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 5; ++i) {
         try {
           // 等待1秒再检查
           await new Promise((resolve) => setTimeout(resolve, 1000));

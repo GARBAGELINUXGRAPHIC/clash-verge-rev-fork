@@ -31,7 +31,7 @@ const SettingPage = () => {
   });
 
   const mode = useThemeMode();
-  const isDark = mode === "light" ? false : true;
+  const isDark = mode !== "light";
 
   return (
     <BasePage

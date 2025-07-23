@@ -1,6 +1,8 @@
 {
   "Label-Easy": "简 易",
   "EasyMode": "简易模式",
+  "one-click-setup": "一键配置",
+  "click-setup-again-after-restart": "TUN安装完成，自动重启后请重新点击一键配置",
   "millis": "毫秒",
   "seconds": "秒",
   "mins": "分钟",

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { open } from "@tauri-apps/plugin-dialog";
 import { Button, MenuItem, Select, Input } from "@mui/material";
@@ -21,9 +21,14 @@ import { TooltipIcon } from "@/components/base/base-tooltip-icon";
 import { ContentCopyRounded } from "@mui/icons-material";
 import { languages } from "@/services/i18n";
 import { showNotice } from "@/services/noticeService";
+import { types } from "sass";
+import Error = types.Error;
+import setupRef from "@/utils/setupInterface";
+import { closeAllConnections } from "@/services/api";
 
 interface Props {
-  onError?: (err: Error) => void;
+  onError: (err: Error) => void;
+  ref?: React.RefObject<setupRef | null>;
 }
 
 const OS = getSystem();
@@ -43,7 +48,7 @@ const languageOptions = Object.entries(languages).map(([code, _]) => {
   return { code, label: labels[code] };
 });
 
-const SettingVergeBasic = ({ onError }: Props) => {
+const SettingVergeBasic = ({ onError, ref }: Props) => {
   const { t } = useTranslation();
 
   const { verge, patchVerge, mutateVerge } = useVerge();
@@ -72,6 +77,19 @@ const SettingVergeBasic = ({ onError }: Props) => {
     showNotice("success", t("Copy Success"), 1000);
   }, []);
 
+  useEffect(() => {
+    if (ref) {
+      ref.current = {
+        async Setup() {
+          // set startup page to Easy
+          if(!start_page || start_page?.toLowerCase() !== '/easy') {
+            await patchVerge({ start_page: '/easy' })
+          }
+        }
+      };
+    }
+  }, [ref]);
+
   return (
     <SettingList title={t("Verge Basic Setting")}>
       <ThemeViewer ref={themeRef} />
@@ -84,7 +102,7 @@ const SettingVergeBasic = ({ onError }: Props) => {
 
       <SettingItem label={t("Start Page")}>
         <GuardState
-          value={start_page ?? "/easy"}
+          value={start_page ?? "/"}
           onCatch={onError}
           onFormat={(e: any) => e.target.value}
           onChange={(e) => onChangeData({ start_page: e })}
@@ -101,7 +119,6 @@ const SettingVergeBasic = ({ onError }: Props) => {
           </Select>
         </GuardState>
       </SettingItem>
-
     </SettingList>
   );
 };

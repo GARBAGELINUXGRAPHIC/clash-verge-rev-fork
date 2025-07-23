@@ -1,6 +1,8 @@
 {
   "Label-Easy": "EZ Mode",
   "EasyMode": "Easy Mode",
+  "one-click-setup": "One click setup",
+  "click-setup-again-after-restart": "TUN mode is installed, please click 'One click setup' button again after restart",
   "millis": "ms",
   "seconds": "seconds",
   "mins": "mins",

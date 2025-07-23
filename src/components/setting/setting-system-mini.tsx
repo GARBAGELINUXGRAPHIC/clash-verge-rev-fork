@@ -1,5 +1,5 @@
 import { mutate } from "swr";
-import { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
   SettingsRounded,
@@ -17,7 +17,7 @@ import { GuardState } from "./mods/guard-state";
 import { SysproxyViewer } from "./mods/sysproxy-viewer";
 import { TunViewer } from "./mods/tun-viewer";
 import { TooltipIcon } from "@/components/base/base-tooltip-icon";
-import { uninstallService, restartCore, stopCore } from "@/services/cmds";
+import { uninstallService, restartCore, stopCore, exitApp, restartApp } from "@/services/cmds";
 import { useLockFn } from "ahooks";
 import { Button, Tooltip } from "@mui/material";
 import { useSystemState } from "@/hooks/use-system-state";
@@ -25,12 +25,17 @@ import { useSystemState } from "@/hooks/use-system-state";
 import { showNotice } from "@/services/noticeService";
 import { useServiceInstaller } from "@/hooks/useServiceInstaller";
 import { closeAllConnections } from "@/services/api";
+import { types } from "sass";
+import Error = types.Error;
+import setupRef from "@/utils/setupInterface";
+import { sleep } from "@/utils/sleep";
 
 interface Props {
   onError?: (err: Error) => void;
+  ref?: React.RefObject<setupRef | null>;
 }
 
-const SettingSystem = ({ onError }: Props) => {
+const SettingSystem = ({ onError, ref }: Props) => {
   const { t } = useTranslation();
 
   const { verge, mutateVerge, patchVerge } = useVerge();
@@ -107,31 +112,43 @@ const SettingSystem = ({ onError }: Props) => {
     await mutate("getAutotemProxy");
   };
 
-  const Setup = async () => {
-    // open system proxy
-    if (!systemProxyActualState) {
-      await closeAllConnections();
-      await patchVerge({ enable_system_proxy: true });
-      await updateProxyStatus();
+  useEffect(() => {
+    if (ref) {
+      ref.current = {
+        async Setup() {
+          // install TUN
+          if (!isServiceMode && !isAdminMode) {
+            const result = await installServiceAndRestartCore();
+            if(!result) {
+              throw new Error("Failed to install service");
+            }
+            //alert(t("click-setup-again-after-restart"))
+            //await restartApp();
+            //throw new Error("Restarting Core...");
+          }
+          // open tun
+          if (!enable_tun_mode) {
+            if (!isTunAvailable) return;
+            await patchVerge({ enable_tun_mode: true });
+          }
+          // open system proxy
+          if (!systemProxyActualState) {
+            await closeAllConnections();
+            await patchVerge({ enable_system_proxy: true });
+            await updateProxyStatus();
+          }
+          // open start on sys boot
+          if (!enable_auto_launch) {
+            await patchVerge({ enable_auto_launch: true });
+          }
+          // open start silently
+          if (!enable_silent_start) {
+            await patchVerge({ enable_silent_start: true });
+          }
+        }
+      };
     }
-    // install TUN
-    if (!isTunAvailable) {
-      await installServiceAndRestartCore();
-    }
-    // open tun
-    if (!enable_tun_mode) {
-      if (!isTunAvailable) return;
-      await patchVerge({ enable_tun_mode: true });
-    }
-    // open start on sys boot
-    if (!enable_auto_launch) {
-      await patchVerge({ enable_auto_launch: true });
-    }
-    // open start silently
-    if (!enable_silent_start) {
-      await patchVerge({ enable_silent_start: true });
-    }
-  }
+  }, [ref]);
 
   return (
     <SettingList title={t("System Setting")}>

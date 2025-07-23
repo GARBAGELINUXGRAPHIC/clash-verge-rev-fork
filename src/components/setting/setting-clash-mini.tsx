@@ -3,12 +3,12 @@ import { TooltipIcon } from "@/components/base/base-tooltip-icon";
 import { useClash } from "@/hooks/use-clash";
 import { useListen } from "@/hooks/use-listen";
 import { useVerge } from "@/hooks/use-verge";
-import { updateGeoData } from "@/services/api";
+import { closeAllConnections, updateGeoData } from "@/services/api";
 import { showNotice } from "@/services/noticeService";
 import { LanRounded, SettingsRounded } from "@mui/icons-material";
 import { invoke } from "@tauri-apps/api/core";
 import { useLockFn } from "ahooks";
-import { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ClashCoreViewer } from "./mods/clash-core-viewer";
 import { ClashPortViewer } from "./mods/clash-port-viewer";
@@ -19,11 +19,17 @@ import { NetworkInterfaceViewer } from "./mods/network-interface-viewer";
 import { SettingItem, SettingList } from "./mods/setting-comp";
 import { WebUIViewer } from "./mods/web-ui-viewer";
 import { HeaderConfiguration } from "./mods/external-controller-cors";
+import { types } from "sass";
+import Error = types.Error;
+import setupRef from "@/utils/setupInterface";
+import { sleep } from "@/utils/sleep";
+
 interface Props {
   onError: (err: Error) => void;
+  ref?: React.RefObject<setupRef | null>;
 }
 
-const SettingClash = ({ onError }: Props) => {
+const SettingClash = ({ onError, ref }: Props) => {
   const { t } = useTranslation();
 
   const { clash, version, mutateClash, patchClash } = useClash();
@@ -88,6 +94,27 @@ const SettingClash = ({ onError }: Props) => {
       throw err;
     }
   });
+
+  useEffect(() => {
+    if (ref) {
+      ref.current = {
+        async Setup() {
+          // open allow lan (in case somebody need to use VMs or wsl or other devices through host)
+          if (!allowLan) {
+            await patchClash({ "allow-lan": true });
+          }
+          // disable DNS overwrite, use profile's dns settings
+          if(dnsSettingsEnabled) {
+            await handleDnsToggle(false);
+          }
+          // open ipv6
+          if(!ipv6) {
+            await patchClash({ ipv6: true })
+          }
+        }
+      };
+    }
+  }, [ref]);
 
   return (
     <SettingList title={t("Clash Setting")}>
