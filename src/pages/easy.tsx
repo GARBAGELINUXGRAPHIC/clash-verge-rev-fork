@@ -2,7 +2,6 @@ import { Box, ButtonGroup, IconButton, Grid } from "@mui/material";
 import { useLockFn } from "ahooks";
 import { useTranslation } from "react-i18next";
 import { BasePage } from "@/components/base";
-import { GitHub, HelpOutlineRounded, Telegram } from "@mui/icons-material";
 import { openWebUrl } from "@/services/cmds";
 import SettingVergeBasic from "@/components/setting/setting-verge-basic-mini";
 import SettingVergeAdvanced from "@/components/setting/setting-verge-advanced-mini";
@@ -10,6 +9,7 @@ import SettingClash from "@/components/setting/setting-clash-mini";
 import SettingSystem from "@/components/setting/setting-system-mini";
 import { useThemeMode } from "@/services/states";
 import { showNotice } from "@/services/noticeService";
+import { useRef } from "react";
 
 const SettingPage = () => {
   const { t } = useTranslation();
@@ -19,7 +19,7 @@ const SettingPage = () => {
   };
 
   const mode = useThemeMode();
-  const isDark = mode === "light" ? false : true;
+  const isDark = mode !== "light";
 
   return (
     <BasePage
@@ -36,16 +36,17 @@ const SettingPage = () => {
           >
             <SettingSystem onError={onError} />
           </Box>
+        </Grid>
+        <Grid size={6}>
           <Box
             sx={{
               borderRadius: 2,
+              marginBottom: 1.5,
               backgroundColor: isDark ? "#282a36" : "#ffffff",
             }}
           >
             <SettingClash onError={onError} />
           </Box>
-        </Grid>
-        <Grid size={6}>
           <Box
             sx={{
               borderRadius: 2,

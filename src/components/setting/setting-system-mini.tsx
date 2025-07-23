@@ -24,6 +24,7 @@ import { useSystemState } from "@/hooks/use-system-state";
 
 import { showNotice } from "@/services/noticeService";
 import { useServiceInstaller } from "@/hooks/useServiceInstaller";
+import { closeAllConnections } from "@/services/api";
 
 interface Props {
   onError?: (err: Error) => void;
@@ -52,8 +53,8 @@ const SettingSystem = ({ onError }: Props) => {
     verge ?? {};
 
   const onSwitchFormat = (_e: any, value: boolean) => value;
-  const onChangeData = (patch: Partial<IVergeConfig>) => {
-    mutateVerge({ ...verge, ...patch }, false);
+  const onChangeData = async (patch: Partial<IVergeConfig>) => {
+    await mutateVerge({ ...verge, ...patch }, false);
   };
 
   // 抽象服务操作逻辑
@@ -99,6 +100,38 @@ const SettingSystem = ({ onError }: Props) => {
       actionMsg: t("Uninstalling Service..."),
       successMsg: t("Service Uninstalled Successfully"),
     });
+
+  const updateProxyStatus = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await mutate("getSystemProxy");
+    await mutate("getAutotemProxy");
+  };
+
+  const Setup = async () => {
+    // open system proxy
+    if (!systemProxyActualState) {
+      await closeAllConnections();
+      await patchVerge({ enable_system_proxy: true });
+      await updateProxyStatus();
+    }
+    // install TUN
+    if (!isTunAvailable) {
+      await installServiceAndRestartCore();
+    }
+    // open tun
+    if (!enable_tun_mode) {
+      if (!isTunAvailable) return;
+      await patchVerge({ enable_tun_mode: true });
+    }
+    // open start on sys boot
+    if (!enable_auto_launch) {
+      await patchVerge({ enable_auto_launch: true });
+    }
+    // open start silently
+    if (!enable_silent_start) {
+      await patchVerge({ enable_silent_start: true });
+    }
+  };
 
   return (
     <SettingList title={t("System Setting")}>

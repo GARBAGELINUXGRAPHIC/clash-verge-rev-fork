@@ -170,9 +170,9 @@ export const useCustomTheme = () => {
     const rootEle = document.documentElement;
     if (rootEle) {
       const backgroundColor =
-        mode === "light" ? "#ECECEC" : dt.background_color;
-      const selectColor = mode === "light" ? "#f5f5f5" : "#3E3E3E";
-      const scrollColor = mode === "light" ? "#90939980" : "#555555";
+        mode === "light" ? "#F5F5F7" : dt.background_color;
+      const selectColor = mode === "light" ? "#fafafc" : "#3E3E3E";
+      const scrollColor = mode === "light" ? "#b0b3b980" : "#555555";
       const dividerColor =
         mode === "light" ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.06)";
 
@@ -191,15 +191,15 @@ export const useCustomTheme = () => {
       // 添加CSS变量
       rootEle.style.setProperty(
         "--window-border-color",
-        mode === "light" ? "#cccccc" : "#1E1E1E",
+        mode === "light" ? "#eeeeee" : "#1E1E1E",
       );
       rootEle.style.setProperty(
         "--scrollbar-bg",
-        mode === "light" ? "#f1f1f1" : "#2E303D",
+        mode === "light" ? "#f5f5f7" : "#2E303D",
       );
       rootEle.style.setProperty(
         "--scrollbar-thumb",
-        mode === "light" ? "#c1c1c1" : "#555555",
+        mode === "light" ? "#d9d9d9" : "#555555",
       );
 
       // 设置背景图相关变量
