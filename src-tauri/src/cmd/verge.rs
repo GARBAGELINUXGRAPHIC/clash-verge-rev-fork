@@ -1,16 +1,15 @@
 use super::CmdResult;
-use crate::{config::*, feat, wrap_err};
+use crate::{cmd::StringifyErr as _, config::IVerge, feat};
+use clash_verge_draft::SharedDraft;
 
 /// 获取Verge配置
 #[tauri::command]
-pub fn get_verge_config() -> CmdResult<IVergeResponse> {
-    let verge = Config::verge();
-    let verge_data = verge.latest_ref().clone();
-    Ok(IVergeResponse::from(*verge_data))
+pub async fn get_verge_config() -> CmdResult<SharedDraft<IVerge>> {
+    feat::fetch_verge_config().await.stringify_err()
 }
 
 /// 修改Verge配置
 #[tauri::command]
 pub async fn patch_verge_config(payload: IVerge) -> CmdResult {
-    wrap_err!(feat::patch_verge(payload, false).await)
+    feat::patch_verge(&payload, false).await.stringify_err()
 }

@@ -1,11 +1,33 @@
 use serde::{Deserialize, Serialize};
-use serde_yaml::{Mapping, Sequence, Value};
+use serde_yaml_ng::{Mapping, Sequence, Value};
+use std::collections::HashSet;
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct SeqMap {
     pub prepend: Sequence,
     pub append: Sequence,
     pub delete: Vec<String>,
+}
+
+fn collect_proxy_names(seq: &Sequence) -> Vec<String> {
+    seq.iter()
+        .filter_map(|item| match item {
+            Value::Mapping(map) => map.get("name").and_then(Value::as_str).map(str::to_owned),
+            Value::String(name) => Some(name.to_owned()),
+            _ => None,
+        })
+        .collect()
+}
+
+fn is_selector_group(group_map: &Mapping) -> bool {
+    group_map
+        .get("type")
+        .and_then(Value::as_str)
+        .map(|value| {
+            let value = value.to_ascii_lowercase();
+            value == "select" || value == "selector"
+        })
+        .unwrap_or(false)
 }
 
 pub fn use_seq(seq: SeqMap, mut config: Mapping, field: &str) -> Mapping {
@@ -15,13 +37,25 @@ pub fn use_seq(seq: SeqMap, mut config: Mapping, field: &str) -> Mapping {
         delete,
     } = seq;
 
-    let mut new_seq = Sequence::new();
-    new_seq.extend(prepend);
+    let added_proxy_names = if field == "proxies" {
+        let mut names = collect_proxy_names(&prepend);
+        names.extend(collect_proxy_names(&append));
+        let mut seen = HashSet::new();
+        names
+            .into_iter()
+            .filter(|name| seen.insert(name.clone()))
+            .collect::<Vec<String>>()
+    } else {
+        Vec::new()
+    };
 
-    if let Some(Value::Sequence(origin)) = config.get(field) {
+    let mut updated_items = Sequence::new();
+    updated_items.extend(prepend);
+
+    if let Some(Value::Sequence(existing_items)) = config.remove(field) {
         // Filter out deleted items
-        let filtered: Sequence = origin
-            .iter()
+        let kept_items: Sequence = existing_items
+            .into_iter()
             .filter(|item| {
                 if let Value::String(s) = item {
                     !delete.contains(s)
@@ -35,49 +69,81 @@ pub fn use_seq(seq: SeqMap, mut config: Mapping, field: &str) -> Mapping {
                     true
                 }
             })
-            .cloned()
             .collect();
-        new_seq.extend(filtered);
+        updated_items.extend(kept_items);
     }
 
-    new_seq.extend(append);
-    config.insert(Value::String(field.into()), Value::Sequence(new_seq));
+    updated_items.extend(append);
+    config.insert(Value::String(field.into()), Value::Sequence(updated_items));
 
-    // If this is proxies field, we also need to filter proxy-groups
-    if field == "proxies" {
-        if let Some(Value::Sequence(groups)) = config.get_mut("proxy-groups") {
-            let mut new_groups = Sequence::new();
-            for group in groups {
-                if let Value::Mapping(group_map) = group {
-                    let mut new_group = group_map.clone();
-                    if let Some(Value::Sequence(proxies)) = group_map.get("proxies") {
-                        let filtered_proxies: Sequence = proxies
-                            .iter()
-                            .filter(|p| {
-                                if let Value::String(name) = p {
-                                    !delete.contains(name)
-                                } else {
-                                    true
-                                }
-                            })
-                            .cloned()
-                            .collect();
-                        new_group.insert(
-                            Value::String("proxies".into()),
-                            Value::Sequence(filtered_proxies),
-                        );
-                    }
-                    new_groups.push(Value::Mapping(new_group));
-                } else {
-                    new_groups.push(group.clone());
+    if field != "proxies" {
+        return config;
+    }
+
+    let Some(proxy_groups_value) = config.remove("proxy-groups") else {
+        return config;
+    };
+
+    let Value::Sequence(proxy_groups) = proxy_groups_value else {
+        config.insert(Value::String("proxy-groups".into()), proxy_groups_value);
+        return config;
+    };
+
+    let mut updated_groups = Sequence::new();
+    let mut appended_to_selector = false;
+    for group in proxy_groups {
+        if let Value::Mapping(mut group_map) = group {
+            let mut group_proxies = match group_map.remove("proxies") {
+                Some(Value::Sequence(proxies)) => Some(
+                    proxies
+                        .into_iter()
+                        .filter(|p| {
+                            if let Value::String(name) = p {
+                                !delete.contains(name)
+                            } else {
+                                true
+                            }
+                        })
+                        .collect::<Sequence>(),
+                ),
+                Some(value) => {
+                    group_map.insert(Value::String("proxies".into()), value);
+                    None
                 }
+                None => None,
+            };
+
+            if !appended_to_selector && !added_proxy_names.is_empty() && is_selector_group(&group_map) {
+                let base_group_proxies = group_proxies.unwrap_or_else(Sequence::new);
+                let mut merged_proxies = Sequence::new();
+                let mut seen_proxy_names = HashSet::new();
+                for name in &added_proxy_names {
+                    if seen_proxy_names.insert(name.clone()) {
+                        merged_proxies.push(Value::String(name.clone()));
+                    }
+                }
+                for value in base_group_proxies {
+                    if let Value::String(name) = &value
+                        && !seen_proxy_names.insert(name.to_owned())
+                    {
+                        continue;
+                    }
+
+                    merged_proxies.push(value);
+                }
+                group_proxies = Some(merged_proxies);
+                appended_to_selector = true;
             }
-            config.insert(
-                Value::String("proxy-groups".into()),
-                Value::Sequence(new_groups),
-            );
+
+            if let Some(group_proxies) = group_proxies {
+                group_map.insert(Value::String("proxies".into()), Value::Sequence(group_proxies));
+            }
+            updated_groups.push(Value::Mapping(group_map));
+        } else {
+            updated_groups.push(group);
         }
     }
+    config.insert(Value::String("proxy-groups".into()), Value::Sequence(updated_groups));
 
     config
 }
@@ -86,9 +152,11 @@ pub fn use_seq(seq: SeqMap, mut config: Mapping, field: &str) -> Mapping {
 mod tests {
     use super::*;
     #[allow(unused_imports)]
-    use serde_yaml::Value;
+    use serde_yaml_ng::Value;
 
     #[test]
+    #[allow(clippy::unwrap_used)]
+    #[allow(clippy::expect_used)]
     fn test_delete_proxy_and_references() {
         let config_str = r#"
 proxies:
@@ -107,7 +175,7 @@ proxy-groups:
   proxies:
     - "proxy1"
 "#;
-        let mut config: Mapping = serde_yaml::from_str(config_str).unwrap();
+        let mut config: Mapping = serde_yaml_ng::from_str(config_str).expect("Failed to parse test config YAML");
 
         let seq = SeqMap {
             prepend: Sequence::new(),
@@ -118,38 +186,142 @@ proxy-groups:
         config = use_seq(seq, config, "proxies");
 
         // Check if proxy1 is removed from proxies
-        let proxies = config.get("proxies").unwrap().as_sequence().unwrap();
+        let proxies = config
+            .get("proxies")
+            .expect("proxies field should exist")
+            .as_sequence()
+            .expect("proxies should be a sequence");
         assert_eq!(proxies.len(), 1);
         assert_eq!(
             proxies[0]
                 .as_mapping()
-                .unwrap()
+                .expect("proxy should be a mapping")
                 .get("name")
-                .unwrap()
+                .expect("proxy should have name")
                 .as_str()
-                .unwrap(),
+                .expect("name should be string"),
             "proxy2"
         );
 
         // Check if proxy1 is removed from all groups
-        let groups = config.get("proxy-groups").unwrap().as_sequence().unwrap();
+        let groups = config
+            .get("proxy-groups")
+            .expect("proxy-groups field should exist")
+            .as_sequence()
+            .expect("proxy-groups should be a sequence");
         let group1_proxies = groups[0]
             .as_mapping()
-            .unwrap()
+            .expect("group should be a mapping")
             .get("proxies")
-            .unwrap()
+            .expect("group should have proxies")
             .as_sequence()
-            .unwrap();
+            .expect("group proxies should be a sequence");
         let group2_proxies = groups[1]
             .as_mapping()
-            .unwrap()
+            .expect("group should be a mapping")
             .get("proxies")
-            .unwrap()
+            .expect("group should have proxies")
             .as_sequence()
-            .unwrap();
+            .expect("group proxies should be a sequence");
 
         assert_eq!(group1_proxies.len(), 1);
-        assert_eq!(group1_proxies[0].as_str().unwrap(), "proxy2");
+        assert_eq!(
+            group1_proxies[0].as_str().expect("proxy name should be string"),
+            "proxy2"
+        );
         assert_eq!(group2_proxies.len(), 0);
+    }
+
+    #[test]
+    #[allow(clippy::unwrap_used)]
+    #[allow(clippy::expect_used)]
+    fn test_add_new_proxies_to_first_selector_group() {
+        let config_str = r#"
+proxies:
+- name: "proxy1"
+  type: "ss"
+proxy-groups:
+- name: "group1"
+  type: "select"
+  proxies:
+    - "proxy1"
+- name: "group2"
+  type: "select"
+  proxies:
+    - "proxy1"
+"#;
+        let mut config: Mapping = serde_yaml_ng::from_str(config_str).expect("Failed to parse test config YAML");
+
+        let prepend: Sequence = serde_yaml_ng::from_str(
+            r#"
+- name: "proxy3"
+  type: "ss"
+"#,
+        )
+        .expect("Failed to parse prepend proxies");
+
+        let append: Sequence = serde_yaml_ng::from_str(
+            r#"
+- name: "proxy4"
+  type: "vmess"
+"#,
+        )
+        .expect("Failed to parse append proxies");
+
+        let seq = SeqMap {
+            prepend,
+            append,
+            delete: vec![],
+        };
+
+        config = use_seq(seq, config, "proxies");
+
+        let groups = config
+            .get("proxy-groups")
+            .expect("proxy-groups field should exist")
+            .as_sequence()
+            .expect("proxy-groups should be a sequence");
+        let group1_proxies = groups[0]
+            .as_mapping()
+            .expect("group should be a mapping")
+            .get("proxies")
+            .expect("group should have proxies")
+            .as_sequence()
+            .expect("group proxies should be a sequence");
+        let names: Vec<&str> = group1_proxies.iter().filter_map(Value::as_str).collect();
+        assert_eq!(names, vec!["proxy3", "proxy4", "proxy1"]);
+
+        let group2_proxies = groups[1]
+            .as_mapping()
+            .expect("group should be a mapping")
+            .get("proxies")
+            .expect("group should have proxies")
+            .as_sequence()
+            .expect("group proxies should be a sequence");
+        let names: Vec<&str> = group2_proxies.iter().filter_map(Value::as_str).collect();
+        assert_eq!(names, vec!["proxy1"]);
+    }
+
+    #[test]
+    #[allow(clippy::unwrap_used)]
+    #[allow(clippy::expect_used)]
+    fn test_preserve_non_sequence_proxy_groups() {
+        let config_str = r#"
+proxies:
+- name: "proxy1"
+  type: "ss"
+proxy-groups: "invalid"
+"#;
+        let mut config: Mapping = serde_yaml_ng::from_str(config_str).expect("Failed to parse test config YAML");
+
+        let seq = SeqMap {
+            prepend: Sequence::new(),
+            append: Sequence::new(),
+            delete: vec!["proxy1".to_string()],
+        };
+
+        config = use_seq(seq, config, "proxies");
+
+        assert_eq!(config.get("proxy-groups").and_then(Value::as_str), Some("invalid"));
     }
 }

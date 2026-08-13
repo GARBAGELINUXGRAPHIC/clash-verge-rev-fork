@@ -1,141 +1,74 @@
-import { DialogRef, Switch } from "@/components/base";
-import { TooltipIcon } from "@/components/base/base-tooltip-icon";
-import { useClash } from "@/hooks/use-clash";
-import { useListen } from "@/hooks/use-listen";
-import { useVerge } from "@/hooks/use-verge";
-import { closeAllConnections, updateGeoData } from "@/services/api";
-import { showNotice } from "@/services/noticeService";
-import { LanRounded, SettingsRounded } from "@mui/icons-material";
-import { invoke } from "@tauri-apps/api/core";
-import { useLockFn } from "ahooks";
-import React, { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { ClashCoreViewer } from "./mods/clash-core-viewer";
-import { ClashPortViewer } from "./mods/clash-port-viewer";
-import { ControllerViewer } from "./mods/controller-viewer";
-import { DnsViewer } from "./mods/dns-viewer";
-import { GuardState } from "./mods/guard-state";
-import { NetworkInterfaceViewer } from "./mods/network-interface-viewer";
-import { SettingItem, SettingList } from "./mods/setting-comp";
-import { WebUIViewer } from "./mods/web-ui-viewer";
-import { HeaderConfiguration } from "./mods/external-controller-cors";
-import { types } from "sass";
-import Error = types.Error;
-import setupRef from "@/utils/setupInterface";
-import { sleep } from "@/utils/sleep";
+import { LanRounded, SettingsRounded } from '@mui/icons-material'
+import { invoke } from '@tauri-apps/api/core'
+import { useLockFn } from 'ahooks'
+import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
+
+import { DialogRef, Switch, TooltipIcon } from '@/components/base'
+import { useClash } from '@/hooks/use-clash'
+import { useVerge } from '@/hooks/use-verge'
+import { showNotice } from '@/services/notice-service'
+
+import { DnsViewer } from './mods/dns-viewer'
+import { GuardState } from './mods/guard-state'
+import { NetworkInterfaceViewer } from './mods/network-interface-viewer'
+import { SettingItem, SettingList } from './mods/setting-comp'
 
 interface Props {
-  onError: (err: Error) => void;
-  ref?: React.RefObject<setupRef | null>;
+  onError: (err: Error) => void
 }
 
-const SettingClash = ({ onError, ref }: Props) => {
-  const { t } = useTranslation();
+const SettingClashMini = ({ onError }: Props) => {
+  const { t } = useTranslation()
+  const { clash, mutateClash, patchClash } = useClash()
+  const { verge, mutateVerge, patchVerge } = useVerge()
+  const networkRef = useRef<DialogRef>(null)
+  const dnsRef = useRef<DialogRef>(null)
 
-  const { clash, version, mutateClash, patchClash } = useClash();
-  const { verge, mutateVerge, patchVerge } = useVerge();
+  const { ipv6, 'allow-lan': allowLan } = clash ?? {}
+  const dnsSettingsEnabled = verge?.enable_dns_settings ?? false
 
-  const {
-    ipv6,
-    "allow-lan": allowLan,
-    "log-level": logLevel,
-    "unified-delay": unifiedDelay,
-    dns,
-  } = clash ?? {};
-
-  const { enable_random_port = false, verge_mixed_port } = verge ?? {};
-
-  // 独立跟踪DNS设置开关状态
-  const [dnsSettingsEnabled, setDnsSettingsEnabled] = useState(() => {
-    return verge?.enable_dns_settings ?? false;
-  });
-
-  const { addListener } = useListen();
-
-  const webRef = useRef<DialogRef>(null);
-  const portRef = useRef<DialogRef>(null);
-  const ctrlRef = useRef<DialogRef>(null);
-  const coreRef = useRef<DialogRef>(null);
-  const networkRef = useRef<DialogRef>(null);
-  const dnsRef = useRef<DialogRef>(null);
-  const corsRef = useRef<DialogRef>(null);
-
-  const onSwitchFormat = (_e: any, value: boolean) => value;
+  const onSwitchFormat = (_event: unknown, value: boolean) => value
   const onChangeData = (patch: Partial<IConfigData>) => {
-    mutateClash((old) => ({ ...(old! || {}), ...patch }), false);
-  };
-  const onChangeVerge = (patch: Partial<IVergeConfig>) => {
-    mutateVerge({ ...verge, ...patch }, false);
-  };
-  const onUpdateGeo = async () => {
-    try {
-      await updateGeoData();
-      showNotice("success", t("GeoData Updated"));
-    } catch (err: any) {
-      showNotice("error", err?.response.data.message || err.toString());
-    }
-  };
+    mutateClash((old) => ({ ...old!, ...patch }), false)
+  }
 
-  // 实现DNS设置开关处理函数
   const handleDnsToggle = useLockFn(async (enable: boolean) => {
-    try {
-      setDnsSettingsEnabled(enable);
-      localStorage.setItem("dns_settings_enabled", String(enable));
-      await patchVerge({ enable_dns_settings: enable });
-      await invoke("apply_dns_config", { apply: enable });
-      setTimeout(() => {
-        mutateClash();
-      }, 500);
-    } catch (err: any) {
-      setDnsSettingsEnabled(!enable);
-      localStorage.setItem("dns_settings_enabled", String(!enable));
-      showNotice("error", err.message || err.toString());
-      await patchVerge({ enable_dns_settings: !enable }).catch(() => {});
-      throw err;
-    }
-  });
+    mutateVerge(
+      (current) =>
+        current ? { ...current, enable_dns_settings: enable } : current,
+      false,
+    )
 
-  useEffect(() => {
-    if (ref) {
-      ref.current = {
-        async Setup() {
-          // open allow lan (in case somebody need to use VMs or wsl or other devices through host)
-          if (!allowLan) {
-            await patchClash({ "allow-lan": true });
-          }
-          // disable DNS overwrite, use profile's dns settings
-          if(dnsSettingsEnabled) {
-            await handleDnsToggle(false);
-          }
-          // open ipv6
-          if(!ipv6) {
-            await patchClash({ ipv6: true })
-          }
-        }
-      };
+    try {
+      await patchVerge({ enable_dns_settings: enable })
+      await invoke('apply_dns_config', { apply: enable })
+      setTimeout(() => mutateClash(), 500)
+    } catch (error) {
+      mutateVerge(
+        (current) =>
+          current ? { ...current, enable_dns_settings: !enable } : current,
+        false,
+      )
+      await patchVerge({ enable_dns_settings: !enable }).catch(() => {})
+      showNotice.error(error)
+      throw error
     }
-  }, [ref]);
+  })
 
   return (
-    <SettingList title={t("Clash Setting")}>
-      <WebUIViewer ref={webRef} />
-      <ClashPortViewer ref={portRef} />
-      <ControllerViewer ref={ctrlRef} />
-      <ClashCoreViewer ref={coreRef} />
+    <SettingList title={t('settings.sections.clash.title')}>
       <NetworkInterfaceViewer ref={networkRef} />
       <DnsViewer ref={dnsRef} />
-      <HeaderConfiguration ref={corsRef} />
 
       <SettingItem
-        label={t("Allow Lan")}
+        label={t('settings.sections.clash.form.fields.allowLan')}
         extra={
           <TooltipIcon
-            title={t("Network Interface")}
-            color={"inherit"}
+            title={t('settings.sections.clash.form.tooltips.networkInterface')}
+            color="inherit"
             icon={LanRounded}
-            onClick={() => {
-              networkRef.current?.open();
-            }}
+            onClick={() => networkRef.current?.open()}
           />
         }
       >
@@ -144,15 +77,15 @@ const SettingClash = ({ onError, ref }: Props) => {
           valueProps="checked"
           onCatch={onError}
           onFormat={onSwitchFormat}
-          onChange={(e) => onChangeData({ "allow-lan": e })}
-          onGuard={(e) => patchClash({ "allow-lan": e })}
+          onChange={(value) => onChangeData({ 'allow-lan': value })}
+          onGuard={(value) => patchClash({ 'allow-lan': value })}
         >
           <Switch edge="end" />
         </GuardState>
       </SettingItem>
 
       <SettingItem
-        label={t("DNS Overwrite")}
+        label={t('settings.sections.clash.form.fields.dnsOverwrite')}
         extra={
           <TooltipIcon
             icon={SettingsRounded}
@@ -167,20 +100,20 @@ const SettingClash = ({ onError, ref }: Props) => {
         />
       </SettingItem>
 
-      <SettingItem label={t("IPv6")}>
+      <SettingItem label={t('settings.sections.clash.form.fields.ipv6')}>
         <GuardState
           value={ipv6 ?? false}
           valueProps="checked"
           onCatch={onError}
           onFormat={onSwitchFormat}
-          onChange={(e) => onChangeData({ ipv6: e })}
-          onGuard={(e) => patchClash({ ipv6: e })}
+          onChange={(value) => onChangeData({ ipv6: value })}
+          onGuard={(value) => patchClash({ ipv6: value })}
         >
           <Switch edge="end" />
         </GuardState>
       </SettingItem>
     </SettingList>
-  );
-};
+  )
+}
 
-export default SettingClash;
+export default SettingClashMini

@@ -1,48 +1,51 @@
-use super::CmdResult;
-use crate::{
-    core::{service, CoreManager},
-    utils::i18n::t,
+use super::{CmdResult, WithErrorCode as _};
+use crate::core::{
+    CoreManager,
+    service::{SERVICE_MANAGER, ServiceStatus},
 };
 
-async fn execute_service_operation(
-    service_op: impl std::future::Future<Output = Result<(), impl ToString + std::fmt::Debug>>,
-    op_type: &str,
-) -> CmdResult {
-    if service_op.await.is_err() {
-        let emsg = format!("{} {} failed", op_type, "Service");
-        return Err(t(emsg.as_str()));
+async fn execute_service_operation_sync(status: ServiceStatus, error_code: &str) -> CmdResult {
+    let manager = CoreManager::global();
+    let _lifecycle = manager.lifecycle_lock.lock().await;
+    if matches!(
+        &status,
+        ServiceStatus::ReinstallRequired | ServiceStatus::ForceReinstallRequired
+    ) {
+        manager.controlled_stop_core_inner().await.with_error_code(error_code)?;
     }
-    if CoreManager::global().restart_core().await.is_err() {
-        let emsg = format!("{} {} failed", "Restart", "Core");
-        return Err(t(emsg.as_str()));
-    }
-    Ok(())
+    SERVICE_MANAGER
+        .handle_service_status(status)
+        .await
+        .with_error_code(error_code)
 }
 
 #[tauri::command]
 pub async fn install_service() -> CmdResult {
-    execute_service_operation(service::install_service(), "Install").await
+    execute_service_operation_sync(ServiceStatus::InstallRequired, "SERVICE_INSTALL_FAILED").await
 }
 
 #[tauri::command]
 pub async fn uninstall_service() -> CmdResult {
-    execute_service_operation(service::uninstall_service(), "Uninstall").await
+    CoreManager::global()
+        .uninstall_service_and_start_sidecar()
+        .await
+        .with_error_code("SERVICE_UNINSTALL_FAILED")
 }
 
 #[tauri::command]
 pub async fn reinstall_service() -> CmdResult {
-    execute_service_operation(service::reinstall_service(), "Reinstall").await
+    execute_service_operation_sync(ServiceStatus::ReinstallRequired, "SERVICE_REINSTALL_FAILED").await
 }
 
 #[tauri::command]
 pub async fn repair_service() -> CmdResult {
-    execute_service_operation(service::force_reinstall_service(), "Repair").await
+    execute_service_operation_sync(ServiceStatus::ForceReinstallRequired, "SERVICE_REPAIR_FAILED").await
 }
 
 #[tauri::command]
-pub async fn is_service_available() -> CmdResult<bool> {
-    service::is_service_available()
+pub async fn continue_with_sidecar() -> CmdResult {
+    crate::core::CoreManager::global()
+        .continue_with_sidecar()
         .await
-        .map(|_| true)
-        .map_err(|e| e.to_string())
+        .with_error_code("SERVICE_SIDECAR_FAILED")
 }

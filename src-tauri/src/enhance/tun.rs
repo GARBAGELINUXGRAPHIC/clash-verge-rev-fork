@@ -1,4 +1,7 @@
-use serde_yaml::{Mapping, Value};
+use serde_yaml_ng::{Mapping, Value};
+
+#[cfg(target_os = "macos")]
+use crate::process::AsyncHandler;
 
 macro_rules! revise {
     ($map: expr, $key: expr, $val: expr) => {
@@ -18,25 +21,22 @@ macro_rules! append {
     };
 }
 
-pub async fn use_tun(mut config: Mapping, enable: bool) -> Mapping {
+pub fn use_tun(mut config: Mapping, enable: bool) -> Mapping {
     let tun_key = Value::from("tun");
     let tun_val = config.get(&tun_key);
-    let mut tun_val = tun_val.map_or(Mapping::new(), |val| {
-        val.as_mapping().cloned().unwrap_or(Mapping::new())
+    let mut tun_val = tun_val.map_or_else(Mapping::new, |val| {
+        val.as_mapping().cloned().unwrap_or_else(Mapping::new)
     });
 
     if enable {
         // 读取DNS配置
         let dns_key = Value::from("dns");
         let dns_val = config.get(&dns_key);
-        let mut dns_val = dns_val.map_or(Mapping::new(), |val| {
-            val.as_mapping().cloned().unwrap_or(Mapping::new())
+        let mut dns_val = dns_val.map_or_else(Mapping::new, |val| {
+            val.as_mapping().cloned().unwrap_or_else(Mapping::new)
         });
         let ipv6_key = Value::from("ipv6");
-        let ipv6_val = config
-            .get(&ipv6_key)
-            .and_then(|v| v.as_bool())
-            .unwrap_or(false);
+        let ipv6_val = config.get(&ipv6_key).and_then(|v| v.as_bool()).unwrap_or(false);
 
         // 检查现有的 enhanced-mode 设置
         let current_mode = dns_val
@@ -57,10 +57,17 @@ pub async fn use_tun(mut config: Mapping, enable: bool) -> Mapping {
                 revise!(dns_val, "fake-ip-range", "198.18.0.1/16");
             }
 
+            // 当启用 IPv6 时，补充 IPv6 的 fake-ip 范围
+            if ipv6_val && !dns_val.contains_key(Value::from("fake-ip-range6")) {
+                revise!(dns_val, "fake-ip-range6", "fdfe:dcba:9876::1/64");
+            }
+
             #[cfg(target_os = "macos")]
             {
-                crate::utils::resolve::restore_public_dns().await;
-                crate::utils::resolve::set_public_dns("223.6.6.6".to_string()).await;
+                AsyncHandler::spawn(move || async move {
+                    crate::utils::resolve::dns::restore_public_dns().await;
+                    crate::utils::resolve::dns::set_public_dns("114.114.114.114".to_string()).await;
+                });
             }
         }
 
@@ -69,7 +76,9 @@ pub async fn use_tun(mut config: Mapping, enable: bool) -> Mapping {
     } else {
         // TUN未启用时，仅恢复系统DNS，不修改配置文件中的DNS设置
         #[cfg(target_os = "macos")]
-        crate::utils::resolve::restore_public_dns().await;
+        AsyncHandler::spawn(move || async move {
+            crate::utils::resolve::dns::restore_public_dns().await;
+        });
     }
 
     // 更新TUN配置
