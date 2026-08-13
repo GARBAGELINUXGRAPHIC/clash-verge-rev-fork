@@ -1,267 +1,283 @@
+use crate::config::MixedPort;
 use anyhow::Result;
-use lazy_static::lazy_static;
-use parking_lot::Mutex;
-use reqwest::{Client, ClientBuilder, Proxy, RequestBuilder, Response};
-use std::{
-    sync::{Arc, Once},
-    time::{Duration, Instant},
+use base64::{Engine as _, engine::general_purpose};
+use reqwest::{
+    Client, Proxy, StatusCode,
+    header::{HeaderMap, HeaderValue, USER_AGENT},
 };
-use tokio::runtime::{Builder, Runtime};
+use smartstring::alias::String;
+use std::{sync::Arc, time::Duration};
+use sysproxy::Sysproxy;
+use tauri::Url;
 
-use crate::{config::Config, logging, utils::logging::Type};
-
-// HTTP2 相关
-const H2_CONNECTION_WINDOW_SIZE: u32 = 1024 * 1024;
-const H2_STREAM_WINDOW_SIZE: u32 = 1024 * 1024;
-const H2_MAX_FRAME_SIZE: u32 = 16 * 1024;
-const H2_KEEP_ALIVE_INTERVAL: Duration = Duration::from_secs(5);
-const H2_KEEP_ALIVE_TIMEOUT: Duration = Duration::from_secs(5);
-const DEFAULT_CONNECT_TIMEOUT: Duration = Duration::from_secs(10);
-const DEFAULT_REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
-const POOL_MAX_IDLE_PER_HOST: usize = 5;
-const POOL_IDLE_TIMEOUT: Duration = Duration::from_secs(15);
-
-/// 网络管理器
-pub struct NetworkManager {
-    runtime: Arc<Runtime>,
-    self_proxy_client: Arc<Mutex<Option<Client>>>,
-    system_proxy_client: Arc<Mutex<Option<Client>>>,
-    no_proxy_client: Arc<Mutex<Option<Client>>>,
-    init: Once,
-    last_connection_error: Arc<Mutex<Option<(Instant, String)>>>,
-    connection_error_count: Arc<Mutex<usize>>,
+#[derive(Debug)]
+pub struct HttpResponse {
+    status: StatusCode,
+    headers: HeaderMap,
+    body: String,
 }
 
-lazy_static! {
-    static ref NETWORK_MANAGER: NetworkManager = NetworkManager::new();
+impl HttpResponse {
+    pub const fn new(status: StatusCode, headers: HeaderMap, body: String) -> Self {
+        Self { status, headers, body }
+    }
+
+    pub const fn status(&self) -> StatusCode {
+        self.status
+    }
+
+    pub const fn headers(&self) -> &HeaderMap {
+        &self.headers
+    }
+
+    pub fn text_with_charset(&self) -> Result<&str> {
+        Ok(&self.body)
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum ProxyType {
+    None,
+    Localhost,
+    System,
+}
+
+#[derive(Debug, Clone, Copy)]
+enum TlsRootMode {
+    PlatformVerifier,
+    StaticWebpkiRoots,
+}
+
+pub struct NetworkManager;
+
+impl Default for NetworkManager {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl NetworkManager {
-    fn new() -> Self {
-        // 创建专用的异步运行时，线程数限制为4个
-        let runtime = Builder::new_multi_thread()
-            .worker_threads(4)
-            .thread_name("clash-verge-network")
-            .enable_io()
-            .enable_time()
-            .build()
-            .expect("Failed to create network runtime");
-
-        NetworkManager {
-            runtime: Arc::new(runtime),
-            self_proxy_client: Arc::new(Mutex::new(None)),
-            system_proxy_client: Arc::new(Mutex::new(None)),
-            no_proxy_client: Arc::new(Mutex::new(None)),
-            init: Once::new(),
-            last_connection_error: Arc::new(Mutex::new(None)),
-            connection_error_count: Arc::new(Mutex::new(0)),
-        }
+    pub const fn new() -> Self {
+        Self
     }
 
-    pub fn global() -> &'static Self {
-        &NETWORK_MANAGER
-    }
-
-    /// 初始化网络客户端
-    pub fn init(&self) {
-        self.init.call_once(|| {
-            self.runtime.spawn(async {
-                logging!(info, Type::Network, true, "初始化网络管理器");
-
-                // 创建无代理客户端
-                let no_proxy_client = ClientBuilder::new()
-                    .use_rustls_tls()
-                    .no_proxy()
-                    .pool_max_idle_per_host(POOL_MAX_IDLE_PER_HOST)
-                    .pool_idle_timeout(POOL_IDLE_TIMEOUT)
-                    .connect_timeout(Duration::from_secs(10))
-                    .timeout(Duration::from_secs(30))
-                    .build()
-                    .expect("Failed to build no_proxy client");
-
-                let mut no_proxy_guard = NETWORK_MANAGER.no_proxy_client.lock();
-                *no_proxy_guard = Some(no_proxy_client);
-
-                logging!(info, Type::Network, true, "网络管理器初始化完成");
-            });
-        });
-    }
-
-    fn record_connection_error(&self, error: &str) {
-        let mut last_error = self.last_connection_error.lock();
-        *last_error = Some((Instant::now(), error.to_string()));
-
-        let mut error_count = self.connection_error_count.lock();
-        *error_count += 1;
-    }
-
-    fn should_reset_clients(&self) -> bool {
-        let error_count = *self.connection_error_count.lock();
-        let last_error = self.last_connection_error.lock();
-
-        if error_count > 5 {
-            return true;
-        }
-
-        if let Some((time, _)) = *last_error {
-            if time.elapsed() < Duration::from_secs(30) && error_count > 2 {
-                return true;
-            }
-        }
-
-        false
-    }
-
-    pub fn reset_clients(&self) {
-        logging!(info, Type::Network, true, "正在重置所有HTTP客户端");
-        {
-            let mut client = self.self_proxy_client.lock();
-            *client = None;
-        }
-        {
-            let mut client = self.system_proxy_client.lock();
-            *client = None;
-        }
-        {
-            let mut client = self.no_proxy_client.lock();
-            *client = None;
-        }
-        {
-            let mut error_count = self.connection_error_count.lock();
-            *error_count = 0;
-        }
-    }
-
-    /// 创建带有自定义选项的HTTP请求
-    pub fn create_request(
+    fn build_client(
         &self,
-        url: &str,
+        proxy_url: Option<std::string::String>,
+        default_headers: HeaderMap,
+        accept_invalid_certs: bool,
+        timeout_secs: Option<u64>,
+        tls_root_mode: TlsRootMode,
+    ) -> Result<Client> {
+        let mut builder = Client::builder()
+            .tls_backend_rustls()
+            .redirect(reqwest::redirect::Policy::limited(10))
+            .tcp_keepalive(Duration::from_secs(60))
+            .pool_max_idle_per_host(0)
+            .pool_idle_timeout(None);
+
+        if matches!(tls_root_mode, TlsRootMode::StaticWebpkiRoots) {
+            builder = builder.tls_backend_preconfigured(Self::build_static_webpki_tls_config()?);
+        }
+
+        // 设置代理
+        if let Some(proxy_str) = proxy_url {
+            let proxy = Proxy::all(proxy_str)?;
+            builder = builder.proxy(proxy);
+        } else {
+            builder = builder.no_proxy();
+        }
+
+        builder = builder.default_headers(default_headers);
+
+        // SSL/TLS
+        if accept_invalid_certs {
+            builder = builder
+                .danger_accept_invalid_certs(true)
+                .danger_accept_invalid_hostnames(true);
+        }
+
+        // 超时设置
+        if let Some(secs) = timeout_secs {
+            builder = builder
+                .timeout(Duration::from_secs(secs))
+                .connect_timeout(Duration::from_secs(secs.min(30)));
+        }
+
+        Ok(builder.build()?)
+    }
+
+    fn build_static_webpki_tls_config() -> Result<rustls::ClientConfig> {
+        let root_store = rustls::RootCertStore::from_iter(webpki_roots::TLS_SERVER_ROOTS.iter().cloned());
+        let mut config =
+            rustls::ClientConfig::builder_with_provider(Arc::new(rustls::crypto::ring::default_provider()))
+                .with_safe_default_protocol_versions()?
+                .with_root_certificates(root_store)
+                .with_no_client_auth();
+
+        config.alpn_protocols = vec![b"h2".to_vec(), b"http/1.1".to_vec()];
+
+        Ok(config)
+    }
+
+    fn should_retry_with_static_webpki_roots(err: &anyhow::Error) -> bool {
+        if err.chain().any(Self::is_legacy_tls_protocol_error) {
+            return false;
+        }
+
+        err.chain().any(|e| {
+            let msg = e.to_string().to_ascii_lowercase();
+            [
+                "certificate",
+                "cert",
+                "tls",
+                "ssl",
+                "rustls",
+                "webpki",
+                "revocation",
+                "ocsp",
+                "crl",
+                "issuer",
+                "unknownissuer",
+            ]
+            .iter()
+            .any(|kw| msg.contains(kw))
+        })
+    }
+
+    fn context_reqwest_error(err: reqwest::Error, context: &'static str) -> anyhow::Error {
+        let legacy_tls = Self::is_legacy_tls_protocol_error(&err);
+        let err = anyhow::Error::new(err).context(context);
+
+        if legacy_tls {
+            err.context("Subscription server uses legacy TLS; only TLS 1.2/1.3 is supported. TLS 1.0/1.1 is insecure")
+        } else {
+            err
+        }
+    }
+
+    fn is_legacy_tls_protocol_error(err: &(dyn std::error::Error + 'static)) -> bool {
+        let detail = format!("{err:#?}").to_ascii_lowercase();
+        detail.contains("protocolversion") || detail.contains("protocol version")
+    }
+
+    pub async fn create_request(
+        &self,
         proxy_type: ProxyType,
         timeout_secs: Option<u64>,
         user_agent: Option<String>,
         accept_invalid_certs: bool,
-    ) -> RequestBuilder {
-        if self.should_reset_clients() {
-            self.reset_clients();
-        }
-
-        let mut builder = ClientBuilder::new()
-            .use_rustls_tls()
-            .pool_max_idle_per_host(POOL_MAX_IDLE_PER_HOST)
-            .pool_idle_timeout(POOL_IDLE_TIMEOUT)
-            .connect_timeout(DEFAULT_CONNECT_TIMEOUT)
-            .http2_initial_stream_window_size(H2_STREAM_WINDOW_SIZE)
-            .http2_initial_connection_window_size(H2_CONNECTION_WINDOW_SIZE)
-            .http2_adaptive_window(true)
-            .http2_keep_alive_interval(Some(H2_KEEP_ALIVE_INTERVAL))
-            .http2_keep_alive_timeout(H2_KEEP_ALIVE_TIMEOUT)
-            .http2_max_frame_size(H2_MAX_FRAME_SIZE)
-            .tcp_keepalive(Some(Duration::from_secs(10)))
-            .http2_max_header_list_size(16 * 1024);
-
-        if let Some(timeout) = timeout_secs {
-            builder = builder.timeout(Duration::from_secs(timeout));
-        } else {
-            builder = builder.timeout(DEFAULT_REQUEST_TIMEOUT);
-        }
-
-        match proxy_type {
-            ProxyType::None => {
-                builder = builder.no_proxy();
-            }
-            ProxyType::Localhost => {
-                let port = Config::verge()
-                    .latest_ref()
-                    .verge_mixed_port
-                    .unwrap_or(Config::clash().latest_ref().get_mixed_port());
-
-                let proxy_scheme = format!("http://127.0.0.1:{port}");
-
-                if let Ok(proxy) = Proxy::http(&proxy_scheme) {
-                    builder = builder.proxy(proxy);
-                }
-                if let Ok(proxy) = Proxy::https(&proxy_scheme) {
-                    builder = builder.proxy(proxy);
-                }
-                if let Ok(proxy) = Proxy::all(&proxy_scheme) {
-                    builder = builder.proxy(proxy);
-                }
-            }
-            ProxyType::System => {
-                use sysproxy::Sysproxy;
-
-                if let Ok(p @ Sysproxy { enable: true, .. }) = Sysproxy::get_system_proxy() {
-                    let proxy_scheme = format!("http://{}:{}", p.host, p.port);
-
-                    if let Ok(proxy) = Proxy::http(&proxy_scheme) {
-                        builder = builder.proxy(proxy);
-                    }
-                    if let Ok(proxy) = Proxy::https(&proxy_scheme) {
-                        builder = builder.proxy(proxy);
-                    }
-                    if let Ok(proxy) = Proxy::all(&proxy_scheme) {
-                        builder = builder.proxy(proxy);
-                    }
-                }
-            }
-        }
-
-        builder = builder.danger_accept_invalid_certs(accept_invalid_certs);
-
-        if let Some(ua) = user_agent {
-            builder = builder.user_agent(ua);
-        } else {
-            use crate::utils::resolve::VERSION;
-
-            let version = match VERSION.get() {
-                Some(v) => format!("clash-verge/v{v}"),
-                None => "clash-verge/unknown".to_string(),
-            };
-
-            builder = builder.user_agent(version);
-        }
-
-        let client = builder.build().expect("Failed to build custom HTTP client");
-
-        client.get(url)
-    }
-
-    /*     /// 执行GET请求，添加错误跟踪
-    pub async fn get(
-        &self,
-        url: &str,
-        proxy_type: ProxyType,
-        timeout_secs: Option<u64>,
-        user_agent: Option<String>,
-        accept_invalid_certs: bool,
-    ) -> Result<Response> {
-        let request = self.create_request(
-            url,
+    ) -> Result<Client> {
+        self.create_request_with_tls_mode(
             proxy_type,
             timeout_secs,
             user_agent,
             accept_invalid_certs,
-        );
+            TlsRootMode::PlatformVerifier,
+        )
+        .await
+    }
 
-        let timeout_duration = timeout_secs.unwrap_or(30);
+    async fn get_with_tls_mode(
+        &self,
+        url: &str,
+        proxy_type: ProxyType,
+        timeout_secs: Option<u64>,
+        user_agent: Option<String>,
+        accept_invalid_certs: bool,
+        tls_root_mode: TlsRootMode,
+    ) -> Result<HttpResponse> {
+        let mut parsed = Url::parse(url)?;
+        let mut extra_headers = HeaderMap::new();
 
-        match tokio::time::timeout(Duration::from_secs(timeout_duration), request.send()).await {
-            Ok(result) => match result {
-                Ok(response) => Ok(response),
-                Err(e) => {
-                    self.record_connection_error(&e.to_string());
-                    Err(anyhow::anyhow!("Failed to send HTTP request: {}", e))
-                }
-            },
-            Err(_) => {
-                self.record_connection_error("Request timeout");
-                Err(anyhow::anyhow!(
-                    "HTTP request timed out after {} seconds",
-                    timeout_duration
-                ))
-            }
+        if !parsed.username().is_empty() {
+            let username = percent_encoding::percent_decode_str(parsed.username())
+                .decode_utf8_lossy()
+                .into_owned();
+            let password = percent_encoding::percent_decode_str(parsed.password().unwrap_or_default())
+                .decode_utf8_lossy()
+                .into_owned();
+            let auth_str = format!("{}:{}", username, password);
+            let encoded = general_purpose::STANDARD.encode(auth_str);
+            extra_headers.insert("Authorization", HeaderValue::from_str(&format!("Basic {}", encoded))?);
         }
-    } */
+
+        parsed.set_username("").ok();
+        parsed.set_password(None).ok();
+
+        // 创建请求
+        let client = self
+            .create_request_with_tls_mode(
+                proxy_type,
+                timeout_secs,
+                user_agent,
+                accept_invalid_certs,
+                tls_root_mode,
+            )
+            .await?;
+
+        let mut request_builder = client.get(parsed);
+
+        for (key, value) in extra_headers.iter() {
+            request_builder = request_builder.header(key, value);
+        }
+
+        let response = match request_builder.send().await {
+            Ok(resp) => resp,
+            Err(e) => {
+                return Err(Self::context_reqwest_error(e, "Request failed"));
+            }
+        };
+
+        let status = response.status();
+        let headers = response.headers().to_owned();
+        let body = match response.text().await {
+            Ok(text) => text.into(),
+            Err(e) => {
+                return Err(Self::context_reqwest_error(e, "Failed to read response body"));
+            }
+        };
+
+        Ok(HttpResponse::new(status, headers, body))
+    }
+
+    async fn create_request_with_tls_mode(
+        &self,
+        proxy_type: ProxyType,
+        timeout_secs: Option<u64>,
+        user_agent: Option<String>,
+        accept_invalid_certs: bool,
+        tls_root_mode: TlsRootMode,
+    ) -> Result<Client> {
+        let proxy_url: Option<std::string::String> = match proxy_type {
+            ProxyType::None => None,
+            ProxyType::Localhost => {
+                let port = MixedPort::desired().await;
+                Some(format!("http://127.0.0.1:{port}"))
+            }
+            ProxyType::System => {
+                if let Ok(p @ Sysproxy { enable: true, .. }) = Sysproxy::get_system_proxy() {
+                    Some(format!("http://{}:{}", p.host, p.port))
+                } else {
+                    None
+                }
+            }
+        };
+
+        let mut headers = HeaderMap::new();
+
+        // 设置 User-Agent
+        if let Some(ua) = user_agent {
+            headers.insert(USER_AGENT, HeaderValue::from_str(ua.as_str())?);
+        } else {
+            headers.insert(
+                USER_AGENT,
+                HeaderValue::from_str(&format!("clash-verge/v{}", env!("CARGO_PKG_VERSION")))?,
+            );
+        }
+
+        self.build_client(proxy_url, headers, accept_invalid_certs, timeout_secs, tls_root_mode)
+    }
 
     pub async fn get_with_interrupt(
         &self,
@@ -270,49 +286,34 @@ impl NetworkManager {
         timeout_secs: Option<u64>,
         user_agent: Option<String>,
         accept_invalid_certs: bool,
-    ) -> Result<Response> {
-        let request = self.create_request(
-            url,
-            proxy_type,
-            timeout_secs,
-            user_agent,
-            accept_invalid_certs,
-        );
+    ) -> Result<HttpResponse> {
+        let platform_result = self
+            .get_with_tls_mode(
+                url,
+                proxy_type,
+                timeout_secs,
+                user_agent.clone(),
+                accept_invalid_certs,
+                TlsRootMode::PlatformVerifier,
+            )
+            .await;
 
-        let timeout_duration = timeout_secs.unwrap_or(20);
-
-        let (cancel_tx, cancel_rx) = tokio::sync::oneshot::channel::<()>();
-
-        let url_clone = url.to_string();
-        let watchdog = tokio::spawn(async move {
-            tokio::time::sleep(Duration::from_secs(timeout_duration)).await;
-            let _ = cancel_tx.send(());
-            logging!(warn, Type::Network, true, "请求超时取消: {}", url_clone);
-        });
-
-        let result = tokio::select! {
-            result = request.send() => result,
-            _ = cancel_rx => {
-                self.record_connection_error(&format!("Request interrupted for: {url}"));
-                return Err(anyhow::anyhow!("Request interrupted after {} seconds", timeout_duration));
-            }
-        };
-        watchdog.abort();
-
-        match result {
+        match platform_result {
             Ok(response) => Ok(response),
-            Err(e) => {
-                self.record_connection_error(&e.to_string());
-                Err(anyhow::anyhow!("Failed to send HTTP request: {}", e))
-            }
+            Err(err) if !accept_invalid_certs && Self::should_retry_with_static_webpki_roots(&err) => self
+                .get_with_tls_mode(
+                    url,
+                    proxy_type,
+                    timeout_secs,
+                    user_agent,
+                    accept_invalid_certs,
+                    TlsRootMode::StaticWebpkiRoots,
+                )
+                .await
+                .map_err(|fallback_err| {
+                    fallback_err.context("static webpki roots fallback failed after platform TLS verifier failed")
+                }),
+            Err(err) => Err(err),
         }
     }
-}
-
-/// 代理类型
-#[derive(Debug, Clone, Copy)]
-pub enum ProxyType {
-    None,
-    Localhost,
-    System,
 }

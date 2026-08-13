@@ -1,72 +1,79 @@
-import useSWR, { mutate } from "swr";
-import { useVerge } from "@/hooks/use-verge";
-import { getAutotemProxy } from "@/services/cmds";
-import { useAppData } from "@/providers/app-data-provider";
-import { closeAllConnections } from "@/services/api";
+import { useRef } from 'react'
+import { closeAllConnections } from 'tauri-plugin-mihomo-api'
+
+import { useDisplayedMixedPort } from '@/hooks/use-displayed-mixed-port'
+import { useVerge } from '@/hooks/use-verge'
+import { useSystemData } from '@/providers/app-data-context'
+import { getAutotemProxy, getEmbeddedServerPort } from '@/services/cmds'
+import { revalidateQueries, useQuery } from '@/services/query-client'
 
 // 系统代理状态检测统一逻辑
 export const useSystemProxyState = () => {
-  const { verge, mutateVerge, patchVerge } = useVerge();
-  const { sysproxy } = useAppData();
-  const { data: autoproxy } = useSWR("getAutotemProxy", getAutotemProxy, {
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-  });
+  const { verge, mutateVerge, patchVerge } = useVerge()
+  const { sysproxy } = useSystemData()
+  const displayedMixedPort = useDisplayedMixedPort()
+  const { data: autoproxy } = useQuery({
+    queryKey: ['getAutotemProxy'],
+    queryFn: getAutotemProxy,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+  })
+  const { data: pacPort } = useQuery({
+    queryKey: ['getEmbeddedServerPort'],
+    queryFn: getEmbeddedServerPort,
+  })
 
-  const { enable_system_proxy, proxy_auto_config } = verge ?? {};
+  const { enable_system_proxy, proxy_auto_config, proxy_host } = verge ?? {}
 
-  const getSystemProxyActualState = () => {
-    const userEnabled = enable_system_proxy ?? false;
-
-    if (userEnabled) {
-      return true;
-    }
-
-    return autoproxy?.enable === false && sysproxy?.enable === false
-      ? false
-      : userEnabled;
-  };
-
-  const getSystemProxyIndicator = () => {
+  // OS 实际状态：enable + 地址匹配本应用
+  const indicator = (() => {
+    const host = proxy_host || '127.0.0.1'
     if (proxy_auto_config) {
-      return autoproxy?.enable ?? false;
+      if (!autoproxy?.enable) return false
+      if (!pacPort) return false
+      return autoproxy.url === `http://${host}:${pacPort}/commands/pac`
     } else {
-      return sysproxy?.enable ?? false;
+      if (!sysproxy?.enable) return false
+      return sysproxy.server === `${host}:${displayedMixedPort}`
     }
-  };
+  })()
 
-  const updateProxyStatus = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    await mutate("getSystemProxy");
-    await mutate("getAutotemProxy");
-  };
+  // "最后一次生效"模式：快速连续点击时，只执行最终状态
+  const pendingRef = useRef<boolean | null>(null)
+  const busyRef = useRef(false)
 
-  const toggleSystemProxy = (enabled: boolean) => {
-    mutateVerge({ ...verge, enable_system_proxy: enabled }, false);
+  const toggleSystemProxy = async (enabled: boolean) => {
+    mutateVerge(
+      (prev) => (prev ? { ...prev, enable_system_proxy: enabled } : prev),
+      false,
+    )
+    pendingRef.current = enabled
 
-    setTimeout(async () => {
-      try {
-        if (!enabled && verge?.auto_close_connection) {
-          closeAllConnections();
+    if (busyRef.current) return
+    busyRef.current = true
+
+    try {
+      while (pendingRef.current !== null) {
+        const target = pendingRef.current
+        pendingRef.current = null
+        await patchVerge({ enable_system_proxy: target })
+        if (!target && verge?.auto_close_connection) {
+          await closeAllConnections().catch(() => {})
         }
-        await patchVerge({ enable_system_proxy: enabled });
-
-        updateProxyStatus();
-      } catch (error) {
-        mutateVerge({ ...verge, enable_system_proxy: !enabled }, false);
       }
-    }, 0);
+    } finally {
+      busyRef.current = false
+      await revalidateQueries([['getSystemProxy'], ['getAutotemProxy']])
+    }
+  }
 
-    return Promise.resolve();
-  };
+  const invalidateProxyState = () =>
+    revalidateQueries([['getSystemProxy'], ['getAutotemProxy']])
 
   return {
-    actualState: getSystemProxyActualState(),
-    indicator: getSystemProxyIndicator(),
+    indicator,
     configState: enable_system_proxy ?? false,
-    sysproxy,
-    autoproxy,
-    proxy_auto_config,
     toggleSystemProxy,
-  };
-};
+    invalidateProxyState,
+  }
+}

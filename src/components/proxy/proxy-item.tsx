@@ -1,6 +1,4 @@
-import { useEffect, useState } from "react";
-import { useLockFn } from "ahooks";
-import { CheckCircleOutlineRounded } from "@mui/icons-material";
+import { CheckCircleOutlineRounded } from '@mui/icons-material'
 import {
   alpha,
   Box,
@@ -9,184 +7,185 @@ import {
   ListItemIcon,
   ListItemText,
   styled,
-  SxProps,
-  Theme,
-} from "@mui/material";
-import { BaseLoading } from "@/components/base";
-import delayManager from "@/services/delay";
-import { useVerge } from "@/hooks/use-verge";
+  type SxProps,
+  type Theme,
+} from '@mui/material'
+import { useTranslation } from 'react-i18next'
+
+import { BaseLoading } from '@/components/base'
+import { useProxyDelayState } from '@/hooks/use-proxy-delay-state'
+import delayManager from '@/services/delay'
+import {
+  memberDetails,
+  providerNameOf,
+  type ProxyGroupView,
+  type ResolvedProxyMember,
+} from '@/types/proxy-view'
 
 interface Props {
-  group: IProxyGroupItem;
-  proxy: IProxyItem;
-  selected: boolean;
-  showType?: boolean;
-  sx?: SxProps<Theme>;
-  onClick?: (name: string) => void;
+  group: ProxyGroupView
+  member: ResolvedProxyMember
+  selected: boolean
+  showType?: boolean
+  sx?: SxProps<Theme>
+  onClick?: (member: ResolvedProxyMember) => void
 }
 
 const Widget = styled(Box)(() => ({
-  padding: "3px 6px",
+  padding: '3px 6px',
   fontSize: 14,
-  borderRadius: "4px",
-}));
+  borderRadius: '4px',
+}))
 
-const TypeBox = styled("span")(({ theme }) => ({
-  display: "inline-block",
-  border: "1px solid #ccc",
+const TypeBox = styled('span')(({ theme }) => ({
+  display: 'inline-block',
+  border: '1px solid #ccc',
   borderColor: alpha(theme.palette.text.secondary, 0.36),
   color: alpha(theme.palette.text.secondary, 0.42),
   borderRadius: 4,
   fontSize: 10,
-  marginRight: "4px",
-  padding: "0 2px",
+  marginRight: '4px',
+  padding: '0 2px',
   lineHeight: 1.25,
-}));
+}))
 
 export const ProxyItem = (props: Props) => {
-  const { group, proxy, selected, showType = true, sx, onClick } = props;
+  const { t } = useTranslation()
+  const { group, member, selected, showType = true, sx, onClick } = props
+  const details = memberDetails(member)
+  const unresolved = member.kind === 'unresolved'
+  const name = member.ref.name
+  const type = unresolved ? member.ref.reason : (details?.type ?? '')
+  const provider =
+    member.kind === 'node' ? providerNameOf(member.node) : undefined
+  const now = member.kind === 'group' ? member.group.now : undefined
 
-  const presetList = ["DIRECT", "REJECT", "REJECT-DROP", "PASS", "COMPATIBLE"];
-  const isPreset = presetList.includes(proxy.name);
-  // -1/<=0 为 不显示
-  // -2 为 loading
-  const [delay, setDelay] = useState(-1);
-  const { verge } = useVerge();
-  const timeout = verge?.default_latency_timeout || 10000;
-  useEffect(() => {
-    if (isPreset) return;
-    delayManager.setListener(proxy.name, group.name, setDelay);
-
-    return () => {
-      delayManager.removeListener(proxy.name, group.name);
-    };
-  }, [proxy.name, group.name]);
-
-  useEffect(() => {
-    if (!proxy) return;
-    setDelay(delayManager.getDelayFix(proxy, group.name));
-  }, [proxy]);
-
-  const onDelay = useLockFn(async () => {
-    setDelay(-2);
-    setDelay(await delayManager.checkDelay(proxy.name, group.name, timeout));
-  });
+  // -1/<=0 为不显示，-2 为 loading
+  const { delayValue, isPreset, timeout, onDelay } = useProxyDelayState(
+    member,
+    group.name,
+  )
 
   return (
     <ListItem sx={sx}>
       <ListItemButton
         dense
-        selected={selected}
-        onClick={() => onClick?.(proxy.name)}
+        disabled={unresolved}
+        selected={!unresolved && selected}
+        onClick={unresolved ? undefined : () => onClick?.(member)}
         sx={[
           { borderRadius: 1 },
           ({ palette: { mode, primary } }) => {
-            const bgcolor = mode === "light" ? "#ffffff" : "#24252f";
-            const selectColor = mode === "light" ? primary.main : primary.light;
-            const showDelay = delay > 0;
+            const bgcolor = mode === 'light' ? '#ffffff' : '#24252f'
+            const selectColor = mode === 'light' ? primary.main : primary.light
+            const showDelay = delayValue > 0
 
             return {
-              "&:hover .the-check": { display: !showDelay ? "block" : "none" },
-              "&:hover .the-delay": { display: showDelay ? "block" : "none" },
-              "&:hover .the-icon": { display: "none" },
-              "&.Mui-selected": {
+              '&:hover .the-check': { display: !showDelay ? 'block' : 'none' },
+              '&:hover .the-delay': { display: showDelay ? 'block' : 'none' },
+              '&:hover .the-icon': { display: 'none' },
+              '&.Mui-selected': {
                 width: `calc(100% + 3px)`,
                 marginLeft: `-3px`,
                 borderLeft: `3px solid ${selectColor}`,
                 bgcolor:
-                  mode === "light"
+                  mode === 'light'
                     ? alpha(primary.main, 0.15)
                     : alpha(primary.main, 0.35),
               },
               backgroundColor: bgcolor,
-              marginBottom: "8px",
-              height: "40px",
-            };
+              marginBottom: '8px',
+              height: '40px',
+            }
           },
         ]}
       >
         <ListItemText
-          title={proxy.name}
+          title={name}
           secondary={
             <>
               <Box
                 sx={{
-                  display: "inline-block",
-                  marginRight: "8px",
-                  fontSize: "14px",
-                  color: "text.primary",
+                  display: 'inline-block',
+                  marginRight: '8px',
+                  fontSize: '14px',
+                  color: 'text.primary',
                 }}
               >
-                {proxy.name}
-                {showType && proxy.now && ` - ${proxy.now}`}
+                {name}
+                {showType && now && ` - ${now}`}
               </Box>
-              {showType && !!proxy.provider && (
-                <TypeBox>{proxy.provider}</TypeBox>
+              {showType && !!provider && <TypeBox>{provider}</TypeBox>}
+              {showType && <TypeBox>{type}</TypeBox>}
+              {!unresolved && showType && details?.udp && (
+                <TypeBox>UDP</TypeBox>
               )}
-              {showType && <TypeBox>{proxy.type}</TypeBox>}
-              {showType && proxy.udp && <TypeBox>UDP</TypeBox>}
-              {showType && proxy.xudp && <TypeBox>XUDP</TypeBox>}
-              {showType && proxy.tfo && <TypeBox>TFO</TypeBox>}
-              {showType && proxy.mptcp && <TypeBox>MPTCP</TypeBox>}
-              {showType && proxy.smux && <TypeBox>SMUX</TypeBox>}
+              {!unresolved && showType && details?.xudp && (
+                <TypeBox>XUDP</TypeBox>
+              )}
+              {!unresolved && showType && details?.tfo && (
+                <TypeBox>TFO</TypeBox>
+              )}
+              {!unresolved && showType && details?.mptcp && (
+                <TypeBox>MPTCP</TypeBox>
+              )}
+              {!unresolved && showType && details?.smux && (
+                <TypeBox>SMUX</TypeBox>
+              )}
             </>
           }
         />
 
         <ListItemIcon
           sx={{
-            justifyContent: "flex-end",
-            color: "primary.main",
-            display: isPreset ? "none" : "",
+            justifyContent: 'flex-end',
+            color: 'primary.main',
+            display: isPreset ? 'none' : '',
           }}
         >
-          {delay === -2 && (
+          {!unresolved && delayValue === -2 && (
             <Widget>
               <BaseLoading />
             </Widget>
           )}
 
-          {!proxy.provider && delay !== -2 && (
-            // provider的节点不支持检测
+          {!unresolved && delayValue !== -2 && (
             <Widget
               className="the-check"
               onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                onDelay();
+                e.preventDefault()
+                e.stopPropagation()
+                void onDelay()
               }}
               sx={({ palette }) => ({
-                display: "none", // hover才显示
-                ":hover": { bgcolor: alpha(palette.primary.main, 0.15) },
+                display: 'none', // hover 时显示
+                ':hover': { bgcolor: alpha(palette.primary.main, 0.15) },
               })}
             >
-              Check
+              {t('shared.actions.check')}
             </Widget>
           )}
 
-          {delay > 0 && (
+          {!unresolved && delayValue > 0 && (
             // 显示延迟
             <Widget
               className="the-delay"
               onClick={(e) => {
-                if (proxy.provider) return;
-                e.preventDefault();
-                e.stopPropagation();
-                onDelay();
+                e.preventDefault()
+                e.stopPropagation()
+                void onDelay()
               }}
-              color={delayManager.formatDelayColor(delay, timeout)}
-              sx={({ palette }) =>
-                !proxy.provider
-                  ? { ":hover": { bgcolor: alpha(palette.primary.main, 0.15) } }
-                  : {}
-              }
+              sx={({ palette }) => ({
+                color: delayManager.formatDelayColor(delayValue, timeout),
+                ':hover': { bgcolor: alpha(palette.primary.main, 0.15) },
+              })}
             >
-              {delayManager.formatDelay(delay, timeout)}
+              {delayManager.formatDelay(delayValue, timeout)}
             </Widget>
           )}
 
-          {delay !== -2 && delay <= 0 && selected && (
-            // 展示已选择的icon
+          {!unresolved && delayValue !== -2 && delayValue <= 0 && selected && (
+            // 展示已选择的 icon
             <CheckCircleOutlineRounded
               className="the-icon"
               sx={{ fontSize: 16 }}
@@ -195,5 +194,5 @@ export const ProxyItem = (props: Props) => {
         </ListItemIcon>
       </ListItemButton>
     </ListItem>
-  );
-};
+  )
+}
