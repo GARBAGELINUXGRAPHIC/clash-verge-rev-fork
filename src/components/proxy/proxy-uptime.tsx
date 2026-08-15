@@ -40,12 +40,11 @@ export const ProxyUptime = ({ member }: Props) => {
           display: 'inline-flex',
           alignItems: 'center',
           flexShrink: 0,
-          height: 16,
           marginRight: '4px',
           padding: '0 4px',
           border: '1px solid',
           borderColor: alpha(color, 0.55),
-          borderRadius: '6px',
+          borderRadius: '4px',
           backgroundColor: alpha(color, 0.12),
           color,
           fontSize: 10,
@@ -55,7 +54,7 @@ export const ProxyUptime = ({ member }: Props) => {
         }
       }}
     >
-      {percentage}
+      Uptime: {percentage}
     </Box>
   )
 }
