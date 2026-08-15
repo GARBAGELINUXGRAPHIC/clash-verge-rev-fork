@@ -8,7 +8,7 @@ use clash_verge_logging::{Type, logging};
 use futures::{StreamExt as _, stream};
 use parking_lot::{Mutex, RwLock};
 use serde::Serialize;
-use tauri_plugin_mihomo::models::{Proxies, Proxy, ProxyProviders, ProxyType};
+use tauri_plugin_mihomo::models::{Proxies, Proxy, ProxyProviders, ProxyType, VehicleType};
 use tokio::{sync::mpsc, time::sleep};
 
 use crate::{config::Config, core::handle::Handle, module::lightweight, process::AsyncHandler, singleton};
@@ -356,6 +356,10 @@ fn collect_monitor_nodes(proxies: &Proxies, providers: &ProxyProviders) -> Vec<M
 
     let mut nodes = HashMap::<NodeKey, MonitorNode>::new();
     for (provider_name, provider) in &providers.providers {
+        if !is_external_provider(&provider.vehicle_type) {
+            continue;
+        }
+
         for proxy in &provider.proxies {
             if !is_monitorable_leaf(proxy) {
                 continue;
@@ -379,6 +383,7 @@ fn collect_monitor_nodes(proxies: &Proxies, providers: &ProxyProviders) -> Vec<M
         let belongs_to_provider = providers
             .providers
             .values()
+            .filter(|provider| is_external_provider(&provider.vehicle_type))
             .any(|provider| provider.proxies.iter().any(|candidate| candidate.name == proxy.name));
         if belongs_to_provider {
             continue;
@@ -401,6 +406,13 @@ fn collect_monitor_nodes(proxies: &Proxies, providers: &ProxyProviders) -> Vec<M
     }
 
     nodes.into_values().collect()
+}
+
+const fn is_external_provider(vehicle_type: &VehicleType) -> bool {
+    matches!(
+        vehicle_type,
+        VehicleType::HTTP | VehicleType::File | VehicleType::Inline
+    )
 }
 
 fn is_monitorable_leaf(proxy: &Proxy) -> bool {
@@ -583,6 +595,7 @@ mod tests {
         providers.providers.insert(
             "provider-a".to_owned(),
             ProxyProvider {
+                vehicle_type: VehicleType::HTTP,
                 proxies: vec![provider_node()],
                 ..ProxyProvider::default()
             },
@@ -590,6 +603,7 @@ mod tests {
         providers.providers.insert(
             "provider-b".to_owned(),
             ProxyProvider {
+                vehicle_type: VehicleType::File,
                 proxies: vec![provider_node()],
                 ..ProxyProvider::default()
             },
@@ -602,5 +616,33 @@ mod tests {
             .collect::<BTreeSet<_>>();
         assert_eq!(nodes.len(), 2);
         assert_eq!(provider_names, BTreeSet::from(["provider-a", "provider-b"]));
+    }
+
+    #[test]
+    fn compatible_pseudo_providers_do_not_hide_core_nodes() {
+        use tauri_plugin_mihomo::models::ProxyProvider;
+
+        let node = || Proxy {
+            name: "node".to_owned(),
+            proxy_type: ProxyType::Vmess,
+            ..Proxy::default()
+        };
+        let mut proxies = Proxies::default();
+        proxies.proxies.insert("node".to_owned(), node());
+
+        let mut providers = ProxyProviders::default();
+        providers.providers.insert(
+            "default".to_owned(),
+            ProxyProvider {
+                vehicle_type: VehicleType::Compatible,
+                proxies: vec![node()],
+                ..ProxyProvider::default()
+            },
+        );
+
+        let nodes = collect_monitor_nodes(&proxies, &providers);
+        assert_eq!(nodes.len(), 1);
+        assert_eq!(nodes[0].key.provider_name, None);
+        assert_eq!(nodes[0].key.name, "node");
     }
 }
