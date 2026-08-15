@@ -402,6 +402,7 @@
         "proxyLayoutColumns": "Прокси күрсәтү баганалары саны",
         "autoLogClean": "Логларны автоматик чистарту",
         "autoDelayDetection": "Автоматик тоткарлык ачыклау",
+        "autoAllLatencyUptime": "Барлык төеннәрне һәм эш вакытын автоматик тикшерү",
         "autoDelayDetectionInterval": "Автоматик тоткарлык ачыклау интервалы",
         "defaultLatencyTest": "Тоткарлануны тикшерү сылтамасы (defaults)",
         "defaultLatencyTimeout": "Тоткарлануның стандарт таймауты"

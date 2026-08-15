@@ -12,7 +12,7 @@ use crate::{
         },
         profiles_append_item_safe,
     },
-    core::{CoreManager, handle, timer::Timer, tray::Tray, validate::ValidationOutcome},
+    core::{CoreManager, LatencyUptimeMonitor, handle, timer::Timer, tray::Tray, validate::ValidationOutcome},
     feat,
     utils::{dirs, help},
 };
@@ -173,6 +173,7 @@ pub async fn delete_profile(index: String) -> CmdResult {
                 // 发送配置变更通知
                 logging!(info, Type::Cmd, "[删除订阅] 发送配置变更通知: {}", index);
                 handle::Handle::notify_profile_changed(&index);
+                LatencyUptimeMonitor::global().refresh();
             }
             Ok(outcome) => {
                 logging!(warn, Type::Cmd, "删除订阅后更新配置失败: {}", outcome);
@@ -243,6 +244,7 @@ async fn handle_success(current_value: Option<&String>) -> CmdResult<ValidationO
         logging!(info, Type::Cmd, "向前端发送配置变更事件: {}", current);
         handle::Handle::notify_profile_changed(current);
     }
+    LatencyUptimeMonitor::global().refresh();
 
     Ok(ValidationOutcome::Valid)
 }

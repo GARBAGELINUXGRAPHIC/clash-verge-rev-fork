@@ -947,6 +947,7 @@ export interface TranslationResources {
             appLogLevel: string
             appLogMaxCount: string
             appLogMaxSize: string
+            autoAllLatencyUptime: string
             autoCheckUpdate: string
             autoCloseConnections: string
             autoDelayDetection: string

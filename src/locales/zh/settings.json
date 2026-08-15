@@ -402,6 +402,7 @@
         "proxyLayoutColumns": "代理页布局列数",
         "autoLogClean": "自动清理日志",
         "autoDelayDetection": "自动延迟检测",
+        "autoAllLatencyUptime": "自动检测所有节点延迟与Uptime",
         "autoDelayDetectionInterval": "自动延迟检测间隔",
         "defaultLatencyTest": "默认测试链接",
         "defaultLatencyTimeout": "测试超时时间"

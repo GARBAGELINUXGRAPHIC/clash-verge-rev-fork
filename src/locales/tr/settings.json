@@ -402,6 +402,7 @@
         "proxyLayoutColumns": "Vekil Düzeni Sütunları",
         "autoLogClean": "Otomatik Günlük Temizleme",
         "autoDelayDetection": "Otomatik Gecikme Tespiti",
+        "autoAllLatencyUptime": "Tüm Düğümleri ve Çalışma Süresini Otomatik Test Et",
         "autoDelayDetectionInterval": "Otomatik Gecikme Tespiti Aralığı",
         "defaultLatencyTest": "Varsayılan Gecikme Testi",
         "defaultLatencyTimeout": "Varsayılan Gecikme Zaman Aşımı"

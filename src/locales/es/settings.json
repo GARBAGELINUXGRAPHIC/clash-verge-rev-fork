@@ -402,6 +402,7 @@
         "proxyLayoutColumns": "Número de columnas en la disposición de la página de proxy",
         "autoLogClean": "Limpiar registros automáticamente",
         "autoDelayDetection": "Detección automática de latencia",
+        "autoAllLatencyUptime": "Probar automáticamente todos los nodos y disponibilidad",
         "autoDelayDetectionInterval": "Intervalo de detección automática de latencia",
         "defaultLatencyTest": "Enlace de prueba de latencia predeterminado",
         "defaultLatencyTimeout": "Tiempo de espera de la prueba de latencia"

@@ -23,6 +23,10 @@ export async function patchProfilesConfig(profiles: IProfilesConfig) {
   return invoke<ValidationOutcome>('patch_profiles_config', { profiles })
 }
 
+export async function getLatencyUptimeSnapshot() {
+  return invoke<ILatencyUptimeSnapshot>('get_latency_uptime_snapshot')
+}
+
 export async function createProfile(
   item: Partial<IProfileItem>,
   fileData?: string | null,

@@ -1,6 +1,6 @@
 use crate::{
     config::Config,
-    core::{timer::Timer, tray::Tray},
+    core::{LatencyUptimeMonitor, timer::Timer, tray::Tray},
     process::AsyncHandler,
 };
 
@@ -115,6 +115,7 @@ pub async fn entry_lightweight_mode() -> bool {
         return false;
     }
     record_state_and_log(LightweightState::In);
+    LatencyUptimeMonitor::global().refresh();
     WindowManager::destroy_main_window();
     cancel_light_weight_timer();
     refresh_lightweight_tray_state().await;
@@ -144,6 +145,7 @@ pub async fn exit_lightweight_mode() -> bool {
     }
     cancel_light_weight_timer();
     record_state_and_log(LightweightState::Normal);
+    LatencyUptimeMonitor::global().refresh();
     refresh_lightweight_tray_state().await;
     true
 }

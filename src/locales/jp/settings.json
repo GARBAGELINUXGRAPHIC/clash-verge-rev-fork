@@ -402,6 +402,7 @@
         "proxyLayoutColumns": "プロキシページのレイアウト列数",
         "autoLogClean": "ログを自動的にクリーンアップ",
         "autoDelayDetection": "自動遅延検出",
+        "autoAllLatencyUptime": "全ノードの遅延と稼働率を自動測定",
         "autoDelayDetectionInterval": "自動遅延検出間隔",
         "defaultLatencyTest": "デフォルトの遅延テストURL",
         "defaultLatencyTimeout": "テストタイムアウト時間"

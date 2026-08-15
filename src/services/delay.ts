@@ -187,11 +187,9 @@ class DelayManager {
 
   /// 暂时修复provider的节点延迟排序的问题
   getDelayFix(proxy: IProxyItem, group: string) {
-    if (!proxy.provider) {
-      const update = this.getDelayUpdate(proxy.name, group)
-      if (update && (update.delay >= 0 || update.delay === -2)) {
-        return update.delay
-      }
+    const update = this.getDelayUpdate(proxy.name, group)
+    if (update && (update.delay >= 0 || update.delay === -2)) {
+      return update.delay
     }
 
     // 添加 history 属性的安全检查
@@ -200,6 +198,15 @@ class DelayManager {
       return proxy.history[proxy.history.length - 1].delay || 1e6
     }
     return -1
+  }
+
+  applyLatencyUptimeSnapshot(nodes: ILatencyUptimeNode[]) {
+    nodes.forEach((node) => {
+      node.groups.forEach((group) => {
+        this.setDelay(node.name, group, node.delay)
+        this.queueGroupNotification(group)
+      })
+    })
   }
 
   // 统一延迟测试检测

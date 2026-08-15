@@ -5,6 +5,7 @@ use tauri::AppHandle;
 use tauri_plugin_mihomo::{Mihomo, MihomoExt as _};
 use tokio::sync::RwLockReadGuard;
 
+use super::latency_uptime::LatencyUptimeSnapshot;
 use super::notification::{FrontendEvent, NotificationSystem};
 
 #[derive(Debug)]
@@ -64,6 +65,10 @@ impl Handle {
 
     pub fn notify_profile_update_completed(uid: &String) {
         Self::send_event(FrontendEvent::ProfileUpdateCompleted { uid });
+    }
+
+    pub fn notify_latency_uptime_updated(snapshot: &LatencyUptimeSnapshot) {
+        Self::send_event(FrontendEvent::LatencyUptimeUpdated { snapshot });
     }
 
     pub fn notice_message<S: AsRef<str>, M: Into<String>>(status: S, msg: M) {

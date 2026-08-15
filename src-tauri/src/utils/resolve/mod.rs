@@ -5,7 +5,7 @@ use anyhow::Result;
 use crate::{
     config::Config,
     core::{
-        CoreManager, Timer,
+        CoreManager, LatencyUptimeMonitor, Timer,
         handle::Handle,
         hotkey::Hotkey,
         logger::Logger,
@@ -66,6 +66,7 @@ pub fn resolve_setup_async() {
         let core_init = AsyncHandler::spawn(|| async {
             init_service_manager().await;
             init_core_manager().await;
+            init_latency_uptime_monitor().await;
             init_system_proxy().await;
             init_system_proxy_guard().await;
         });
@@ -197,6 +198,10 @@ pub(super) async fn init_service_manager() {
 
 pub(super) async fn init_core_manager() {
     logging_error!(Type::Setup, CoreManager::global().init().await);
+}
+
+pub(super) async fn init_latency_uptime_monitor() {
+    logging_error!(Type::Setup, LatencyUptimeMonitor::global().init().await);
 }
 
 pub(super) async fn init_system_proxy() {

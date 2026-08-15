@@ -32,6 +32,18 @@ export interface UptimeContextType {
   uptime: number
 }
 
+export interface LatencyUptimeContextType {
+  enabled: boolean
+  profileId?: string | null
+  nodesByKey: ReadonlyMap<string, ILatencyUptimeNode>
+  nodesByName: ReadonlyMap<string, ILatencyUptimeNode | null>
+}
+
+export const latencyUptimeNodeKey = (
+  name: string,
+  providerName?: string | null,
+) => `${providerName ?? ''}\u0000${name}`
+
 export interface CoreDataStatusContextType {
   isCoreDataPending: boolean
 }
@@ -53,6 +65,8 @@ export const ClashConfigContext = createContext<ClashConfigContextType | null>(
 )
 export const SystemContext = createContext<SystemContextType | null>(null)
 export const UptimeContext = createContext<UptimeContextType | null>(null)
+export const LatencyUptimeContext =
+  createContext<LatencyUptimeContextType | null>(null)
 export const CoreDataStatusContext =
   createContext<CoreDataStatusContextType | null>(null)
 export const RefreshersContext = createContext<RefreshersContextType | null>(
@@ -95,6 +109,9 @@ export const useSystemData = (): SystemContextType =>
 
 export const useUptimeData = (): UptimeContextType =>
   useCtx(UptimeContext, 'useUptimeData')
+
+export const useLatencyUptimeData = (): LatencyUptimeContextType =>
+  useCtx(LatencyUptimeContext, 'useLatencyUptimeData')
 
 export const useAppRefreshers = (): RefreshersContextType =>
   useCtx(RefreshersContext, 'useAppRefreshers')

@@ -158,7 +158,10 @@ pub struct IVerge {
     /// 是否自动检测当前节点延迟
     pub enable_auto_delay_detection: Option<bool>,
 
-    /// 自动检测当前节点延迟的间隔（分钟）
+    /// 是否自动检测所有节点延迟并统计可用率
+    pub enable_auto_all_latency_uptime: Option<bool>,
+
+    /// 两种自动延迟检测共享的间隔（分钟）
     pub auto_delay_detection_interval_minutes: Option<u64>,
 
     /// 是否使用内部的脚本支持，默认为真
@@ -259,6 +262,30 @@ pub struct IVerge {
     pub enable_external_controller: Option<bool>,
 }
 
+#[cfg(test)]
+mod tests {
+    use super::IVerge;
+
+    #[test]
+    fn latency_detector_patches_remain_mutually_exclusive() {
+        let mut config = IVerge::default();
+        config.patch_config(&IVerge {
+            enable_auto_delay_detection: Some(true),
+            enable_auto_all_latency_uptime: Some(true),
+            ..IVerge::default()
+        });
+        assert_eq!(config.enable_auto_delay_detection, Some(false));
+        assert_eq!(config.enable_auto_all_latency_uptime, Some(true));
+
+        config.patch_config(&IVerge {
+            enable_auto_delay_detection: Some(true),
+            ..IVerge::default()
+        });
+        assert_eq!(config.enable_auto_delay_detection, Some(true));
+        assert_eq!(config.enable_auto_all_latency_uptime, Some(false));
+    }
+}
+
 #[derive(Default, Debug, Clone, Deserialize, Serialize)]
 pub struct IVergeTestItem {
     pub uid: Option<String>,
@@ -296,6 +323,15 @@ impl IVerge {
         };
 
         let mut needs_fix = false;
+
+        if config.normalize_latency_detectors() {
+            logging!(
+                warn,
+                Type::Config,
+                "Both latency detectors were enabled; keeping the all-node Uptime monitor"
+            );
+            needs_fix = true;
+        }
 
         if let Some(ref core) = config.clash_core {
             let core_str = core.trim();
@@ -365,6 +401,7 @@ impl IVerge {
                     {
                         config.start_page = Some(String::from("/"));
                     }
+                    config.normalize_latency_detectors();
                     config
                 }
                 Err(err) => {
@@ -430,6 +467,7 @@ impl IVerge {
             proxy_guard_duration: Some(30),
             auto_close_connection: Some(true),
             auto_check_update: Some(true),
+            enable_auto_all_latency_uptime: Some(false),
             enable_builtin_enhanced: Some(true),
             auto_log_clean: Some(2), // 1: 1天, 2: 7天, 3: 30天, 4: 90天
             enable_auto_backup_schedule: Some(false),
@@ -532,7 +570,16 @@ impl IVerge {
         patch!(default_latency_test);
         patch!(default_latency_timeout);
         patch!(enable_auto_delay_detection);
+        patch!(enable_auto_all_latency_uptime);
         patch!(auto_delay_detection_interval_minutes);
+
+        // The legacy current-node detector and the all-node monitor are
+        // intentionally separate implementations and must not run together.
+        match (patch.enable_auto_all_latency_uptime, patch.enable_auto_delay_detection) {
+            (Some(true), _) => self.enable_auto_delay_detection = Some(false),
+            (_, Some(true)) => self.enable_auto_all_latency_uptime = Some(false),
+            _ => {}
+        }
         patch!(enable_builtin_enhanced);
         patch!(proxy_layout_column);
         patch!(test_list);
@@ -554,6 +601,15 @@ impl IVerge {
         patch!(enable_dns_settings);
         patch!(home_cards);
         patch!(enable_external_controller);
+    }
+
+    fn normalize_latency_detectors(&mut self) -> bool {
+        if self.enable_auto_all_latency_uptime == Some(true) && self.enable_auto_delay_detection == Some(true) {
+            self.enable_auto_delay_detection = Some(false);
+            true
+        } else {
+            false
+        }
     }
 
     pub const fn get_singleton_port() -> u16 {

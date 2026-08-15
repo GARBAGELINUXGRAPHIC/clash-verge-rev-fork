@@ -15,6 +15,8 @@ import { BaseLoading } from '@/components/base'
 import { useProxyDelayState } from '@/hooks/use-proxy-delay-state'
 import delayManager from '@/services/delay'
 
+import { ProxyUptime } from './proxy-uptime'
+
 interface Props {
   group: IProxyGroupItem
   proxy: IProxyItem
@@ -102,6 +104,7 @@ export const ProxyItem = (props: Props) => {
               {showType && !!proxy.provider && (
                 <TypeBox>{proxy.provider}</TypeBox>
               )}
+              {showType && <ProxyUptime proxy={proxy} />}
               {showType && <TypeBox>{proxy.type}</TypeBox>}
               {showType && proxy.udp && <TypeBox>UDP</TypeBox>}
               {showType && proxy.xudp && <TypeBox>XUDP</TypeBox>}

@@ -4,6 +4,8 @@ use smartstring::alias::String;
 
 use tauri::{AppHandle, Emitter as _, Manager as _, WebviewWindow};
 
+use super::latency_uptime::LatencyUptimeSnapshot;
+
 #[derive(Debug)]
 pub enum FrontendEvent<'a> {
     RefreshClash,
@@ -14,6 +16,7 @@ pub enum FrontendEvent<'a> {
     TimerUpdated { profile_index: &'a String },
     ProfileUpdateStarted { uid: &'a String },
     ProfileUpdateCompleted { uid: &'a String },
+    LatencyUptimeUpdated { snapshot: &'a LatencyUptimeSnapshot },
 }
 
 #[derive(Debug)]
@@ -38,6 +41,9 @@ impl NotificationSystem {
             FrontendEvent::TimerUpdated { profile_index } => ("verge://timer-updated", Ok(json!(profile_index))),
             FrontendEvent::ProfileUpdateStarted { uid } => ("profile-update-started", Ok(json!({ "uid": uid }))),
             FrontendEvent::ProfileUpdateCompleted { uid } => ("profile-update-completed", Ok(json!({ "uid": uid }))),
+            FrontendEvent::LatencyUptimeUpdated { snapshot } => {
+                ("verge://latency-uptime-updated", serde_json::to_value(snapshot))
+            }
         }
     }
 

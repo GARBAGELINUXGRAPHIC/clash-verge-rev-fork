@@ -29,6 +29,7 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
     enableBuiltinEnhanced: true,
     proxyLayoutColumn: 6,
     enableAutoDelayDetection: false,
+    enableAutoAllLatencyUptime: false,
     autoDelayDetectionIntervalMinutes: 5,
     defaultLatencyTest: '',
     autoLogClean: 2,
@@ -46,7 +47,11 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
         autoCheckUpdate: verge?.auto_check_update ?? true,
         enableBuiltinEnhanced: verge?.enable_builtin_enhanced ?? true,
         proxyLayoutColumn: verge?.proxy_layout_column || 6,
-        enableAutoDelayDetection: verge?.enable_auto_delay_detection ?? false,
+        enableAutoDelayDetection:
+          (verge?.enable_auto_delay_detection ?? false) &&
+          !(verge?.enable_auto_all_latency_uptime ?? false),
+        enableAutoAllLatencyUptime:
+          verge?.enable_auto_all_latency_uptime ?? false,
         autoDelayDetectionIntervalMinutes:
           verge?.auto_delay_detection_interval_minutes ?? 5,
         defaultLatencyTest: verge?.default_latency_test || '',
@@ -68,6 +73,7 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
         enable_builtin_enhanced: values.enableBuiltinEnhanced,
         proxy_layout_column: values.proxyLayoutColumn,
         enable_auto_delay_detection: values.enableAutoDelayDetection,
+        enable_auto_all_latency_uptime: values.enableAutoAllLatencyUptime,
         auto_delay_detection_interval_minutes:
           values.autoDelayDetectionIntervalMinutes,
         default_latency_test: values.defaultLatencyTest,
@@ -322,9 +328,34 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
             edge="end"
             checked={values.enableAutoDelayDetection}
             onChange={(_, c) =>
-              setValues((v) => ({ ...v, enableAutoDelayDetection: c }))
+              setValues((v) => ({
+                ...v,
+                enableAutoDelayDetection: c,
+                enableAutoAllLatencyUptime: c
+                  ? false
+                  : v.enableAutoAllLatencyUptime,
+              }))
             }
             sx={{ marginLeft: 'auto' }}
+          />
+        </ListItem>
+
+        <ListItem sx={{ padding: '5px 2px' }}>
+          <ListItemText
+            primary={t('settings.modals.misc.fields.autoAllLatencyUptime')}
+          />
+          <Switch
+            edge="end"
+            checked={values.enableAutoAllLatencyUptime}
+            onChange={(_, c) =>
+              setValues((v) => ({
+                ...v,
+                enableAutoAllLatencyUptime: c,
+                enableAutoDelayDetection: c
+                  ? false
+                  : v.enableAutoDelayDetection,
+              }))
+            }
           />
         </ListItem>
 
@@ -344,7 +375,10 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
             spellCheck="false"
             sx={{ width: 160, marginLeft: 'auto' }}
             value={values.autoDelayDetectionIntervalMinutes}
-            disabled={!values.enableAutoDelayDetection}
+            disabled={
+              !values.enableAutoDelayDetection &&
+              !values.enableAutoAllLatencyUptime
+            }
             onChange={(e) => {
               const parsed = parseInt(e.target.value, 10)
               const intervalMinutes =

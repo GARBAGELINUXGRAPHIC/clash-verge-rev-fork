@@ -6,6 +6,8 @@ import { BaseLoading } from '@/components/base'
 import { useProxyDelayState } from '@/hooks/use-proxy-delay-state'
 import delayManager from '@/services/delay'
 
+import { ProxyUptime } from './proxy-uptime'
+
 interface Props {
   group: IProxyGroupItem
   proxy: IProxyItem
@@ -72,7 +74,7 @@ export const ProxyItemMini = (props: Props) => {
     >
       <Box
         title={`${proxy.name}\n${proxy.now ?? ''}`}
-        sx={{ overflow: 'hidden' }}
+        sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}
       >
         <Typography
           variant="body2"
@@ -120,6 +122,7 @@ export const ProxyItemMini = (props: Props) => {
                 {proxy.provider}
               </TypeBox>
             )}
+            <ProxyUptime proxy={proxy} />
             <TypeBox color="text.secondary" component="span">
               {proxy.type}
             </TypeBox>

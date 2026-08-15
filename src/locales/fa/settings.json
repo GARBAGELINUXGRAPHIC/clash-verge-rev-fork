@@ -402,6 +402,7 @@
         "proxyLayoutColumns": "ستون چیدمان پراکسی",
         "autoLogClean": "پاکسازی خودکار لاگ",
         "autoDelayDetection": "تشخیص تأخیر خودکار",
+        "autoAllLatencyUptime": "آزمایش خودکار تأخیر و دسترس‌پذیری همه گره‌ها",
         "autoDelayDetectionInterval": "فاصله تشخیص تأخیر خودکار",
         "defaultLatencyTest": "آزمون تأخیر پیش‌فرض",
         "defaultLatencyTimeout": "زمان انتظار تأخیر پیش‌فرض"

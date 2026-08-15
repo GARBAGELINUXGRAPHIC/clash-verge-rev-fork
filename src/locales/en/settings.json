@@ -402,6 +402,7 @@
         "proxyLayoutColumns": "Proxy Layout Columns",
         "autoLogClean": "Auto Log Clean",
         "autoDelayDetection": "Auto Delay Detection",
+        "autoAllLatencyUptime": "Automatically Test All Nodes and Uptime",
         "autoDelayDetectionInterval": "Auto Delay Detection Interval",
         "defaultLatencyTest": "Default Latency Test",
         "defaultLatencyTimeout": "Default Latency Timeout"

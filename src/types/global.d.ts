@@ -127,6 +127,22 @@ interface IProxyProviderItem {
   }
 }
 
+interface ILatencyUptimeNode {
+  name: string
+  providerName?: string | null
+  groups: string[]
+  delay: number
+  updatedAt: number
+  uptime: number
+  samples: number
+}
+
+interface ILatencyUptimeSnapshot {
+  enabled: boolean
+  profileId?: string | null
+  nodes: ILatencyUptimeNode[]
+}
+
 interface IRuleProviderItem {
   name: string
   behavior: string
@@ -941,6 +957,7 @@ interface IVergeConfig {
   default_latency_test?: string
   default_latency_timeout?: number
   enable_auto_delay_detection?: boolean
+  enable_auto_all_latency_uptime?: boolean
   auto_delay_detection_interval_minutes?: number
   enable_builtin_enhanced?: boolean
   auto_log_clean?: 0 | 1 | 2 | 3 | 4

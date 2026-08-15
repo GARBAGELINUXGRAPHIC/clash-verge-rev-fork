@@ -1,5 +1,5 @@
 import { listen } from '@tauri-apps/api/event'
-import React, { useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   getBaseConfig,
   getRuleProviders,
@@ -11,14 +11,18 @@ import {
   calcuProxies,
   calcuProxyProviders,
   getAppUptime,
+  getLatencyUptimeSnapshot,
   getRunningMode,
   getSystemProxy,
 } from '@/services/cmds'
+import delayManager from '@/services/delay'
 import { revalidateQueries, useQuery } from '@/services/query-client'
 
 import {
   ClashConfigContext,
   CoreDataStatusContext,
+  LatencyUptimeContext,
+  latencyUptimeNodeKey,
   ProxiesContext,
   RefreshersContext,
   RulesContext,
@@ -54,6 +58,17 @@ export const AppDataProvider = ({
   children: React.ReactNode
 }) => {
   const { verge } = useVerge()
+  const [latencyUptime, setLatencyUptime] = useState<ILatencyUptimeSnapshot>({
+    enabled: false,
+    nodes: [],
+  })
+
+  const applyLatencyUptimeSnapshot = useStableFn(
+    (snapshot: ILatencyUptimeSnapshot) => {
+      setLatencyUptime(snapshot)
+      delayManager.applyLatencyUptimeSnapshot(snapshot.nodes)
+    },
+  )
 
   const {
     data: proxiesData,
@@ -123,11 +138,16 @@ export const AppDataProvider = ({
   const refreshRuleProviders = useStableFn(_refetchRuleProviders)
 
   useEffect(() => {
+    let disposed = false
     let lastProfileId: string | null = null
     let lastProfileUpdateTime = 0
     let lastProxyUpdateTime = 0
     const refreshThrottle = 800
     const cleanupFns: Array<() => void> = []
+    const keepListener = (unlisten: () => void) => {
+      if (disposed) unlisten()
+      else cleanupFns.push(unlisten)
+    }
 
     const handleProfileChanged = (event: { payload: string }) => {
       const newProfileId = event.payload
@@ -141,6 +161,9 @@ export const AppDataProvider = ({
       lastProfileId = newProfileId
       lastProfileUpdateTime = now
       void revalidateQueries([['getProfiles']])
+      void getLatencyUptimeSnapshot()
+        .then(applyLatencyUptimeSnapshot)
+        .catch(() => {})
     }
 
     const handleRefreshProxy = () => {
@@ -156,11 +179,28 @@ export const AppDataProvider = ({
 
     const initializeListeners = async () => {
       try {
+        const unlistenLatencyUptime = await listen<ILatencyUptimeSnapshot>(
+          'verge://latency-uptime-updated',
+          (event) => applyLatencyUptimeSnapshot(event.payload),
+        )
+        keepListener(unlistenLatencyUptime)
+      } catch (error) {
+        console.warn('[AppDataProvider] 监听延迟与 Uptime 事件失败:', error)
+      }
+
+      try {
+        const snapshot = await getLatencyUptimeSnapshot()
+        if (!disposed) applyLatencyUptimeSnapshot(snapshot)
+      } catch (error) {
+        console.warn('[AppDataProvider] 获取延迟与 Uptime 快照失败:', error)
+      }
+
+      try {
         const unlistenProfile = await listen<string>(
           'profile-changed',
           handleProfileChanged,
         )
-        cleanupFns.push(unlistenProfile)
+        keepListener(unlistenProfile)
       } catch (error) {
         console.error('[AppDataProvider] 监听 Profile 事件失败:', error)
       }
@@ -170,7 +210,7 @@ export const AppDataProvider = ({
           'verge://refresh-profiles',
           handleRefreshProfiles,
         )
-        cleanupFns.push(unlistenProfiles)
+        keepListener(unlistenProfiles)
       } catch (error) {
         console.error('[AppDataProvider] 监听 Profiles 刷新事件失败:', error)
       }
@@ -180,7 +220,7 @@ export const AppDataProvider = ({
           'verge://refresh-proxy-config',
           handleRefreshProxy,
         )
-        cleanupFns.push(unlistenProxy)
+        keepListener(unlistenProxy)
       } catch (error) {
         console.warn('[AppDataProvider] 设置 Tauri 事件监听器失败:', error)
       }
@@ -189,6 +229,7 @@ export const AppDataProvider = ({
     void initializeListeners()
 
     return () => {
+      disposed = true
       cleanupFns.forEach((fn) => {
         try {
           fn()
@@ -197,7 +238,7 @@ export const AppDataProvider = ({
         }
       })
     }
-  }, [refreshProxy])
+  }, [applyLatencyUptimeSnapshot, refreshProxy])
 
   const refreshAll = useCallback(async () => {
     await Promise.all([
@@ -282,6 +323,21 @@ export const AppDataProvider = ({
 
   const uptimeValue = useMemo(() => ({ uptime: uptimeData || 0 }), [uptimeData])
 
+  const latencyUptimeValue = useMemo(() => {
+    const nodesByKey = new Map<string, ILatencyUptimeNode>()
+    const nodesByName = new Map<string, ILatencyUptimeNode | null>()
+    latencyUptime.nodes.forEach((node) => {
+      nodesByKey.set(latencyUptimeNodeKey(node.name, node.providerName), node)
+      nodesByName.set(node.name, nodesByName.has(node.name) ? null : node)
+    })
+    return {
+      enabled: latencyUptime.enabled,
+      profileId: latencyUptime.profileId,
+      nodesByKey,
+      nodesByName,
+    }
+  }, [latencyUptime])
+
   const coreDataStatusValue = useMemo(
     () => ({ isCoreDataPending: isProxiesPending || isClashConfigPending }),
     [isProxiesPending, isClashConfigPending],
@@ -314,11 +370,13 @@ export const AppDataProvider = ({
         <ClashConfigContext value={clashConfigValue}>
           <SystemContext value={systemValue}>
             <UptimeContext value={uptimeValue}>
-              <CoreDataStatusContext value={coreDataStatusValue}>
-                <RefreshersContext value={refreshersValue}>
-                  {children}
-                </RefreshersContext>
-              </CoreDataStatusContext>
+              <LatencyUptimeContext value={latencyUptimeValue}>
+                <CoreDataStatusContext value={coreDataStatusValue}>
+                  <RefreshersContext value={refreshersValue}>
+                    {children}
+                  </RefreshersContext>
+                </CoreDataStatusContext>
+              </LatencyUptimeContext>
             </UptimeContext>
           </SystemContext>
         </ClashConfigContext>
