@@ -3,7 +3,6 @@ use smartstring::alias::String;
 use std::sync::atomic::{AtomicBool, Ordering};
 use tauri::AppHandle;
 use tauri_plugin_mihomo::{Mihomo, MihomoExt as _};
-use tokio::sync::RwLockReadGuard;
 
 use super::latency_uptime::LatencyUptimeSnapshot;
 use super::notification::{FrontendEvent, NotificationSystem};
@@ -33,8 +32,8 @@ impl Handle {
         APP_HANDLE.get().expect("App handle not initialized")
     }
 
-    pub async fn mihomo() -> RwLockReadGuard<'static, Mihomo> {
-        Self::app_handle().mihomo().read().await
+    pub fn mihomo() -> &'static Mihomo {
+        Self::app_handle().mihomo()
     }
 
     pub fn refresh_clash() {
@@ -47,6 +46,21 @@ impl Handle {
 
     pub fn refresh_profiles() {
         Self::send_event(FrontendEvent::RefreshProfiles);
+    }
+
+    pub fn refresh_proxy_config() {
+        Self::send_event(FrontendEvent::RefreshProxyConfig);
+    }
+
+    /// Push a Run State snapshot to the frontend.
+    ///
+    /// Sent on every transition, so the frontend does not have to poll to notice that the Core
+    /// stopped or that the Service came back.
+    pub fn notify_run_state(state: &crate::core::runstate::RunStateView) {
+        let Ok(state) = serde_json::to_value(state) else {
+            return;
+        };
+        Self::send_event(FrontendEvent::RunStateChanged { state });
     }
 
     pub fn notify_profile_changed(profile_id: &String) {
@@ -83,6 +97,10 @@ impl Handle {
 
     pub fn set_is_exiting(&self) {
         self.is_exiting.store(true, Ordering::Release);
+    }
+
+    pub fn clear_is_exiting(&self) {
+        self.is_exiting.store(false, Ordering::Release);
     }
 
     pub fn is_exiting(&self) -> bool {

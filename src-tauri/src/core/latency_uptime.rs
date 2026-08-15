@@ -130,12 +130,12 @@ impl LatencyUptimeMonitor {
         }
     }
 
-    pub async fn init(&self) -> anyhow::Result<()> {
+    pub fn init(&self) {
         let (sender, receiver) = mpsc::channel(1);
         {
             let mut current_sender = self.wake_sender.lock();
             if current_sender.is_some() {
-                return Ok(());
+                return;
             }
             *current_sender = Some(sender);
         }
@@ -144,7 +144,6 @@ impl LatencyUptimeMonitor {
             Self::run(receiver).await;
         });
         self.refresh();
-        Ok(())
     }
 
     pub fn refresh(&self) {
@@ -208,7 +207,7 @@ impl LatencyUptimeMonitor {
             return;
         };
 
-        let mihomo = Handle::mihomo().await;
+        let mihomo = Handle::mihomo();
         let proxies = match mihomo.get_proxies().await {
             Ok(proxies) => proxies,
             Err(error) => {
@@ -238,7 +237,6 @@ impl LatencyUptimeMonitor {
         let results = stream::iter(nodes)
             .map(|node| {
                 let test_url = Arc::clone(&test_url);
-                let mihomo = &mihomo;
                 async move {
                     let result = if let Some(provider_name) = node.key.provider_name.as_deref() {
                         mihomo
@@ -273,7 +271,6 @@ impl LatencyUptimeMonitor {
             .buffer_unordered(MAX_CONCURRENCY)
             .collect::<Vec<_>>()
             .await;
-        drop(mihomo);
 
         self.store.write().apply_batch(&profile_id, Some(results), now_millis());
         self.emit_snapshot().await;

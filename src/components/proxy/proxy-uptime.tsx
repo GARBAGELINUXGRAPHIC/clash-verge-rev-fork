@@ -4,18 +4,22 @@ import {
   latencyUptimeNodeKey,
   useLatencyUptimeData,
 } from '@/providers/app-data-context'
+import { providerNameOf, type ResolvedProxyMember } from '@/types/proxy-view'
 
 interface Props {
-  proxy: IProxyItem
+  member: ResolvedProxyMember
 }
 
-export const ProxyUptime = ({ proxy }: Props) => {
+export const ProxyUptime = ({ member }: Props) => {
   const { enabled, nodesByKey, nodesByName } = useLatencyUptimeData()
-  if (!enabled) return null
+  if (!enabled || member.kind !== 'node') return null
+
+  const providerName = providerNameOf(member.node)
+  const proxyName = member.node.source.proxyName
 
   const node =
-    nodesByKey.get(latencyUptimeNodeKey(proxy.name, proxy.provider)) ??
-    (!proxy.provider ? nodesByName.get(proxy.name) : undefined)
+    nodesByKey.get(latencyUptimeNodeKey(proxyName, providerName)) ??
+    (!providerName ? nodesByName.get(proxyName) : undefined)
   if (!node || node.samples < 1) return null
 
   const percentage = `${(node.uptime * 100).toFixed(2)}%`

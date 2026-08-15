@@ -1,5 +1,4 @@
 use crate::config::{IProfilePreview, IVerge};
-use crate::core::service;
 use crate::core::tray::menu_def::TrayAction;
 use crate::module::lightweight;
 use crate::process::AsyncHandler;
@@ -15,7 +14,6 @@ use crate::{
 use clash_verge_limiter::{Limiter, SystemClock, SystemLimiter};
 use clash_verge_logging::logging_error;
 use tauri::tray::{MouseButton, MouseButtonState, TrayIcon, TrayIconBuilder, TrayIconEvent};
-use tauri_plugin_clash_verge_sysinfo::is_current_app_handle_admin;
 use tauri_plugin_mihomo::models::Proxies;
 use tokio::fs;
 
@@ -208,8 +206,7 @@ impl Tray {
         let verge = Config::verge().await.latest_arc();
         let system_proxy = verge.enable_system_proxy.as_ref().unwrap_or(&false);
         let tun_mode = verge.enable_tun_mode.as_ref().unwrap_or(&false);
-        let tun_mode_available =
-            is_current_app_handle_admin(app_handle) || service::is_service_available().await.is_ok();
+        let tun_mode_available = crate::core::runstate::RUN_STATE.state().tun_capable();
         let mode = {
             Config::clash()
                 .await
@@ -612,52 +609,34 @@ async fn create_tray_menu(
 
     // TODO: should update tray menu again when it was timeout error
     let (proxy_nodes_data, runtime_proxy_groups_order) = if options.include_proxy_groups {
-        let proxy_nodes_data = tokio::time::timeout(
-            Duration::from_millis(1000),
-            handle::Handle::mihomo().await.get_proxies(),
-        )
-        .await
-        .map_or(None, |res| res.ok());
+        let proxy_nodes_data =
+            tokio::time::timeout(Duration::from_millis(1000), handle::Handle::mihomo().get_proxies())
+                .await
+                .map_or(None, |res| res.ok());
 
-        let runtime_proxy_groups_order = cmd::get_runtime_config()
-            .await
-            .map_err(|e| {
-                logging!(
-                    error,
-                    Type::Cmd,
-                    "Failed to fetch runtime proxy groups for tray menu: {e}"
-                );
-            })
-            .ok()
-            .flatten()
-            .map(|config| {
-                config
-                    .get("proxy-groups")
-                    .and_then(|groups| groups.as_sequence())
-                    .map(|groups| {
-                        groups
-                            .iter()
-                            .filter_map(|group| group.get("name"))
-                            .filter_map(|name| name.as_str())
-                            .map(|name| name.into())
-                            .collect::<Vec<String>>()
-                    })
-                    .unwrap_or_default()
-            });
+        let runtime = Config::runtime().await.latest_arc();
+        let runtime_proxy_groups_order = runtime.config.as_ref().map(|config| {
+            config
+                .get("proxy-groups")
+                .and_then(|groups| groups.as_sequence())
+                .map(|groups| {
+                    groups
+                        .iter()
+                        .filter_map(|group| group.get("name"))
+                        .filter_map(|name| name.as_str())
+                        .enumerate()
+                        .map(|(index, name)| (name.into(), index))
+                        .collect::<HashMap<String, usize>>()
+                })
+                .unwrap_or_default()
+        });
 
         (proxy_nodes_data, runtime_proxy_groups_order)
     } else {
         (None, None)
     };
 
-    let proxy_group_order_map: Option<HashMap<smartstring::SmartString<smartstring::LazyCompact>, usize>> =
-        runtime_proxy_groups_order.as_ref().map(|group_names| {
-            group_names
-                .iter()
-                .enumerate()
-                .map(|(index, name)| (name.clone(), index))
-                .collect::<HashMap<String, usize>>()
-        });
+    let proxy_group_order_map = runtime_proxy_groups_order;
 
     let verge_settings = Config::verge().await.latest_arc();
     let tray_proxy_groups_display_mode = verge_settings
@@ -970,13 +949,13 @@ fn on_menu_event(_: &AppHandle, event: MenuEvent) {
                 };
             }
             MenuIds::SYSTEM_PROXY => {
-                feat::toggle_system_proxy().await;
+                let _ = feat::toggle_system_proxy().await;
             }
             MenuIds::TUN_MODE => {
                 feat::toggle_tun_mode(None).await;
             }
             MenuIds::CLOSE_ALL_CONNECTIONS => {
-                if let Err(err) = handle::Handle::mihomo().await.close_all_connections().await {
+                if let Err(err) = handle::Handle::mihomo().close_all_connections().await {
                     logging!(error, Type::Tray, "Failed to close all connections from tray: {err}");
                 }
             }
@@ -994,7 +973,7 @@ fn on_menu_event(_: &AppHandle, event: MenuEvent) {
                 let _ = help::open_app_latest_log();
             }
             MenuIds::CORE_LOG => {
-                let _ = help::open_core_latest_log();
+                let _ = help::open_core_latest_log().await;
             }
             MenuIds::RESTART_CLASH => feat::restart_clash_core().await,
             MenuIds::RESTART_APP => feat::restart_app().await,

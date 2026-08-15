@@ -322,15 +322,14 @@ impl IVerge {
             Err(_) => Self::template(),
         };
 
-        let mut needs_fix = false;
+        let mut needs_fix = config.normalize_latency_detectors();
 
-        if config.normalize_latency_detectors() {
+        if needs_fix {
             logging!(
                 warn,
                 Type::Config,
                 "Both latency detectors were enabled; keeping the all-node Uptime monitor"
             );
-            needs_fix = true;
         }
 
         if let Some(ref core) = config.clash_core {
@@ -611,11 +610,6 @@ impl IVerge {
             false
         }
     }
-
-    pub const fn get_singleton_port() -> u16 {
-        crate::constants::network::ports::SINGLETON_SERVER
-    }
-
     /// 获取日志等级
     pub fn get_log_level(&self) -> LevelFilter {
         if let Some(level) = self.app_log_level.as_ref() {
