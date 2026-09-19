@@ -26,10 +26,6 @@ export interface SystemContextType {
   systemProxyAddress: string
 }
 
-export interface UptimeContextType {
-  uptime: number
-}
-
 export interface LatencyUptimeContextType {
   enabled: boolean
   profileId?: string | null
@@ -61,7 +57,6 @@ export const ClashConfigContext = createContext<ClashConfigContextType | null>(
   null,
 )
 export const SystemContext = createContext<SystemContextType | null>(null)
-export const UptimeContext = createContext<UptimeContextType | null>(null)
 export const LatencyUptimeContext =
   createContext<LatencyUptimeContextType | null>(null)
 export const CoreDataStatusContext =
@@ -93,9 +88,6 @@ export const useClashConfigData = (): ClashConfigContextType =>
 
 export const useSystemData = (): SystemContextType =>
   useCtx(SystemContext, 'useSystemData')
-
-export const useUptimeData = (): UptimeContextType =>
-  useCtx(UptimeContext, 'useUptimeData')
 
 export const useLatencyUptimeData = (): LatencyUptimeContextType =>
   useCtx(LatencyUptimeContext, 'useLatencyUptimeData')

@@ -393,6 +393,9 @@ export interface TranslationResources {
             local: string
             remote: string
           }
+          warnings: {
+            frequentUpdate: string
+          }
         }
         proxiesEditor: {
           actions: {
@@ -496,6 +499,9 @@ export interface TranslationResources {
             updateFailed: string
             updateSuccess: string
           }
+        }
+        warnings: {
+          invalidTestUrl: string
         }
       }
       page: {
@@ -809,10 +815,12 @@ export interface TranslationResources {
             uninstallFailed: string
           }
           sysproxy: {
+            coreNotReady: string
             directFallback: string
             guardStopped: string
             privilegeRequired: string
             sidecarWhileServiceReady: string
+            systemCallFailed: string
           }
         }
         notifications: {
@@ -826,6 +834,7 @@ export interface TranslationResources {
           }
           clashService: {
             installSuccess: string
+            sidecarFallback: string
             uninstallSuccess: string
           }
           updater: {
@@ -1031,6 +1040,13 @@ export interface TranslationResources {
           messages: {
             configError: string
             saved: string
+          }
+          protection: {
+            autoDisabled: string
+            enableAnyway: string
+            keepDisabled: string
+            message: string
+            title: string
           }
           sections: {
             fallbackFilter: string

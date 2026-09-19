@@ -9,7 +9,6 @@ import { useClashInfo, useRuntimeConfig } from '@/hooks/use-clash'
 import { runStateQueryKey } from '@/hooks/use-system-state'
 import { useVerge } from '@/hooks/use-verge'
 import {
-  getAppUptime,
   getLatencyUptimeSnapshot,
   getProxyView,
   getRuntimeState,
@@ -17,7 +16,7 @@ import {
 } from '@/services/cmds'
 import delayManager from '@/services/delay'
 import { subscribeVergeEvents } from '@/services/events'
-import { revalidateQueries, useQuery } from '@/services/query-client'
+import { useQuery } from '@/services/query-client'
 import { resolveDisplayedMixedPort } from '@/utils/mixed-port'
 
 import {
@@ -29,7 +28,6 @@ import {
   RefreshersContext,
   RulesContext,
   SystemContext,
-  UptimeContext,
 } from './app-data-context'
 
 const TQ_MIHOMO = {
@@ -83,7 +81,7 @@ export const AppDataProvider = ({
   } = useQuery({
     queryKey: ['getProxyView'],
     queryFn: getProxyView,
-    refetchInterval: 3000,
+    refetchInterval: 15000,
     refetchIntervalInBackground: false,
     ...TQ_MIHOMO,
   })
@@ -125,14 +123,6 @@ export const AppDataProvider = ({
   })
   const runningMode = runState?.mode
 
-  const { data: uptimeData } = useQuery({
-    queryKey: ['appUptime'],
-    queryFn: getAppUptime,
-    ...TQ_DEFAULTS,
-    refetchInterval: 3000,
-    retry: 1,
-  })
-
   const refreshProxy = useStableFn(_refetchProxyView)
   const refreshClashConfig = useStableFn(_refetchClashConfig)
   const refreshRules = useStableFn(_refetchRules)
@@ -140,22 +130,8 @@ export const AppDataProvider = ({
   const refreshRuleProviders = useStableFn(_refetchRuleProviders)
 
   useEffect(() => {
-    let lastProfileId: string | null = null
-    let lastProfileUpdateTime = 0
     let lastProxyUpdateTime = 0
     const refreshThrottle = 800
-    const handleProfileChanged = (newProfileId: string) => {
-      const now = Date.now()
-      if (
-        lastProfileId === newProfileId &&
-        now - lastProfileUpdateTime < refreshThrottle
-      ) {
-        return
-      }
-      lastProfileId = newProfileId
-      lastProfileUpdateTime = now
-      void revalidateQueries([['getProfiles']])
-    }
 
     const handleRefreshProxy = () => {
       const now = Date.now()
@@ -164,14 +140,8 @@ export const AppDataProvider = ({
       refreshProxy().catch(() => {})
     }
 
-    const handleRefreshProfiles = () => {
-      void revalidateQueries([['getProfiles']])
-    }
-
     return subscribeVergeEvents(
       {
-        'profile-changed': handleProfileChanged,
-        'verge://refresh-profiles': handleRefreshProfiles,
         'verge://refresh-proxy-config': handleRefreshProxy,
         'verge://latency-uptime-updated': applyLatencyUptimeSnapshot,
       },
@@ -270,8 +240,6 @@ export const AppDataProvider = ({
     }
   }, [sysproxy, runningMode, isRunningModePending, verge, displayedMixedPort])
 
-  const uptimeValue = useMemo(() => ({ uptime: uptimeData || 0 }), [uptimeData])
-
   const latencyUptimeValue = useMemo(() => {
     const nodesByKey = new Map<string, ILatencyUptimeNode>()
     const nodesByName = new Map<string, ILatencyUptimeNode | null>()
@@ -318,15 +286,13 @@ export const AppDataProvider = ({
       <RulesContext value={rulesValue}>
         <ClashConfigContext value={clashConfigValue}>
           <SystemContext value={systemValue}>
-            <UptimeContext value={uptimeValue}>
-              <LatencyUptimeContext value={latencyUptimeValue}>
-                <CoreDataStatusContext value={coreDataStatusValue}>
-                  <RefreshersContext value={refreshersValue}>
-                    {children}
-                  </RefreshersContext>
-                </CoreDataStatusContext>
-              </LatencyUptimeContext>
-            </UptimeContext>
+            <LatencyUptimeContext value={latencyUptimeValue}>
+              <CoreDataStatusContext value={coreDataStatusValue}>
+                <RefreshersContext value={refreshersValue}>
+                  {children}
+                </RefreshersContext>
+              </CoreDataStatusContext>
+            </LatencyUptimeContext>
           </SystemContext>
         </ClashConfigContext>
       </RulesContext>

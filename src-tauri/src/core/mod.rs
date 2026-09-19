@@ -6,6 +6,8 @@ pub mod latency_uptime;
 pub mod listener;
 pub mod logger;
 pub mod manager;
+#[cfg(target_os = "macos")]
+pub mod network_watch;
 pub mod notification;
 pub(crate) mod owner_identity;
 pub mod proxy_control;
