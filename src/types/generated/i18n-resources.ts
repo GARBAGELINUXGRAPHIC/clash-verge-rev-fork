@@ -593,6 +593,28 @@ export interface TranslationResources {
           sortName: string
         }
       }
+      protocol: {
+        aggressive: string
+        congestion: string
+        conservative: string
+        custom: string
+        download: string
+        duration: string
+        expiresAt: string
+        halfHour: string
+        invalidExpiry: string
+        keepExpiry: string
+        midnight: string
+        oneDay: string
+        oneHour: string
+        original: string
+        settings: string
+        sixHours: string
+        standard: string
+        title: string
+        unavailable: string
+        upload: string
+      }
     }
     rules: {
       feedback: {

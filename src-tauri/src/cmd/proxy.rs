@@ -34,6 +34,48 @@ pub async fn forget_selected_node(group_name: String) -> CmdResult<()> {
 static TRAY_SYNC_RUNNING: AtomicBool = AtomicBool::new(false);
 static TRAY_SYNC_PENDING: AtomicBool = AtomicBool::new(false);
 
+#[derive(serde::Serialize)]
+pub struct Hy2SettingsResponse {
+    target: crate::config::hy2::Hy2Target,
+    settings: Option<crate::config::hy2::Hy2Settings>,
+}
+
+#[tauri::command]
+pub async fn get_hy2_settings(source: crate::core::proxy_view::ProxyNodeSource) -> CmdResult<Hy2SettingsResponse> {
+    use crate::config::hy2;
+    let profile = Config::profiles()
+        .await
+        .latest_arc()
+        .current
+        .as_ref()
+        .map(ToString::to_string);
+    let target = hy2::Hy2Target { profile, source };
+    let settings = hy2::load()
+        .await
+        .stringify_err()?
+        .into_iter()
+        .find(|entry| entry.target == target && entry.settings.expires_at > hy2::now())
+        .map(|entry| entry.settings);
+    Ok(Hy2SettingsResponse { target, settings })
+}
+
+#[tauri::command]
+pub async fn set_hy2_settings(
+    target: crate::config::hy2::Hy2Target,
+    settings: Option<crate::config::hy2::Hy2Settings>,
+) -> CmdResult<()> {
+    let view = get_proxy_view().await?;
+    if !view.records.values().any(|node| {
+        node.source == target.source && node.proxy_type == tauri_plugin_mihomo::models::ProxyType::Hysteria2
+    }) {
+        return Err("The Hysteria2 node is no longer available".into());
+    }
+    crate::core::CoreManager::global()
+        .update_hy2_override(Some((target, settings)))
+        .await
+        .stringify_err()
+}
+
 fn runtime_group_order(config: Option<&Mapping>) -> Vec<String> {
     let mut seen = HashSet::new();
 

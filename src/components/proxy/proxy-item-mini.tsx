@@ -11,6 +11,7 @@ import {
   type ResolvedProxyMember,
 } from '@/types/proxy-view'
 
+import { ProxyProtocol } from './proxy-protocol'
 import { ProxyUptime } from './proxy-uptime'
 
 interface Props {
@@ -129,9 +130,13 @@ export const ProxyItemMini = (props: Props) => {
               </Typography>
             )}
             <ProxyUptime member={member} />
-            <TypeBox color="text.secondary" component="span">
-              {type}
-            </TypeBox>
+            <ProxyProtocol member={member}>
+              {(props) => (
+                <TypeBox {...props} color="text.secondary" component="span">
+                  {type}
+                </TypeBox>
+              )}
+            </ProxyProtocol>
             {!unresolved && details?.udp && (
               <TypeBox color="text.secondary" component="span">
                 UDP

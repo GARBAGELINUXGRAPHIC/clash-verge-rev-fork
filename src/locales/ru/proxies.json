@@ -1,4 +1,26 @@
 {
+  "protocol": {
+    "settings": "{{protocol}} settings",
+    "unavailable": "No settings available",
+    "title": "Hysteria2",
+    "congestion": "Congestion control",
+    "original": "Use subscription settings",
+    "standard": "BBR - Standard",
+    "conservative": "BBR - Conservative",
+    "aggressive": "BBR - Aggressive",
+    "upload": "Upload (Mbps)",
+    "download": "Download (Mbps)",
+    "duration": "Duration",
+    "midnight": "Until local midnight",
+    "halfHour": "30 minutes",
+    "oneHour": "1 hour",
+    "sixHours": "6 hours",
+    "oneDay": "24 hours",
+    "custom": "Custom expiration",
+    "expiresAt": "Expires at (local time)",
+    "keepExpiry": "Until {{time}}",
+    "invalidExpiry": "Choose a future expiration time."
+  },
   "page": {
     "modes": {
       "rule": "Правила",

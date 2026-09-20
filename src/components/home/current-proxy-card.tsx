@@ -36,6 +36,7 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
 import { EnhancedCard } from '@/components/home/enhanced-card'
+import { ProxyProtocol } from '@/components/proxy/proxy-protocol'
 import type { ProxySortType } from '@/components/proxy/use-filter-sort'
 import { useGroupDelays } from '@/hooks/use-group-delays'
 import { useProfiles } from '@/hooks/use-profiles'
@@ -1036,13 +1037,20 @@ export const CurrentProxyCard = () => {
               <Box
                 sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}
               >
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ mr: 1 }}
-                >
-                  {currentProxy?.type}
-                </Typography>
+                {currentMember && (
+                  <ProxyProtocol member={currentMember}>
+                    {(props) => (
+                      <Typography
+                        {...props}
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ mr: 1 }}
+                      >
+                        {currentProxy?.type}
+                      </Typography>
+                    )}
+                  </ProxyProtocol>
+                )}
                 {isGlobalMode && (
                   <Chip
                     size="small"

@@ -21,6 +21,7 @@ import {
   type ResolvedProxyMember,
 } from '@/types/proxy-view'
 
+import { ProxyProtocol } from './proxy-protocol'
 import { ProxyUptime } from './proxy-uptime'
 
 interface Props {
@@ -115,7 +116,11 @@ export const ProxyItem = (props: Props) => {
                 {showType && now && ` - ${now}`}
               </Box>
               {showType && <ProxyUptime member={member} />}
-              {showType && <TypeBox>{type}</TypeBox>}
+              {showType && (
+                <ProxyProtocol member={member}>
+                  {(props) => <TypeBox {...props}>{type}</TypeBox>}
+                </ProxyProtocol>
+              )}
               {!unresolved && showType && details?.udp && (
                 <TypeBox>UDP</TypeBox>
               )}

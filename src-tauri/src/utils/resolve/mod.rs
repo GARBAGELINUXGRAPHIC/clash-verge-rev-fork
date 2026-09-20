@@ -79,6 +79,7 @@ async fn resolve_setup() {
     let core_init = AsyncHandler::spawn(|| async {
         init_core_manager().await;
         init_latency_uptime_monitor();
+        crate::config::hy2::start_expiry_task();
     });
 
     let _ = futures::join!(

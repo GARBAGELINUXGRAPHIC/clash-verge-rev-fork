@@ -1,4 +1,26 @@
 {
+  "protocol": {
+    "settings": "{{protocol}} 设置",
+    "unavailable": "无可用设置",
+    "title": "Hysteria2",
+    "congestion": "拥塞控制",
+    "original": "使用订阅原始设置",
+    "standard": "BBR - 标准",
+    "conservative": "BBR - 保守",
+    "aggressive": "BBR - 激进",
+    "upload": "上传 (Mbps)",
+    "download": "下载 (Mbps)",
+    "duration": "持续时间",
+    "midnight": "至今晚 24:00（本机时间）",
+    "halfHour": "30 分钟",
+    "oneHour": "1 小时",
+    "sixHours": "6 小时",
+    "oneDay": "24 小时",
+    "custom": "自定义到期时间",
+    "expiresAt": "到期时间（本机时间）",
+    "keepExpiry": "至 {{time}}",
+    "invalidExpiry": "请选择未来的到期时间。"
+  },
   "page": {
     "modes": {
       "rule": "规则",

@@ -3,6 +3,7 @@ mod clash;
 mod config;
 pub(crate) mod dns;
 mod encrypt;
+pub(crate) mod hy2;
 mod mixed_port;
 mod port;
 mod prfitem;

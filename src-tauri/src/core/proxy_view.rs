@@ -95,7 +95,7 @@ pub struct ProxyNodeView {
     pub source: ProxyNodeSource,
 }
 
-#[derive(Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "camelCase")]
 pub enum ProxyNodeSource {
     Core {

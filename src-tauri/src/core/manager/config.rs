@@ -249,6 +249,53 @@ impl CoreManager {
         }
     }
 
+    pub(crate) async fn update_hy2_override(
+        &self,
+        change: Option<(crate::config::hy2::Hy2Target, Option<crate::config::hy2::Hy2Settings>)>,
+    ) -> Result<()> {
+        use crate::config::hy2;
+
+        if handle::Handle::global().is_exiting() || !self.try_start_config_update() {
+            return Err(anyhow!("Configuration update is busy; please try again"));
+        }
+        let _guard = ConfigUpdateGuard(self);
+        let original = hy2::load().await?;
+        let mut candidate = original.clone();
+        candidate.retain(|entry| entry.settings.expires_at > hy2::now());
+        if let Some((target, settings)) = change {
+            if Config::profiles().await.latest_arc().current.as_deref() != target.profile.as_deref() {
+                return Err(anyhow!("The active profile changed; reopen the protocol settings"));
+            }
+            if let Some(settings) = &settings {
+                settings.validate()?;
+            }
+            candidate.retain(|entry| entry.target != target);
+            if let Some(settings) = settings {
+                candidate.push(hy2::Hy2Override { target, settings });
+            }
+        }
+        hy2::save(&candidate).await?;
+        match self.perform_config_update(None).await {
+            Ok(outcome) if outcome.is_valid() => {
+                handle::Handle::refresh_clash();
+                Ok(())
+            }
+            result => {
+                hy2::save(&original).await?;
+                if result.is_err() {
+                    let rollback = self.perform_config_update(None).await?;
+                    if !rollback.is_valid() {
+                        return Err(anyhow!("Failed to restore configuration: {rollback}"));
+                    }
+                }
+                match result {
+                    Ok(outcome) => Err(anyhow!("{outcome}")),
+                    Err(error) => Err(error),
+                }
+            }
+        }
+    }
+
     fn should_update_config(&self) -> bool {
         let now = Instant::now();
         let last = self.get_last_update();

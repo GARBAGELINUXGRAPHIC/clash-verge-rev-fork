@@ -229,6 +229,12 @@ impl Config {
         let (mut config, exists_keys, logs, dns_override) = enhance::enhance(profiles).await?;
 
         sanitize_tunnels_proxy(&mut config);
+        super::hy2::apply(
+            &mut config,
+            profiles.current.as_deref(),
+            &super::hy2::load().await?,
+            super::hy2::now(),
+        )?;
         // Apply only to generated core config so the saved choice survives the next launch.
         if let Some(port) = MixedPort::session_fallback() {
             config.insert(MIXED_PORT_KEY.into(), port.into());
