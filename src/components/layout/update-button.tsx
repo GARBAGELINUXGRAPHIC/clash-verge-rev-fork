@@ -1,4 +1,5 @@
-import { Button } from '@mui/material'
+import { SystemUpdateAltRounded } from '@mui/icons-material'
+import { IconButton, Tooltip } from '@mui/material'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -24,15 +25,17 @@ export const UpdateButton = (props: Props) => {
     <>
       <UpdateViewer ref={viewerRef} />
 
-      <Button
-        color="error"
-        variant="contained"
-        size="small"
-        className={className}
-        onClick={() => viewerRef.current?.open()}
-      >
-        {t('shared.actions.new')}
-      </Button>
+      <Tooltip title={t('shared.feedback.notifications.updateAvailable')}>
+        <IconButton
+          color="primary"
+          size="small"
+          className={className}
+          aria-label={t('shared.feedback.notifications.updateAvailable')}
+          onClick={() => viewerRef.current?.open()}
+        >
+          <SystemUpdateAltRounded />
+        </IconButton>
+      </Tooltip>
     </>
   )
 }

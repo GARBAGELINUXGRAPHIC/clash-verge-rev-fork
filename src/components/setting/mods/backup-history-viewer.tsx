@@ -1,19 +1,19 @@
+import { ChevronLeftRounded, ChevronRightRounded } from '@mui/icons-material'
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined'
 import DownloadRounded from '@mui/icons-material/DownloadRounded'
 import RefreshRounded from '@mui/icons-material/RefreshRounded'
 import RestoreRounded from '@mui/icons-material/RestoreRounded'
 import {
   Box,
-  Button,
   IconButton,
   List,
   ListItem,
   ListItemText,
-  ListSubheader,
   Stack,
   Tab,
   Tabs,
   Typography,
+  Tooltip,
 } from '@mui/material'
 import { save } from '@tauri-apps/plugin-dialog'
 import { useLockFn } from 'ahooks'
@@ -297,7 +297,7 @@ export const BackupHistoryViewer = ({
     <BaseDialog
       open={open}
       title={t('settings.modals.backup.history.title')}
-      contentSx={{ width: 520 }}
+      contentSx={{ width: 620, maxWidth: '100%' }}
       disableOk
       cancelBtn={t('shared.actions.close')}
       onCancel={onClose}
@@ -308,7 +308,12 @@ export const BackupHistoryViewer = ({
         <Stack spacing={2}>
           <Stack
             direction="row"
-            sx={{ alignItems: 'center', justifyContent: 'space-between' }}
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderBottom: 1,
+              borderColor: 'divider',
+            }}
           >
             <Tabs
               value={source}
@@ -333,7 +338,13 @@ export const BackupHistoryViewer = ({
                 sx={{ px: 2 }}
               />
             </Tabs>
-            <IconButton size="small" onClick={handleRefresh} disabled={isBusy}>
+            <IconButton
+              size="small"
+              onClick={handleRefresh}
+              disabled={isBusy}
+              title={t('shared.actions.refresh')}
+              aria-label={t('shared.actions.refresh')}
+            >
               <RefreshRounded fontSize="small" />
             </IconButton>
           </Stack>
@@ -341,14 +352,7 @@ export const BackupHistoryViewer = ({
             {summary}
           </Typography>
 
-          <List
-            disablePadding
-            subheader={
-              <ListSubheader disableSticky>
-                {t('settings.modals.backup.history.title')}
-              </ListSubheader>
-            }
-          >
+          <List disablePadding>
             {pagedRows.length === 0 ? (
               <ListItem>
                 <ListItemText
@@ -357,8 +361,14 @@ export const BackupHistoryViewer = ({
               </ListItem>
             ) : (
               pagedRows.map((row) => (
-                <ListItem key={`${row.platform}-${row.filename}`} divider>
+                <ListItem
+                  key={`${row.platform}-${row.filename}`}
+                  divider
+                  disableGutters
+                  sx={{ py: 1.5 }}
+                >
                   <ListItemText
+                    slotProps={{ secondary: { component: 'div' } }}
                     primary={
                       <Typography
                         variant="body2"
@@ -374,6 +384,8 @@ export const BackupHistoryViewer = ({
                         sx={{
                           alignItems: 'center',
                           justifyContent: 'space-between',
+                          flexWrap: 'wrap',
+                          gap: 1,
                         }}
                       >
                         <Typography variant="caption" color="text.secondary">
@@ -385,28 +397,61 @@ export const BackupHistoryViewer = ({
                           sx={{ alignItems: 'center' }}
                         >
                           {isLocal && (
-                            <IconButton
-                              size="small"
-                              disabled={isBusy}
-                              onClick={() => handleExport(row.filename)}
+                            <Tooltip
+                              title={t(
+                                'settings.modals.backup.actions.exportBackup',
+                              )}
                             >
-                              <DownloadRounded fontSize="small" />
-                            </IconButton>
+                              <span>
+                                <IconButton
+                                  size="small"
+                                  disabled={isBusy}
+                                  onClick={() => handleExport(row.filename)}
+                                  aria-label={t(
+                                    'settings.modals.backup.actions.exportBackup',
+                                  )}
+                                >
+                                  <DownloadRounded fontSize="small" />
+                                </IconButton>
+                              </span>
+                            </Tooltip>
                           )}
-                          <IconButton
-                            size="small"
-                            disabled={isBusy}
-                            onClick={() => handleDelete(row.filename)}
+                          <Tooltip
+                            title={t(
+                              'settings.modals.backup.actions.deleteBackup',
+                            )}
                           >
-                            <DeleteOutlined fontSize="small" />
-                          </IconButton>
-                          <IconButton
-                            size="small"
-                            disabled={isBusy}
-                            onClick={() => handleRestore(row.filename)}
+                            <span>
+                              <IconButton
+                                size="small"
+                                disabled={isBusy}
+                                onClick={() => handleDelete(row.filename)}
+                                aria-label={t(
+                                  'settings.modals.backup.actions.deleteBackup',
+                                )}
+                              >
+                                <DeleteOutlined fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
+                          <Tooltip
+                            title={t(
+                              'settings.modals.backup.actions.restoreBackup',
+                            )}
                           >
-                            <RestoreRounded fontSize="small" />
-                          </IconButton>
+                            <span>
+                              <IconButton
+                                size="small"
+                                disabled={isBusy}
+                                onClick={() => handleRestore(row.filename)}
+                                aria-label={t(
+                                  'settings.modals.backup.actions.restoreBackup',
+                                )}
+                              >
+                                <RestoreRounded fontSize="small" />
+                              </IconButton>
+                            </span>
+                          </Tooltip>
                         </Stack>
                       </Stack>
                     }
@@ -426,24 +471,26 @@ export const BackupHistoryViewer = ({
                 {currentPage + 1} / {pageCount}
               </Typography>
               <Stack direction="row" spacing={1}>
-                <Button
+                <IconButton
                   size="small"
-                  variant="text"
+                  title={t('shared.actions.previous')}
+                  aria-label={t('shared.actions.previous')}
                   disabled={isBusy || currentPage === 0}
                   onClick={() => onPageChange(Math.max(0, currentPage - 1))}
                 >
-                  {t('shared.actions.previous')}
-                </Button>
-                <Button
+                  <ChevronLeftRounded />
+                </IconButton>
+                <IconButton
                   size="small"
-                  variant="text"
+                  title={t('shared.actions.next')}
+                  aria-label={t('shared.actions.next')}
                   disabled={isBusy || currentPage >= pageCount - 1}
                   onClick={() =>
                     onPageChange(Math.min(pageCount - 1, currentPage + 1))
                   }
                 >
-                  {t('shared.actions.next')}
-                </Button>
+                  <ChevronRightRounded />
+                </IconButton>
               </Stack>
             </Stack>
           )}

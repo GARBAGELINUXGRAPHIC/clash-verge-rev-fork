@@ -16,15 +16,14 @@ export const ScrollTopButton = ({ onClick, show, sx }: Props) => {
           position: 'absolute',
           bottom: '20px',
           right: '20px',
-          backgroundColor: (theme) =>
-            theme.palette.mode === 'dark'
-              ? 'rgba(255,255,255,0.1)'
-              : 'rgba(0,0,0,0.1)',
+          backgroundColor: 'background.paper',
+          border: '1px solid',
+          borderColor: 'divider',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+          width: 32,
+          height: 32,
           '&:hover': {
-            backgroundColor: (theme) =>
-              theme.palette.mode === 'dark'
-                ? 'rgba(255,255,255,0.2)'
-                : 'rgba(0,0,0,0.2)',
+            backgroundColor: 'action.hover',
           },
           visibility: show ? 'visible' : 'hidden',
           ...sx,

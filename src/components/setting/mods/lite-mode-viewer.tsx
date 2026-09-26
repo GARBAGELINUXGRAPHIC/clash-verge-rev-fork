@@ -1,6 +1,6 @@
 import {
   InputAdornment,
-  List,
+  Button,
   ListItem,
   ListItemText,
   TextField,
@@ -15,6 +15,8 @@ import { BaseDialog, DialogRef, Switch, TooltipIcon } from '@/components/base'
 import { useVerge } from '@/hooks/use-verge'
 import { entry_lightweight_mode } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
+
+import { SettingForm } from './setting-comp'
 
 export function LiteModeViewer({ ref }: { ref?: Ref<DialogRef> }) {
   const { t } = useTranslation()
@@ -53,29 +55,24 @@ export function LiteModeViewer({ ref }: { ref?: Ref<DialogRef> }) {
     <BaseDialog
       open={open}
       title={t('settings.modals.liteMode.title')}
-      contentSx={{ width: 450 }}
+      contentSx={{ width: 480, maxWidth: '100%' }}
       okBtn={t('shared.actions.save')}
       cancelBtn={t('shared.actions.cancel')}
       onClose={() => setOpen(false)}
       onCancel={() => setOpen(false)}
       onOk={onSave}
     >
-      <List>
+      <SettingForm>
         <ListItem sx={{ padding: '5px 2px' }}>
           <ListItemText
             primary={t('settings.modals.liteMode.actions.enterNow')}
           />
-          <Typography
-            variant="button"
-            sx={{
-              cursor: 'pointer',
-              color: 'primary.main',
-              '&:hover': { textDecoration: 'underline' },
-            }}
+          <Button
+            variant="outlined"
             onClick={async () => await entry_lightweight_mode()}
           >
             {t('shared.actions.enable')}
-          </Typography>
+          </Button>
         </ListItem>
 
         <ListItem sx={{ padding: '5px 2px' }}>
@@ -131,11 +128,7 @@ export function LiteModeViewer({ ref }: { ref?: Ref<DialogRef> }) {
             </ListItem>
 
             <ListItem sx={{ padding: '5px 2px' }}>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ fontStyle: 'italic' }}
-              >
+              <Typography variant="body2" color="text.secondary">
                 {t('settings.modals.liteMode.messages.autoEnterHint', {
                   n: values.autoEnterLiteModeDelay,
                 })}
@@ -143,7 +136,7 @@ export function LiteModeViewer({ ref }: { ref?: Ref<DialogRef> }) {
             </ListItem>
           </>
         )}
-      </List>
+      </SettingForm>
     </BaseDialog>
   )
 }

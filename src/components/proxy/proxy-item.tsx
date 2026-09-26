@@ -43,12 +43,13 @@ const TypeBox = styled('span')(({ theme }) => ({
   display: 'inline-block',
   border: '1px solid #ccc',
   borderColor: alpha(theme.palette.text.secondary, 0.36),
-  color: alpha(theme.palette.text.secondary, 0.42),
+  color: theme.palette.text.secondary,
   borderRadius: 4,
   fontSize: 10,
   marginRight: '4px',
   padding: '0 2px',
   lineHeight: 1.25,
+  flexShrink: 0,
 }))
 
 export const ProxyItem = (props: Props) => {
@@ -74,10 +75,8 @@ export const ProxyItem = (props: Props) => {
         selected={!unresolved && selected}
         onClick={unresolved ? undefined : () => onClick?.(member)}
         sx={[
-          { borderRadius: 1 },
-          ({ palette: { mode, primary } }) => {
-            const bgcolor = mode === 'light' ? '#ffffff' : '#24252f'
-            const selectColor = mode === 'light' ? primary.main : primary.light
+          { borderRadius: '6px', minWidth: 0 },
+          ({ palette: { primary, background, divider } }) => {
             const showDelay = delayValue > 0
 
             return {
@@ -85,29 +84,47 @@ export const ProxyItem = (props: Props) => {
               '&:hover .the-delay': { display: showDelay ? 'block' : 'none' },
               '&:hover .the-icon': { display: 'none' },
               '&.Mui-selected': {
-                width: `calc(100% + 3px)`,
-                marginLeft: `-3px`,
-                borderLeft: `3px solid ${selectColor}`,
-                bgcolor:
-                  mode === 'light'
-                    ? alpha(primary.main, 0.15)
-                    : alpha(primary.main, 0.35),
+                borderColor: alpha(primary.main, 0.45),
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: 'inherit',
+                  background: `linear-gradient(to right, ${primary.main} 3px, transparent 3px)`,
+                  pointerEvents: 'none',
+                },
+                bgcolor: alpha(primary.main, 0.07),
+                '&:hover': { bgcolor: alpha(primary.main, 0.11) },
               },
-              backgroundColor: bgcolor,
+              border: `1px solid ${divider}`,
+              backgroundColor: background.paper,
               marginBottom: '8px',
-              height: '40px',
+              height: showType ? 60 : 40,
             }
           },
         ]}
       >
         <ListItemText
           title={name}
+          slotProps={{ secondary: { component: 'div' } }}
+          sx={{
+            minWidth: 0,
+            overflow: 'hidden',
+            '& .MuiListItemText-secondary': {
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            },
+          }}
           secondary={
             <>
               <Box
                 sx={{
-                  display: 'inline-block',
-                  marginRight: '8px',
+                  display: 'block',
+                  mb: showType ? 0.5 : 0,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
                   fontSize: '14px',
                   color: 'text.primary',
                 }}
@@ -115,26 +132,25 @@ export const ProxyItem = (props: Props) => {
                 {name}
                 {showType && now && ` - ${now}`}
               </Box>
-              {showType && <ProxyUptime member={member} />}
               {showType && (
-                <ProxyProtocol member={member}>
-                  {(props) => <TypeBox {...props}>{type}</TypeBox>}
-                </ProxyProtocol>
-              )}
-              {!unresolved && showType && details?.udp && (
-                <TypeBox>UDP</TypeBox>
-              )}
-              {!unresolved && showType && details?.xudp && (
-                <TypeBox>XUDP</TypeBox>
-              )}
-              {!unresolved && showType && details?.tfo && (
-                <TypeBox>TFO</TypeBox>
-              )}
-              {!unresolved && showType && details?.mptcp && (
-                <TypeBox>MPTCP</TypeBox>
-              )}
-              {!unresolved && showType && details?.smux && (
-                <TypeBox>SMUX</TypeBox>
+                <Box
+                  component="span"
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <ProxyUptime member={member} />
+                  <ProxyProtocol member={member}>
+                    {(props) => <TypeBox {...props}>{type}</TypeBox>}
+                  </ProxyProtocol>
+                  {!unresolved && details?.udp && <TypeBox>UDP</TypeBox>}
+                  {!unresolved && details?.xudp && <TypeBox>XUDP</TypeBox>}
+                  {!unresolved && details?.tfo && <TypeBox>TFO</TypeBox>}
+                  {!unresolved && details?.mptcp && <TypeBox>MPTCP</TypeBox>}
+                  {!unresolved && details?.smux && <TypeBox>SMUX</TypeBox>}
+                </Box>
               )}
             </>
           }

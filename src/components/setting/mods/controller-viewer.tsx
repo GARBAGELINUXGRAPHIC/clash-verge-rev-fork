@@ -4,7 +4,6 @@ import {
   Box,
   CircularProgress,
   IconButton,
-  List,
   ListItem,
   ListItemText,
   Snackbar,
@@ -19,6 +18,8 @@ import { BaseDialog, DialogRef, Switch } from '@/components/base'
 import { useClashInfo } from '@/hooks/use-clash'
 import { useVerge } from '@/hooks/use-verge'
 import { showNotice } from '@/services/notice-service'
+
+import { SettingForm } from './setting-comp'
 
 export function ControllerViewer({ ref }: { ref?: Ref<DialogRef> }) {
   const { t } = useTranslation()
@@ -108,7 +109,7 @@ export function ControllerViewer({ ref }: { ref?: Ref<DialogRef> }) {
     <BaseDialog
       open={open}
       title={t('settings.sections.externalController.title')}
-      contentSx={{ width: 400 }}
+      contentSx={{ width: 480, maxWidth: '100%' }}
       okBtn={
         isSaving ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -124,7 +125,16 @@ export function ControllerViewer({ ref }: { ref?: Ref<DialogRef> }) {
       onCancel={() => setOpen(false)}
       onOk={onSave}
     >
-      <List>
+      <SettingForm
+        sx={{
+          '& > .MuiListItem-root:has(.MuiTextField-root)': {
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            gap: 1,
+          },
+          '& .MuiTextField-root': { flex: 1 },
+        }}
+      >
         <ListItem
           sx={{
             padding: '5px 2px',
@@ -222,7 +232,7 @@ export function ControllerViewer({ ref }: { ref?: Ref<DialogRef> }) {
             </Tooltip>
           </Box>
         </ListItem>
-      </List>
+      </SettingForm>
 
       <Snackbar
         open={copySuccess !== null}

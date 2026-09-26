@@ -151,14 +151,14 @@ const TrafficErrorFallback: React.FC<TrafficErrorFallbackProps> = ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        border: '1px dashed',
-        borderColor: 'error.main',
-        borderRadius: 2,
-        bgcolor: 'error.light',
-        color: 'error.contrastText',
+        minWidth: 0,
+        bgcolor: 'background.paper',
+        color: 'text.primary',
       }}
     >
-      <ErrorOutlineRounded sx={{ fontSize: 48, mb: 2, color: 'error.main' }} />
+      <ErrorOutlineRounded
+        sx={{ fontSize: 28, mb: 1.5, color: 'error.main' }}
+      />
 
       <Typography variant="h6" gutterBottom>
         {t('shared.feedback.errors.trafficStats')}
@@ -186,7 +186,15 @@ const TrafficErrorFallback: React.FC<TrafficErrorFallbackProps> = ({
         )}
       </Alert>
 
-      <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: 1,
+          mb: 2,
+        }}
+      >
         {canRetry && (
           <Button
             variant="contained"
@@ -219,7 +227,7 @@ const TrafficErrorFallback: React.FC<TrafficErrorFallbackProps> = ({
         <Box
           sx={{
             p: 2,
-            bgcolor: 'background.paper',
+            bgcolor: 'background.default',
             borderRadius: 1,
             border: '1px solid',
             borderColor: 'divider',
@@ -283,12 +291,14 @@ export const LightweightTrafficErrorBoundary: React.FC<{
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: 60,
-            bgcolor: 'error.light',
-            borderRadius: 1,
-            color: 'error.contrastText',
+            borderTop: 1,
+            borderColor: 'divider',
+            color: 'text.secondary',
           }}
         >
-          <ErrorOutlineRounded sx={{ mr: 1, fontSize: 20 }} />
+          <ErrorOutlineRounded
+            sx={{ mr: 1, fontSize: 18, color: 'error.main' }}
+          />
           <Typography variant="caption">
             {t('shared.feedback.errors.trafficUnavailable')}
           </Typography>

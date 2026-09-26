@@ -70,7 +70,7 @@ export const ProxyGroupHeaderBlock = ({
           display: 'flex',
           alignItems: 'center',
           minWidth: 0,
-          borderRadius: 2,
+          borderRadius: '6px',
         },
         isDragging && { bgcolor: 'background.paper' },
         isDropTarget && {

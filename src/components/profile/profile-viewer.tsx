@@ -210,7 +210,7 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
   const text = {
     fullWidth: true,
     size: 'small',
-    margin: 'normal',
+    margin: 'none',
     variant: 'outlined',
     autoComplete: 'off',
     autoCorrect: 'off',
@@ -228,7 +228,15 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
           ? t('profiles.modals.profileForm.title.create')
           : t('profiles.modals.profileForm.title.edit')
       }
-      contentSx={{ width: 375, pb: 0, maxHeight: '80%' }}
+      contentSx={{
+        width: 440,
+        maxWidth: '100%',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1.75,
+        py: 2.5,
+      }}
       okBtn={t('shared.actions.save')}
       cancelBtn={t('shared.actions.cancel')}
       onClose={handleClose}
@@ -240,7 +248,7 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
         name="type"
         control={control}
         render={({ field }) => (
-          <FormControl size="small" fullWidth sx={{ mt: 1, mb: 1 }}>
+          <FormControl size="small" fullWidth>
             <InputLabel>
               {t('profiles.modals.profileForm.fields.type')}
             </InputLabel>
@@ -438,9 +446,14 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
   )
 }
 
-const StyledBox = styled(Box)(() => ({
-  margin: '8px 0 8px 8px',
+const StyledBox = styled(Box)(({ theme }) => ({
+  minHeight: 38,
+  padding: '4px 0',
+  borderTop: `1px solid ${theme.palette.divider}`,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
+  gap: 16,
+  '& .MuiInputLabel-root': { whiteSpace: 'normal' },
+  '& .MuiSwitch-root': { flexShrink: 0 },
 }))

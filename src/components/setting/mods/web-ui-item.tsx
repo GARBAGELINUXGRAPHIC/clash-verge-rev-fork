@@ -52,12 +52,13 @@ export const WebUIItem = (props: Props) => {
         <Stack
           spacing={0.75}
           direction="row"
-          sx={{ mt: 1, mb: 1, alignItems: 'center' }}
+          sx={{ py: 1.5, alignItems: 'center', flexWrap: 'wrap', rowGap: 1 }}
         >
           <TextField
             autoComplete="new-password"
             fullWidth
             size="small"
+            sx={{ flex: '1 1 180px', minWidth: 0 }}
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
             placeholder={t(
@@ -67,6 +68,7 @@ export const WebUIItem = (props: Props) => {
           <IconButton
             size="small"
             title={t('shared.actions.save')}
+            aria-label={t('shared.actions.save')}
             color="inherit"
             onClick={() => {
               onChange(editValue)
@@ -78,6 +80,7 @@ export const WebUIItem = (props: Props) => {
           <IconButton
             size="small"
             title={t('shared.actions.cancel')}
+            aria-label={t('shared.actions.cancel')}
             color="inherit"
             onClick={() => {
               onCancel?.()
@@ -112,7 +115,7 @@ export const WebUIItem = (props: Props) => {
       <Stack
         spacing={0.75}
         direction="row"
-        sx={{ alignItems: 'center', mt: 1, mb: 1 }}
+        sx={{ alignItems: 'center', py: 1.5 }}
       >
         <Typography
           component="div"
@@ -120,6 +123,9 @@ export const WebUIItem = (props: Props) => {
           color={value ? 'text.primary' : 'text.secondary'}
           sx={({ palette }) => ({
             width: '100%',
+            minWidth: 0,
+            fontFamily: 'monospace',
+            whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             '> .placeholder': {
@@ -132,6 +138,7 @@ export const WebUIItem = (props: Props) => {
         <IconButton
           size="small"
           title={t('settings.modals.webUI.actions.openUrl')}
+          aria-label={t('settings.modals.webUI.actions.openUrl')}
           color="inherit"
           onClick={() => onOpenUrl?.(value)}
         >
@@ -140,6 +147,7 @@ export const WebUIItem = (props: Props) => {
         <IconButton
           size="small"
           title={t('shared.actions.edit')}
+          aria-label={t('shared.actions.edit')}
           color="inherit"
           onClick={() => {
             setEditing(true)
@@ -151,6 +159,7 @@ export const WebUIItem = (props: Props) => {
         <IconButton
           size="small"
           title={t('shared.actions.delete')}
+          aria-label={t('shared.actions.delete')}
           color="inherit"
           onClick={onDelete}
         >

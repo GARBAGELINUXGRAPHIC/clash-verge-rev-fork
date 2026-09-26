@@ -16,6 +16,8 @@ import {
   ListItem,
   ListItemText,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   styled,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -493,41 +495,77 @@ export const GroupsEditorViewer = (props: Props) => {
       maxWidth="xl"
       fullWidth
       disableEnforceFocus={!visualization}
+      slotProps={{
+        paper: { sx: { height: 'min(820px, calc(100dvh - 48px))' } },
+      }}
     >
       <DialogTitle>
         {
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 1.5,
+            }}
+          >
             {t('profiles.modals.groupsEditor.title')}
-            <Box>
-              <Button
-                variant="contained"
-                size="small"
-                onClick={handleVisualizationToggle}
-              >
-                {visualization
-                  ? t('shared.editorModes.advanced')
-                  : t('shared.editorModes.visualization')}
-              </Button>
-            </Box>
+            <ToggleButtonGroup
+              size="small"
+              exclusive
+              value={visualization ? 'visual' : 'code'}
+              onChange={(_, value) => {
+                if (value && value !== (visualization ? 'visual' : 'code'))
+                  handleVisualizationToggle()
+              }}
+            >
+              <ToggleButton value="visual">
+                {t('shared.editorModes.visualization')}
+              </ToggleButton>
+              <ToggleButton value="code">
+                {t('shared.editorModes.advanced')}
+              </ToggleButton>
+            </ToggleButtonGroup>
           </Box>
         }
       </DialogTitle>
 
       <DialogContent
-        sx={{ display: 'flex', width: 'auto', height: 'calc(100vh - 185px)' }}
+        sx={{
+          display: visualization ? 'grid' : 'flex',
+          flex: 1,
+          minHeight: 0,
+          overflow: 'hidden',
+          gridTemplateColumns: {
+            xs: 'minmax(0, 1fr)',
+            md: 'minmax(0, 1fr) minmax(0, 1fr)',
+          },
+          gridTemplateRows: {
+            xs: 'minmax(0, 1fr) minmax(0, 1fr)',
+            md: 'minmax(0, 1fr)',
+          },
+          gap: 2.5,
+          py: 2.5,
+        }}
       >
         {visualization ? (
           <>
             <List
               sx={{
-                width: '50%',
-                padding: '0 10px',
+                minWidth: 0,
+                minHeight: 0,
+                p: 0,
+                display: 'flex',
+                flexDirection: 'column',
               }}
             >
               <Box
                 sx={{
-                  height: 'calc(100% - 80px)',
+                  flex: 1,
+                  minHeight: 0,
                   overflowY: 'auto',
+                  mb: 1,
                 }}
               >
                 <Controller
@@ -1057,17 +1095,29 @@ export const GroupsEditorViewer = (props: Props) => {
             </List>
 
             <List
-              sx={{
-                width: '50%',
-                padding: '0 10px',
-              }}
+              sx={(theme) => ({
+                minWidth: 0,
+                minHeight: 0,
+                p: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                borderLeft: {
+                  md: `1px solid ${theme.palette.divider}`,
+                },
+                borderTop: {
+                  xs: `1px solid ${theme.palette.divider}`,
+                  md: 'none',
+                },
+                pl: { md: 2.5 },
+                pt: { xs: 2, md: 0 },
+              })}
             >
               <BaseSearchBox onSearch={(match) => setMatch(() => match)} />
               <GroupedVirtualList
                 items={items}
                 renderItem={renderItem}
                 onReorder={onReorder}
-                style={{ height: 'calc(100% - 24px)', marginTop: '8px' }}
+                style={{ flex: 1, minHeight: 0, marginTop: '12px' }}
               />
             </List>
           </>
@@ -1081,6 +1131,7 @@ export const GroupsEditorViewer = (props: Props) => {
               editorRef.current = editorInstance
             }}
             options={{
+              automaticLayout: true,
               tabSize: 2, // 根据语言类型设置缩进大小
               minimap: {
                 enabled: document.documentElement.clientWidth >= 1500, // 超过一定宽度显示minimap滚动条
@@ -1116,6 +1167,14 @@ export const GroupsEditorViewer = (props: Props) => {
   )
 }
 
-const Item = styled(ListItem)(() => ({
-  padding: '5px 2px',
+const Item = styled(ListItem)(({ theme }) => ({
+  padding: '8px 0',
+  gap: 12,
+  flexShrink: 0,
+  '& .MuiListItemText-root': { minWidth: 0, flex: 1 },
+  '& > .MuiAutocomplete-root, & > .MuiTextField-root, & > .MuiFormControl-root':
+    { width: '60%', minWidth: 0 },
+  '&:has(.MuiListItemText-root)': {
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  },
 }))

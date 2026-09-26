@@ -1,14 +1,13 @@
 import {
   Button,
+  Box,
   Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   Typography,
 } from '@mui/material'
-import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseEmpty } from '@/components/base'
@@ -25,36 +24,52 @@ export const LogViewer = (props: Props) => {
   const { t } = useTranslation()
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t('profiles.modals.logViewer.title')}</DialogTitle>
 
       <DialogContent
         sx={{
-          width: 400,
-          height: 300,
+          height: 'min(420px, 60vh)',
           overflowX: 'hidden',
           userSelect: 'text',
-          pb: 1,
+          p: 0,
         }}
       >
         {logInfo.map(([level, log]) => (
-          <Fragment key={`${level}-${log}`}>
-            <Typography color="text.secondary" component="div">
-              <Chip
-                label={level}
-                size="small"
-                variant="outlined"
-                color={
-                  level === 'error' || level === 'exception'
-                    ? 'error'
-                    : 'default'
-                }
-                sx={{ mr: 1 }}
-              />
+          <Box
+            key={`${level}-${log}`}
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '90px minmax(0, 1fr)',
+              gap: 1.5,
+              px: 2.5,
+              py: 1.5,
+              borderBottom: '1px solid',
+              borderColor: 'divider',
+              alignItems: 'start',
+            }}
+          >
+            <Chip
+              label={level}
+              size="small"
+              variant="outlined"
+              color={
+                level === 'error' || level === 'exception' ? 'error' : 'default'
+              }
+              sx={{ justifySelf: 'start', maxWidth: '100%', fontSize: 11 }}
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily:
+                  'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+                fontSize: 12,
+                overflowWrap: 'anywhere',
+              }}
+            >
               {log}
             </Typography>
-            <Divider sx={{ my: 0.5 }} />
-          </Fragment>
+          </Box>
         ))}
 
         {logInfo.length === 0 && <BaseEmpty />}

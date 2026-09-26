@@ -1,5 +1,5 @@
 import { GitHub, HelpOutlineRounded, Telegram } from '@mui/icons-material'
-import { Box, ButtonGroup, IconButton, Grid } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useTranslation } from 'react-i18next'
 
@@ -9,7 +9,6 @@ import SettingSystem from '@/components/setting/setting-system'
 import SettingVergeAdvanced from '@/components/setting/setting-verge-advanced'
 import SettingVergeBasic from '@/components/setting/setting-verge-basic'
 import { showNotice } from '@/services/notice-service'
-import { useThemeMode } from '@/services/states'
 import { openExternalUrl } from '@/utils/open-external-url'
 
 const SettingPage = () => {
@@ -35,15 +34,12 @@ const SettingPage = () => {
     openExternalUrl('https://t.me/clash_verge_re').catch(onError),
   )
 
-  const mode = useThemeMode()
-  const isDark = mode === 'light' ? false : true
-
   return (
     <BasePage
       title={t('settings.page.title')}
       header={
-        <ButtonGroup
-          variant="contained"
+        <Box
+          sx={{ display: 'flex', gap: 0.5 }}
           aria-label={t('settings.page.actionsGroupLabel')}
         >
           <IconButton
@@ -71,49 +67,34 @@ const SettingPage = () => {
           >
             <GitHub fontSize="inherit" />
           </IconButton>
-        </ButtonGroup>
+        </Box>
       }
     >
-      <Grid container spacing={1.5} columns={{ xs: 6, sm: 6, md: 12 }}>
-        <Grid size={6}>
-          <Box
-            sx={{
-              borderRadius: 2,
-              marginBottom: 1.5,
-              backgroundColor: isDark ? '#282a36' : '#ffffff',
-            }}
-          >
-            <SettingSystem onError={onError} />
-          </Box>
-          <Box
-            sx={{
-              borderRadius: 2,
-              backgroundColor: isDark ? '#282a36' : '#ffffff',
-            }}
-          >
-            <SettingClash onError={onError} />
-          </Box>
-        </Grid>
-        <Grid size={6}>
-          <Box
-            sx={{
-              borderRadius: 2,
-              marginBottom: 1.5,
-              backgroundColor: isDark ? '#282a36' : '#ffffff',
-            }}
-          >
-            <SettingVergeBasic onError={onError} />
-          </Box>
-          <Box
-            sx={{
-              borderRadius: 2,
-              backgroundColor: isDark ? '#282a36' : '#ffffff',
-            }}
-          >
-            <SettingVergeAdvanced onError={onError} />
-          </Box>
-        </Grid>
-      </Grid>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: 'minmax(0, 1fr)',
+            md: 'repeat(2, minmax(0, 1fr))',
+          },
+          gap: { xs: 3, lg: 4 },
+          maxWidth: 1200,
+          mx: 'auto',
+        }}
+      >
+        <Box
+          sx={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}
+        >
+          <SettingSystem onError={onError} />
+          <SettingClash onError={onError} />
+        </Box>
+        <Box
+          sx={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0 }}
+        >
+          <SettingVergeBasic onError={onError} />
+          <SettingVergeAdvanced onError={onError} />
+        </Box>
+      </Box>
     </BasePage>
   )
 }

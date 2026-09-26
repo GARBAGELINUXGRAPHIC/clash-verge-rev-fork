@@ -2,18 +2,17 @@ import { styled, Box, Typography } from '@mui/material'
 import { Rule } from 'tauri-plugin-mihomo-api'
 
 const Item = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  padding: '4px 16px',
+  display: 'grid',
+  gridTemplateColumns: '40px minmax(0, 1fr)',
+  alignItems: 'center',
+  minHeight: 44,
+  padding: '8px 20px',
+  boxSizing: 'border-box',
+  gap: 16,
   color: theme.palette.text.primary,
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  '&:hover': { backgroundColor: theme.palette.action.hover },
 }))
-
-const COLOR = [
-  'primary',
-  'secondary',
-  'info.main',
-  'warning.main',
-  'success.main',
-]
 
 interface Props {
   value: Rule & { lineNo: number }
@@ -23,37 +22,51 @@ const parseColor = (text: string) => {
   if (text === 'REJECT' || text === 'REJECT-DROP') return 'error.main'
   if (text === 'DIRECT') return 'text.primary'
 
-  let sum = 0
-  for (let i = 0; i < text.length; i++) {
-    sum += text.charCodeAt(i)
-  }
-  return COLOR[sum % COLOR.length]
+  return 'primary.main'
 }
 
 const RuleItem = (props: Props) => {
   const { value } = props
 
   return (
-    <Item sx={{ borderBottom: '1px solid var(--divider-color)' }}>
+    <Item>
       <Typography
         color="text.secondary"
         variant="body2"
-        sx={{ lineHeight: 2, minWidth: 30, mr: 2.25, textAlign: 'center' }}
+        sx={{ fontVariantNumeric: 'tabular-nums', textAlign: 'right' }}
       >
         {value.lineNo}
       </Typography>
 
-      <Box sx={{ userSelect: 'text' }}>
-        <Typography component="h6" variant="subtitle1" color="text.primary">
+      <Box
+        sx={{
+          userSelect: 'text',
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: 'minmax(0, 1fr) auto',
+            md: 'minmax(0, 1fr) 150px 160px',
+          },
+          alignItems: 'center',
+          gap: 1,
+          minWidth: 0,
+        }}
+      >
+        <Typography
+          variant="body1"
+          color="text.primary"
+          title={value.payload || '-'}
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            fontWeight: 500,
+            gridColumn: { xs: '1 / -1', md: 'auto' },
+          }}
+        >
           {value.payload || '-'}
         </Typography>
 
-        <Typography
-          component="span"
-          variant="body2"
-          color="text.secondary"
-          sx={{ mr: 3, minWidth: 120, display: 'inline-block' }}
-        >
+        <Typography component="span" variant="body2" color="text.secondary">
           {typeof value.type === 'string' ? value.type : value.type.Unknown}
         </Typography>
 
@@ -61,6 +74,12 @@ const RuleItem = (props: Props) => {
           component="span"
           variant="body2"
           color={parseColor(value.proxy)}
+          title={value.proxy}
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
         >
           {value.proxy}
         </Typography>

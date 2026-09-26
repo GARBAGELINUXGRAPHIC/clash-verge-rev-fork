@@ -1,7 +1,7 @@
 import { EditRounded } from '@mui/icons-material'
 import {
   Button,
-  List,
+  Box,
   ListItem,
   ListItemText,
   styled,
@@ -23,6 +23,8 @@ import { EditorViewer } from '@/components/profile/editor-viewer'
 import { useVerge } from '@/hooks/use-verge'
 import { defaultDarkTheme, defaultTheme } from '@/pages/_theme'
 import { showNotice } from '@/services/notice-service'
+
+import { SettingForm } from './setting-comp'
 
 export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
   const { ref } = props
@@ -52,7 +54,7 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
   const textProps = {
     size: 'small',
     autoComplete: 'off',
-    sx: { width: 135 },
+    sx: { width: 148 },
   } as const
 
   const handleChange = (field: keyof typeof theme) => (e: any) => {
@@ -130,11 +132,40 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
     return (
       <Item key={key}>
         <ListItemText primary={label} />
-        <Round sx={{ background: theme[key] || dt[key] }} />
+        <Box
+          component="label"
+          sx={{
+            width: 28,
+            height: 28,
+            borderRadius: 1,
+            border: 1,
+            borderColor: 'divider',
+            bgcolor: theme[key] || dt[key],
+            flexShrink: 0,
+            overflow: 'hidden',
+            cursor: 'pointer',
+          }}
+        >
+          <input
+            type="color"
+            aria-label={label}
+            value={
+              /^#[\da-f]{6}$/i.test(theme[key] || '') ? theme[key] : dt[key]
+            }
+            onChange={handleChange(key)}
+            style={{
+              width: '100%',
+              height: '100%',
+              opacity: 0,
+              cursor: 'pointer',
+            }}
+          />
+        </Box>
         <TextField
           {...textProps}
           value={theme[key] ?? ''}
           placeholder={dt[key]}
+          slotProps={{ htmlInput: { 'aria-label': label } }}
           onChange={handleChange(key)}
           onKeyDown={(e) => e.key === 'Enter' && onSave()}
         />
@@ -148,12 +179,20 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
       title={t('settings.components.verge.theme.title')}
       okBtn={t('shared.actions.save')}
       cancelBtn={t('shared.actions.cancel')}
-      contentSx={{ width: 400, maxHeight: 505, overflow: 'auto', pb: 0 }}
+      contentSx={{ width: 480, maxWidth: '100%', overflow: 'auto' }}
       onClose={() => setOpen(false)}
       onCancel={() => setOpen(false)}
       onOk={onSave}
     >
-      <List sx={{ pt: 0 }}>
+      <SettingForm
+        sx={{
+          '& > .MuiListItem-root:has(input[type="color"])': {
+            flexWrap: 'nowrap',
+            '& > .MuiListItemText-root': { flexBasis: 'auto' },
+            '& > .MuiTextField-root': { width: 132, flexShrink: 0 },
+          },
+        }}
+      >
         {fieldDefinitions.map((field) => renderItem(field.labelKey, field.key))}
 
         <Item>
@@ -194,19 +233,11 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
             />
           )}
         </Item>
-      </List>
+      </SettingForm>
     </BaseDialog>
   )
 }
 
 const Item = styled(ListItem)(() => ({
   padding: '5px 2px',
-}))
-
-const Round = styled('div')(() => ({
-  width: '24px',
-  height: '24px',
-  borderRadius: '18px',
-  display: 'inline-block',
-  marginRight: '8px',
 }))

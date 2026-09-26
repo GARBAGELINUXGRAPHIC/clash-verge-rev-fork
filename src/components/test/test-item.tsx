@@ -1,5 +1,18 @@
-import { LanguageRounded } from '@mui/icons-material'
-import { Box, Divider, MenuItem, Menu, styled, alpha } from '@mui/material'
+import {
+  DeleteOutlineRounded,
+  EditOutlined,
+  LanguageRounded,
+  RefreshRounded,
+} from '@mui/icons-material'
+import {
+  Box,
+  IconButton,
+  ListItemIcon,
+  MenuItem,
+  Menu,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -48,8 +61,18 @@ export const TestItem = ({ itemData, onEdit, onDelete: removeTest }: Props) => {
   })
 
   const menu = [
-    { label: t('shared.actions.edit'), handler: onEditTest },
-    { label: t('shared.actions.delete'), handler: onDelete },
+    {
+      label: t('shared.actions.edit'),
+      handler: onEditTest,
+      icon: EditOutlined,
+      destructive: false,
+    },
+    {
+      label: t('shared.actions.delete'),
+      handler: onDelete,
+      icon: DeleteOutlineRounded,
+      destructive: true,
+    },
   ]
 
   useEffect(
@@ -58,7 +81,7 @@ export const TestItem = ({ itemData, onEdit, onDelete: removeTest }: Props) => {
   )
 
   return (
-    <Box>
+    <Box sx={{ minWidth: 0 }}>
       <TestBox
         onContextMenu={(event) => {
           const { clientX, clientY } = event
@@ -67,85 +90,107 @@ export const TestItem = ({ itemData, onEdit, onDelete: removeTest }: Props) => {
           event.preventDefault()
         }}
       >
-        <Box data-sortable-handle sx={{ position: 'relative', cursor: 'move' }}>
+        <Box
+          data-sortable-handle
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            cursor: 'move',
+            minWidth: 0,
+            height: 28,
+          }}
+        >
           {icon && icon.trim() !== '' ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                flexShrink: 0,
+                width: 28,
+                height: 28,
+                '& img': { maxWidth: '100%', objectFit: 'contain' },
+              }}
+            >
               {icon.trim().startsWith('http') && (
                 <img
                   alt={name}
                   src={iconCachePath === '' ? icon : iconCachePath}
-                  height="40px"
+                  height="28px"
                 />
               )}
               {icon.trim().startsWith('data') && (
-                <img alt={name} src={icon} height="40px" />
+                <img alt={name} src={icon} height="28px" />
               )}
               {icon.trim().startsWith('<svg') && (
                 <img
                   alt={name}
                   src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(icon)}`}
-                  height="40px"
+                  height="28px"
                 />
               )}
             </Box>
           ) : (
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <LanguageRounded sx={{ height: '40px' }} fontSize="large" />
-            </Box>
+            <LanguageRounded
+              sx={{
+                width: 28,
+                height: 28,
+                color: 'text.secondary',
+                flexShrink: 0,
+              }}
+            />
           )}
 
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>{name}</Box>
+          <Typography
+            variant="body2"
+            noWrap
+            title={name}
+            sx={{ fontWeight: 600, minWidth: 0 }}
+          >
+            {name}
+          </Typography>
         </Box>
-        <Divider sx={{ marginTop: '8px' }} />
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'center',
-            marginTop: '8px',
-            color: 'primary.main',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mt: 1.25,
+            height: 28,
           }}
         >
-          {delay === -2 && (
-            <Widget>
-              <BaseLoading />
-            </Widget>
-          )}
-
-          {delay === -1 && (
-            <Widget
-              className="the-check"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                onDelay()
-              }}
-              sx={({ palette }) => ({
-                ':hover': { bgcolor: alpha(palette.primary.main, 0.15) },
-              })}
-            >
-              {t('tests.components.item.actions.test')}
-            </Widget>
-          )}
-
-          {delay >= 0 && (
-            // 显示延迟
-            <Widget
-              className="the-delay"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                onDelay()
-              }}
-              sx={({ palette }) => ({
-                color: delayManager.formatDelayColor(delay),
-                ':hover': {
-                  bgcolor: alpha(palette.primary.main, 0.15),
-                },
-              })}
-            >
-              {delayManager.formatDelay(delay)}
-            </Widget>
-          )}
+          <Typography
+            variant="caption"
+            sx={{
+              color:
+                delay >= 0
+                  ? delayManager.formatDelayColor(delay)
+                  : 'text.secondary',
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
+            {delay >= 0 ? delayManager.formatDelay(delay) : '--'}
+          </Typography>
+          <Tooltip title={t('tests.components.item.actions.test')}>
+            <span>
+              <IconButton
+                size="small"
+                disabled={delay === -2}
+                aria-label={`${t('tests.components.item.actions.test')} ${name}`}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  void onDelay()
+                }}
+                sx={{ width: 28, height: 28 }}
+              >
+                {delay === -2 ? (
+                  <BaseLoading />
+                ) : (
+                  <RefreshRounded sx={{ fontSize: 17 }} />
+                )}
+              </IconButton>
+            </span>
+          </Tooltip>
         </Box>
       </TestBox>
 
@@ -166,9 +211,23 @@ export const TestItem = ({ itemData, onEdit, onDelete: removeTest }: Props) => {
           <MenuItem
             key={item.label}
             onClick={item.handler}
-            sx={{ minWidth: 120 }}
+            sx={{
+              minWidth: 160,
+              color: item.destructive ? 'error.main' : 'text.primary',
+              ...(item.destructive
+                ? {
+                    borderTop: '1px solid',
+                    borderColor: 'divider',
+                    mt: 0.5,
+                    pt: 1,
+                  }
+                : {}),
+            }}
             dense
           >
+            <ListItemIcon sx={{ color: 'inherit' }}>
+              <item.icon fontSize="small" />
+            </ListItemIcon>
             {item.label}
           </MenuItem>
         ))}
@@ -176,9 +235,3 @@ export const TestItem = ({ itemData, onEdit, onDelete: removeTest }: Props) => {
     </Box>
   )
 }
-const Widget = styled(Box)(({ theme: { typography } }) => ({
-  padding: '3px 6px',
-  fontSize: 14,
-  fontFamily: typography.fontFamily,
-  borderRadius: '4px',
-}))

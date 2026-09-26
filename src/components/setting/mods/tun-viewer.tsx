@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  List,
   ListItem,
   ListItemText,
   TextField,
@@ -25,6 +24,7 @@ import { showNotice } from '@/services/notice-service'
 import getSystem from '@/utils/get-system'
 import { areValidIpCidrs } from '@/utils/network'
 
+import { SettingForm } from './setting-comp'
 import { StackModeSwitch } from './stack-mode-switch'
 
 const OS = getSystem()
@@ -141,10 +141,18 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
     <BaseDialog
       open={open}
       title={
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 1,
+          }}
+        >
           <Typography variant="h6">{t('settings.modals.tun.title')}</Typography>
           <Button
-            variant="outlined"
+            variant="text"
             size="small"
             onClick={async () => {
               const tun: IConfigData['tun'] = {
@@ -187,14 +195,14 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
           </Button>
         </Box>
       }
-      contentSx={{ width: 450 }}
+      contentSx={{ width: 520, maxWidth: '100%' }}
       okBtn={t('shared.actions.save')}
       cancelBtn={t('shared.actions.cancel')}
       onClose={() => setOpen(false)}
       onCancel={() => setOpen(false)}
       onOk={onSave}
     >
-      <List>
+      <SettingForm>
         <ListItem sx={{ padding: '5px 2px' }}>
           <ListItemText primary={t('settings.modals.tun.fields.stack')} />
           <StackModeSwitch
@@ -346,7 +354,7 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
             </ListItem>
           )}
         />
-      </List>
+      </SettingForm>
     </BaseDialog>
   )
 }

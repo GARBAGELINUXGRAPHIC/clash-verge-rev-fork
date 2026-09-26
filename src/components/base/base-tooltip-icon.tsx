@@ -16,7 +16,12 @@ export const TooltipIcon: React.FC<Props> = (props: Props) => {
 
   return (
     <Tooltip title={title} placement="top">
-      <IconButton color="inherit" size="small" {...restProps}>
+      <IconButton
+        color="inherit"
+        size="small"
+        aria-label={title || undefined}
+        {...restProps}
+      >
         <Icon fontSize="inherit" style={{ cursor: 'pointer', opacity: 0.75 }} />
       </IconButton>
     </Tooltip>

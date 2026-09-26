@@ -19,6 +19,6 @@ export const BaseStyledTextField = styled((props: TextFieldProps) => {
   )
 })(({ theme }) => ({
   '& .MuiInputBase-root': {
-    background: theme.palette.mode === 'light' ? '#fff' : undefined,
+    background: theme.palette.background.paper,
   },
 }))

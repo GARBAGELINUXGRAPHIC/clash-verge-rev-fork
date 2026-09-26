@@ -156,7 +156,11 @@ const SettingVergeBasic = ({ onError }: Props) => {
       <SettingItem
         label={t('settings.components.verge.basic.fields.copyEnvType')}
         extra={
-          <TooltipIcon icon={ContentCopyRounded} onClick={onCopyClashEnv} />
+          <TooltipIcon
+            icon={ContentCopyRounded}
+            title={t('settings.sections.externalController.tooltips.copy')}
+            onClick={onCopyClashEnv}
+          />
         }
       >
         <GuardState
@@ -180,7 +184,13 @@ const SettingVergeBasic = ({ onError }: Props) => {
         label={t('settings.components.verge.basic.fields.startPage')}
       >
         <GuardState
-          value={start_page ?? '/'}
+          value={
+            Object.values(navigationItems).some(
+              (page) => page.path === start_page,
+            )
+              ? start_page
+              : navigationItems.proxies.path
+          }
           onCatch={onError}
           onFormat={(e: any) => e.target.value}
           onChange={(e) => onChangeData({ start_page: e })}

@@ -185,6 +185,7 @@ export const ServiceMigrationDialog = () => {
       disableOk={checking}
       disableCancel={checking || !canContinue}
       loading={loading}
+      contentSx={{ width: 480 }}
       onOk={() => void handleServiceAction()}
       onCancel={() => void handleContinue()}
     >

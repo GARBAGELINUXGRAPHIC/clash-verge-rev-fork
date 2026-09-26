@@ -174,7 +174,7 @@ export const BackupConfigViewer = memo(
     return (
       <form onSubmit={(e) => e.preventDefault()}>
         <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 9 }}>
+          <Grid size={12}>
             <Grid container spacing={2}>
               <Grid size={{ xs: 12 }}>
                 <TextField
@@ -190,8 +190,9 @@ export const BackupConfigViewer = memo(
                   sx={{ mt: 1 }}
                 />
               </Grid>
-              <Grid size={{ xs: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
+                  fullWidth
                   label={t('settings.modals.backup.fields.username')}
                   variant="outlined"
                   size="small"
@@ -202,8 +203,9 @@ export const BackupConfigViewer = memo(
                   inputRef={usernameRef}
                 />
               </Grid>
-              <Grid size={{ xs: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
+                  fullWidth
                   label={t('shared.labels.password')}
                   type={showPassword ? 'text' : 'password'}
                   variant="outlined"
@@ -220,6 +222,16 @@ export const BackupConfigViewer = memo(
                           <IconButton
                             onClick={handleClickShowPassword}
                             edge="end"
+                            aria-label={t(
+                              showPassword
+                                ? 'shared.actions.hideDetails'
+                                : 'shared.actions.showDetails',
+                            )}
+                            title={t(
+                              showPassword
+                                ? 'shared.actions.hideDetails'
+                                : 'shared.actions.showDetails',
+                            )}
                           >
                             {showPassword ? <VisibilityOff /> : <Visibility />}
                           </IconButton>
@@ -231,13 +243,17 @@ export const BackupConfigViewer = memo(
               </Grid>
             </Grid>
           </Grid>
-          <Grid size={{ xs: 12, sm: 3 }}>
+          <Grid size={12}>
             <Stack
-              direction="column"
+              direction="row"
+              spacing={1}
+              useFlexGap
               sx={{
-                justifyContent: 'space-between',
-                alignItems: 'stretch',
-                height: '100%',
+                justifyContent: 'flex-end',
+                flexWrap: 'wrap',
+                pt: 2,
+                borderTop: 1,
+                borderColor: 'divider',
               }}
             >
               {webdavChanged ||
@@ -247,7 +263,6 @@ export const BackupConfigViewer = memo(
                 <Button
                   variant="contained"
                   color={'primary'}
-                  sx={{ height: '100%' }}
                   type="button"
                   onClick={handleSubmit(save)}
                 >
@@ -257,19 +272,13 @@ export const BackupConfigViewer = memo(
                 <>
                   <Button
                     variant="contained"
-                    color="success"
+                    color="primary"
                     onClick={handleBackup}
                     type="button"
-                    size="large"
                   >
                     {t('settings.modals.backup.actions.backup')}
                   </Button>
-                  <Button
-                    variant="outlined"
-                    onClick={onRefresh}
-                    type="button"
-                    size="large"
-                  >
+                  <Button variant="outlined" onClick={onRefresh} type="button">
                     {t('shared.actions.refresh')}
                   </Button>
                 </>

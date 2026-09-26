@@ -25,12 +25,11 @@ export const ProxyItem = (props: Props) => {
         position: 'relative',
         background:
           type === 'original'
-            ? palette.mode === 'dark'
-              ? alpha(palette.background.paper, 0.3)
-              : alpha(palette.grey[400], 0.3)
+            ? palette.background.paper
             : type === 'delete'
-              ? alpha(palette.error.main, 0.3)
-              : alpha(palette.success.main, 0.3),
+              ? alpha(palette.error.main, 0.06)
+              : alpha(palette.success.main, 0.06),
+        border: `1px solid ${palette.divider}`,
         height: '100%',
         borderRadius: '8px',
       })}
@@ -62,10 +61,11 @@ export const ProxyItem = (props: Props) => {
         }
         slotProps={{
           secondary: {
+            component: 'div',
             sx: {
               display: 'flex',
               alignItems: 'center',
-              color: '#ccc',
+              color: 'text.secondary',
             },
           },
         }}

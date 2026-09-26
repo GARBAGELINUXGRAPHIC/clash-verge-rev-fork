@@ -1,4 +1,5 @@
-import { Box, CircularProgress } from '@mui/material'
+import { alpha, Box, CircularProgress } from '@mui/material'
+import { useTranslation } from 'react-i18next'
 
 interface BaseLoadingOverlayProps {
   isLoading: boolean
@@ -7,6 +8,7 @@ interface BaseLoadingOverlayProps {
 export const BaseLoadingOverlay: React.FC<BaseLoadingOverlayProps> = ({
   isLoading,
 }) => {
+  const { t } = useTranslation()
   if (!isLoading) return null
 
   return (
@@ -20,15 +22,11 @@ export const BaseLoadingOverlay: React.FC<BaseLoadingOverlayProps> = ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        // Respect current theme; avoid bright flash in dark mode
-        backgroundColor: (theme) =>
-          theme.palette.mode === 'dark'
-            ? 'rgba(0, 0, 0, 0.5)'
-            : 'rgba(255, 255, 255, 0.7)',
+        backgroundColor: (theme) => alpha(theme.palette.background.paper, 0.8),
         zIndex: 1000,
       }}
     >
-      <CircularProgress />
+      <CircularProgress size={24} aria-label={t('shared.statuses.loading')} />
     </Box>
   )
 }

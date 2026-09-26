@@ -7,7 +7,8 @@ import { parseHotkey } from '@/utils/parse-hotkey'
 
 const KeyWrapper = styled('div')(({ theme }) => ({
   position: 'relative',
-  width: 230,
+  flex: 1,
+  minWidth: 0,
   minHeight: 36,
 
   '> input': {
@@ -32,7 +33,7 @@ const KeyWrapper = styled('div')(({ theme }) => ({
     boxSizing: 'border-box',
     padding: '3px 4px',
     border: '1px solid',
-    borderRadius: 4,
+    borderRadius: 6,
     borderColor: alpha(theme.palette.text.secondary, 0.15),
     '&:last-child': {
       marginRight: 0,
@@ -40,6 +41,8 @@ const KeyWrapper = styled('div')(({ theme }) => ({
   },
   '.item': {
     fontSize: '14px',
+    fontFamily: 'inherit',
+    backgroundColor: theme.palette.action.hover,
     color: theme.palette.text.primary,
     border: '1px solid',
     borderColor: alpha(theme.palette.text.secondary, 0.2),
@@ -54,21 +57,23 @@ const KeyWrapper = styled('div')(({ theme }) => ({
 }))
 
 interface Props {
+  ariaLabel: string
   value: string[]
   onChange: (value: string[]) => void
 }
 
 export const HotkeyInput = (props: Props) => {
-  const { value, onChange } = props
+  const { value, onChange, ariaLabel } = props
   const { t } = useTranslation()
 
   const changeRef = useRef<string[]>([])
   const [keys, setKeys] = useState(value)
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}>
       <KeyWrapper>
         <input
+          aria-label={ariaLabel}
           onKeyUp={() => {
             const ret = changeRef.current.slice()
             if (ret.length) {
@@ -94,7 +99,7 @@ export const HotkeyInput = (props: Props) => {
               <span className="delimiter" hidden={index === 0}>
                 +
               </span>
-              <div className="item">{key}</div>
+              <kbd className="item">{key}</kbd>
             </Box>
           ))}
         </div>
@@ -103,6 +108,7 @@ export const HotkeyInput = (props: Props) => {
       <IconButton
         size="small"
         title={t('shared.actions.delete')}
+        aria-label={t('shared.actions.delete')}
         color="inherit"
         onClick={() => {
           onChange([])

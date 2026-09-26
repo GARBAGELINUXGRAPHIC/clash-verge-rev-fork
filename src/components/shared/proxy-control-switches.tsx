@@ -5,7 +5,7 @@ import {
   SettingsRounded,
   WarningRounded,
 } from '@mui/icons-material'
-import { Box, Typography, alpha, useTheme } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -36,7 +36,6 @@ interface SwitchRowProps {
   /** Return false to roll back without reporting an error. */
   onToggle: (value: boolean) => Promise<boolean | void>
   onError?: (err: Error) => void
-  highlight?: boolean
 }
 
 /**
@@ -52,9 +51,7 @@ const SwitchRow = ({
   extraIcons,
   onToggle,
   onError,
-  highlight,
 }: SwitchRowProps) => {
-  const theme = useTheme()
   const [checked, setChecked] = useState(active)
   const pendingRef = useRef(false)
 
@@ -86,26 +83,31 @@ const SwitchRow = ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        p: 1,
-        pr: 2,
-        borderRadius: 1.5,
-        bgcolor: highlight
-          ? alpha(theme.palette.success.main, 0.07)
-          : 'transparent',
+        minHeight: 52,
+        py: 1,
+        px: 0.5,
+        gap: 2,
+        borderBottom: 1,
+        borderColor: 'divider',
+        boxSizing: 'border-box',
         opacity: disabled ? 0.6 : 1,
         transition: 'background-color 0.3s',
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          minWidth: 0,
+        }}
+      >
         {active ? (
           <PlayCircleOutlineRounded sx={{ color: 'success.main', mr: 1 }} />
         ) : (
           <PauseCircleOutlineRounded sx={{ color: 'text.disabled', mr: 1 }} />
         )}
-        <Typography
-          variant="subtitle1"
-          sx={{ fontWeight: 500, fontSize: '15px' }}
-        >
+        <Typography variant="subtitle1" sx={{ fontWeight: 400, fontSize: 13 }}>
           {label}
         </Typography>
         <TooltipIcon
@@ -121,6 +123,7 @@ const SwitchRow = ({
         edge="end"
         disabled={disabled}
         checked={checked}
+        slotProps={{ input: { 'aria-label': label } }}
         onChange={handleChange}
       />
     </Box>
@@ -180,7 +183,13 @@ const ProxyControlSwitches = ({
   const isTunMode = label === t('settings.sections.system.toggles.tunMode')
 
   return (
-    <Box sx={{ width: '100%', pr: noRightPadding ? 1 : 2 }}>
+    <Box
+      sx={{
+        width: '100%',
+        boxSizing: 'border-box',
+        pr: noRightPadding ? 0 : 0.5,
+      }}
+    >
       {isSystemProxyMode && (
         <SwitchRow
           label={t('settings.sections.proxyControl.fields.systemProxy')}
@@ -189,7 +198,6 @@ const ProxyControlSwitches = ({
           onInfoClick={() => sysproxyRef.current?.open()}
           onToggle={handleSystemProxyToggle}
           onError={onError}
-          highlight={systemProxyIndicator}
         />
       )}
 
@@ -201,7 +209,6 @@ const ProxyControlSwitches = ({
           onInfoClick={() => tunRef.current?.open()}
           onToggle={handleTunToggle}
           onError={onError}
-          highlight={(enable_tun_mode && isTunModeAvailable) || false}
           extraIcons={
             <>
               {!isTunModeAvailable && (

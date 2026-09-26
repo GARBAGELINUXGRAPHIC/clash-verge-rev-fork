@@ -3,16 +3,18 @@ import {
   TableChartRounded,
   TableRowsRounded,
   ViewColumnRounded,
+  CloseRounded,
+  ArrowDownwardRounded,
+  ArrowUpwardRounded,
 } from '@mui/icons-material'
 import {
   Box,
   Button,
   ButtonGroup,
-  Fab,
   IconButton,
   MenuItem,
   Tooltip,
-  Zoom,
+  Typography,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useCallback, useMemo, useRef, useState } from 'react'
@@ -176,59 +178,115 @@ const ConnectionsPage = () => {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        borderRadius: '8px',
         minHeight: 0,
       }}
       header={
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Box sx={{ mx: 1 }}>
-            {t('shared.labels.downloaded')}:{' '}
-            {parseTraffic(traffic?.downTotal || 0)}
-          </Box>
-          <Box sx={{ mx: 1 }}>
-            {t('shared.labels.uploaded')}: {parseTraffic(traffic?.upTotal || 0)}
-          </Box>
-          <IconButton
-            color="inherit"
-            size="small"
-            onClick={() =>
-              setSetting((o) =>
-                o?.layout !== 'table'
-                  ? { ...o, layout: 'table' }
-                  : { ...o, layout: 'list' },
-              )
-            }
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1.5,
+            flexWrap: 'wrap',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
+              color: 'text.secondary',
+              userSelect: 'text',
+            }}
           >
-            {isTableLayout ? (
-              <TableRowsRounded titleAccess={t('shared.actions.listView')} />
-            ) : (
-              <TableChartRounded titleAccess={t('shared.actions.tableView')} />
+            <Tooltip title={t('shared.labels.downloaded')}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <ArrowDownwardRounded sx={{ fontSize: 14 }} />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontVariantNumeric: 'tabular-nums',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {parseTraffic(traffic?.downTotal || 0).join(' ')}
+                </Typography>
+              </Box>
+            </Tooltip>
+            <Tooltip title={t('shared.labels.uploaded')}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <ArrowUpwardRounded sx={{ fontSize: 14 }} />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    fontVariantNumeric: 'tabular-nums',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {parseTraffic(traffic?.upTotal || 0).join(' ')}
+                </Typography>
+              </Box>
+            </Tooltip>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <IconButton
+              color="inherit"
+              size="small"
+              onClick={() =>
+                setSetting((o) =>
+                  o?.layout !== 'table'
+                    ? { ...o, layout: 'table' }
+                    : { ...o, layout: 'list' },
+                )
+              }
+            >
+              {isTableLayout ? (
+                <TableRowsRounded titleAccess={t('shared.actions.listView')} />
+              ) : (
+                <TableChartRounded
+                  titleAccess={t('shared.actions.tableView')}
+                />
+              )}
+            </IconButton>
+            <Tooltip title={t('shared.actions.closeAll')}>
+              <IconButton
+                size="small"
+                onClick={onCloseAll}
+                aria-label={t('shared.actions.closeAll')}
+              >
+                <CloseRounded />
+              </IconButton>
+            </Tooltip>
+            {connectionsType === 'closed' && filterConn.length > 0 && (
+              <Tooltip title={t('shared.actions.clear')}>
+                <IconButton
+                  size="small"
+                  onClick={() => clearClosedConnections()}
+                  aria-label={t('shared.actions.clear')}
+                >
+                  <DeleteForeverRounded />
+                </IconButton>
+              </Tooltip>
             )}
-          </IconButton>
-          <Button size="small" variant="contained" onClick={onCloseAll}>
-            <span style={{ whiteSpace: 'nowrap' }}>
-              {t('shared.actions.closeAll')}
-            </span>
-          </Button>
+          </Box>
         </Box>
       }
     >
       <Box
         sx={{
-          pt: 1,
-          mb: 0.5,
-          mx: '10px',
-          minHeight: '36px',
+          px: 2.5,
+          py: 1.5,
+          flexShrink: 0,
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'background.paper',
           display: 'flex',
           alignItems: 'center',
           gap: 1,
+          flexWrap: 'wrap',
           userSelect: 'text',
-          position: 'sticky',
-          top: 0,
-          zIndex: 2,
         }}
       >
-        <ButtonGroup sx={{ mr: 1, flexBasis: 'content' }}>
+        <ButtonGroup sx={{ mr: 0.5, flexShrink: 0 }}>
           <Button
             size="small"
             variant={connectionsType === 'active' ? 'contained' : 'outlined'}
@@ -260,7 +318,8 @@ const ConnectionsPage = () => {
         )}
         <Box
           sx={{
-            flex: 1,
+            flex: '1 1 180px',
+            minWidth: 0,
             display: 'flex',
             alignItems: 'center',
             '& > *': {
@@ -307,32 +366,13 @@ const ConnectionsPage = () => {
           )}
           style={{
             flex: 1,
-            borderRadius: '8px',
+            minHeight: 0,
             WebkitOverflowScrolling: 'touch',
             overscrollBehavior: 'contain',
           }}
         />
       )}
       <ConnectionDetail ref={detailRef} />
-      <Zoom
-        in={connectionsType === 'closed' && filterConn.length > 0}
-        unmountOnExit
-      >
-        <Fab
-          size="medium"
-          variant="extended"
-          sx={{
-            position: 'absolute',
-            right: 16,
-            bottom: isTableLayout ? 70 : 16,
-          }}
-          color="primary"
-          onClick={() => clearClosedConnections()}
-        >
-          <DeleteForeverRounded sx={{ mr: 1 }} fontSize="small" />
-          {t('shared.actions.clear')}
-        </Fab>
-      </Zoom>
     </BasePage>
   )
 }

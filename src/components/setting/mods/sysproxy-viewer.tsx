@@ -5,7 +5,6 @@ import {
   Button,
   Chip,
   InputAdornment,
-  List,
   ListItem,
   ListItemText,
   styled,
@@ -24,7 +23,6 @@ import { useTranslation } from 'react-i18next'
 
 import {
   BaseDialog,
-  BaseFieldset,
   BaseSplitChipEditor,
   type DialogRef,
   Switch,
@@ -46,6 +44,8 @@ import {
 import { showNotice } from '@/services/notice-service'
 import { debugLog } from '@/utils/debug'
 import getSystem from '@/utils/get-system'
+
+import { SettingForm } from './setting-comp'
 
 const sleep = (ms: number) =>
   new Promise<void>((resolve) => {
@@ -396,7 +396,7 @@ export const SysproxyViewer = forwardRef<DialogRef>((props, ref) => {
     <BaseDialog
       open={open}
       title={t('settings.modals.sysproxy.title')}
-      contentSx={{ width: 450, maxHeight: 565 }}
+      contentSx={{ width: 520, maxWidth: '100%' }}
       okBtn={t('shared.actions.save')}
       cancelBtn={t('shared.actions.cancel')}
       onClose={() => setOpen(false)}
@@ -405,16 +405,21 @@ export const SysproxyViewer = forwardRef<DialogRef>((props, ref) => {
       loading={saving}
       disableOk={saving}
     >
-      <List>
-        <BaseFieldset
-          label={t('settings.modals.sysproxy.fieldsets.currentStatus')}
-          padding="15px 10px"
-        >
+      <SettingForm>
+        <Box sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}>
+          <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
+            {t('settings.modals.sysproxy.fieldsets.currentStatus')}
+          </Typography>
           <FlexBox>
             <Typography className="label">
               {t('settings.modals.sysproxy.fields.enableStatus')}
             </Typography>
-            <Typography className="value">
+            <Typography
+              className="value"
+              sx={{
+                color: isProxyReallyEnabled ? 'success.main' : 'text.secondary',
+              }}
+            >
               {isProxyReallyEnabled
                 ? t('shared.statuses.enabled')
                 : t('shared.statuses.disabled')}
@@ -438,7 +443,7 @@ export const SysproxyViewer = forwardRef<DialogRef>((props, ref) => {
               </Typography>
             </FlexBox>
           )}
-        </BaseFieldset>
+        </Box>
         <ListItem sx={{ padding: '5px 2px' }}>
           <ListItemText
             primary={t('settings.modals.sysproxy.fields.proxyHost')}
@@ -633,16 +638,26 @@ export const SysproxyViewer = forwardRef<DialogRef>((props, ref) => {
             )}
           </ListItem>
         )}
-      </List>
+      </SettingForm>
     </BaseDialog>
   )
 })
 
 const FlexBox = styled('div')`
   display: flex;
-  margin-top: 4px;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
 
   .label {
-    flex: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+
+  .value {
+    min-width: 0;
+    font-size: 14px;
+    text-align: right;
+    overflow-wrap: anywhere;
   }
 `

@@ -1,5 +1,5 @@
 import { LanRounded, SettingsRounded } from '@mui/icons-material'
-import { MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Button, MenuItem, Select, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -174,6 +174,7 @@ const SettingClash = ({ onError }: Props) => {
           <>
             <TooltipIcon
               icon={SettingsRounded}
+              title={t('settings.modals.dns.dialog.title')}
               onClick={() => dnsRef.current?.open()}
             />
             <TooltipIcon
@@ -268,17 +269,15 @@ const SettingClash = ({ onError }: Props) => {
       </SettingItem>
 
       <SettingItem label={t('settings.sections.clash.form.fields.portConfig')}>
-        <TextField
-          autoComplete="new-password"
-          disabled={false}
-          size="small"
-          value={displayedMixedPort}
-          sx={{ width: 100, input: { py: '7.5px', cursor: 'pointer' } }}
-          onClick={(e) => {
-            portRef.current?.open()
-            ;(e.target as HTMLElement).blur()
-          }}
-        />
+        <Button
+          variant="outlined"
+          startIcon={<SettingsRounded />}
+          aria-label={t('settings.sections.clash.form.fields.portConfig')}
+          onClick={() => portRef.current?.open()}
+          sx={{ fontVariantNumeric: 'tabular-nums' }}
+        >
+          {displayedMixedPort}
+        </Button>
       </SettingItem>
 
       <SettingItem
@@ -308,6 +307,7 @@ const SettingClash = ({ onError }: Props) => {
         extra={
           <TooltipIcon
             icon={SettingsRounded}
+            title={t('settings.sections.clash.form.fields.clashCore')}
             onClick={() => coreRef.current?.open()}
           />
         }

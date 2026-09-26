@@ -1,9 +1,9 @@
 import {
-  alpha,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  useMediaQuery,
 } from '@mui/material'
 import type { ReactNode } from 'react'
 import { useMatch, useNavigate, useResolvedPath } from 'react-router'
@@ -22,57 +22,52 @@ export const LayoutItem = (props: Props) => {
   const { verge } = useVerge()
   const { menu_icon } = verge ?? {}
   const navCollapsed = verge?.collapse_navbar ?? false
+  const narrow = useMediaQuery('(max-width: 700px)')
   const resolved = useResolvedPath(to)
   const match = useMatch({ path: resolved.pathname, end: true })
   const navigate = useNavigate()
 
   const effectiveMenuIcon =
-    navCollapsed && menu_icon === 'disable' ? 'monochrome' : menu_icon
+    (navCollapsed || narrow) && menu_icon === 'disable'
+      ? 'monochrome'
+      : menu_icon
 
   return (
     <ListItem
       ref={sortable?.ref}
       style={sortable?.style}
-      sx={{ py: 0.5, maxWidth: 250, mx: 'auto', padding: '4px 0px' }}
+      sx={{ p: 0, mb: 0.5 }}
     >
       <ListItemButton
         ref={sortable?.handleRef}
         selected={!!match}
-        sx={[
-          {
-            borderRadius: 2,
-            marginLeft: 1.25,
-            paddingLeft: 1,
-            paddingRight: 1,
-            marginRight: 1.25,
-            cursor: 'pointer',
-            '& .MuiListItemText-primary': {
-              color: 'text.primary',
-              fontWeight: '700',
-            },
+        sx={{
+          borderRadius: '6px',
+          minHeight: 38,
+          px: 1.25,
+          py: 0.75,
+          color: 'text.secondary',
+          gap: 1.25,
+          '& .MuiListItemText-primary': {
+            fontWeight: match ? 600 : 400,
+            fontSize: 16,
           },
-          ({ palette: { mode, primary } }) => {
-            const bgcolor =
-              mode === 'light'
-                ? alpha(primary.main, 0.15)
-                : alpha(primary.main, 0.35)
-            const color = mode === 'light' ? '#1f1f1f' : '#ffffff'
-            return {
-              '&.Mui-selected': { bgcolor },
-              '&.Mui-selected:hover': { bgcolor },
-              '&.Mui-selected .MuiListItemText-primary': { color },
-            }
+          '&.Mui-selected, &.Mui-selected:hover': {
+            bgcolor: 'action.selected',
+            color: 'primary.main',
           },
-        ]}
-        title={navCollapsed ? children : undefined}
-        aria-label={navCollapsed ? children : undefined}
+        }}
+        title={children}
+        aria-label={children}
+        aria-current={match ? 'page' : undefined}
         onClick={() => navigate(to)}
       >
         {(effectiveMenuIcon === 'monochrome' || !effectiveMenuIcon) && (
           <ListItemIcon
             sx={{
-              color: 'text.primary',
-              marginLeft: '6px',
+              color: 'inherit',
+              minWidth: 20,
+              '& svg': { width: 20, height: 20 },
               cursor: 'inherit',
             }}
           >
@@ -80,12 +75,21 @@ export const LayoutItem = (props: Props) => {
           </ListItemIcon>
         )}
         {effectiveMenuIcon === 'colorful' && (
-          <ListItemIcon sx={{ cursor: 'inherit' }}>{icon[1]}</ListItemIcon>
+          <ListItemIcon
+            sx={{
+              cursor: 'inherit',
+              minWidth: 20,
+              '& svg': { width: 20, height: 20 },
+            }}
+          >
+            {icon[1]}
+          </ListItemIcon>
         )}
         <ListItemText
           sx={{
-            textAlign: 'center',
-            marginLeft: effectiveMenuIcon === 'disable' ? '' : '-35px',
+            m: 0,
+            minWidth: 0,
+            '& span': { overflowWrap: 'anywhere' },
           }}
           primary={children}
         />

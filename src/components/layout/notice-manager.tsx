@@ -1,9 +1,10 @@
 import { CloseRounded } from '@mui/icons-material'
 import {
-  Snackbar,
   Alert,
+  Grow,
   IconButton,
   Box,
+  Portal,
   Stack,
   type SnackbarOrigin,
 } from '@mui/material'
@@ -185,64 +186,72 @@ export const NoticeManager: React.FC<NoticeManagerProps> = ({ position }) => {
   )
 
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        top: anchorOrigin.vertical === 'top' ? '20px' : 'auto',
-        bottom: anchorOrigin.vertical === 'bottom' ? '20px' : 'auto',
-        left: anchorOrigin.horizontal === 'left' ? '20px' : 'auto',
-        right: anchorOrigin.horizontal === 'right' ? '20px' : 'auto',
-        zIndex: 1500,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '10px',
-        maxWidth: '360px',
-      }}
-    >
-      {currentNotices.map((notice) => (
-        <Snackbar
-          key={notice.id}
-          open={true}
-          anchorOrigin={anchorOrigin}
-          sx={{
-            position: 'relative',
-            transform: 'none',
-            top: 'auto',
-            right: 'auto',
-            bottom: 'auto',
-            left: 'auto',
-            width: '100%',
-          }}
-        >
-          <Alert
-            severity={notice.type}
-            variant="filled"
-            sx={{ width: '100%' }}
-            onContextMenu={(event) => {
-              event.preventDefault()
-              event.stopPropagation()
-              void handleNoticeCopy(notice)
-            }}
-            action={
-              <Stack
-                direction="row"
-                spacing={0.5}
-                sx={{ alignItems: 'center' }}
-              >
-                <IconButton
-                  size="small"
-                  color="inherit"
-                  onClick={() => handleClose(notice.id)}
+    <Portal>
+      <Box
+        sx={{
+          position: 'fixed',
+          top: anchorOrigin.vertical === 'top' ? '20px' : 'auto',
+          bottom: anchorOrigin.vertical === 'bottom' ? '20px' : 'auto',
+          left: anchorOrigin.horizontal === 'left' ? '20px' : 'auto',
+          right: anchorOrigin.horizontal === 'right' ? '20px' : 'auto',
+          zIndex: (theme) => theme.zIndex.snackbar,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+          width: 'min(360px, calc(100vw - 40px))',
+          maxHeight: 'calc(100vh - 40px)',
+          overflowY: 'auto',
+          pointerEvents: 'none',
+        }}
+      >
+        {currentNotices.map((notice) => (
+          <Grow key={notice.id} in>
+            <Alert
+              severity={notice.type}
+              variant="outlined"
+              sx={{
+                width: '100%',
+                flexShrink: 0,
+                pointerEvents: 'auto',
+                boxSizing: 'border-box',
+                bgcolor: 'background.paper',
+                borderColor: 'divider',
+                color: 'text.primary',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
+                '& .MuiAlert-message': {
+                  minWidth: 0,
+                  overflowWrap: 'anywhere',
+                  userSelect: 'text',
+                },
+                '& .MuiAlert-icon': { color: `${notice.type}.main` },
+              }}
+              onContextMenu={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                void handleNoticeCopy(notice)
+              }}
+              action={
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  sx={{ alignItems: 'center' }}
                 >
-                  <CloseRounded fontSize="inherit" />
-                </IconButton>
-              </Stack>
-            }
-          >
-            {resolveNoticeMessage(notice, t)}
-          </Alert>
-        </Snackbar>
-      ))}
-    </Box>
+                  <IconButton
+                    size="small"
+                    color="inherit"
+                    aria-label={t('shared.actions.close')}
+                    onClick={() => handleClose(notice.id)}
+                  >
+                    <CloseRounded fontSize="inherit" />
+                  </IconButton>
+                </Stack>
+              }
+            >
+              {resolveNoticeMessage(notice, t)}
+            </Alert>
+          </Grow>
+        ))}
+      </Box>
+    </Portal>
   )
 }

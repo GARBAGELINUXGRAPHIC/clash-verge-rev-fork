@@ -162,7 +162,6 @@ export function AutoBackupSettings() {
             primary={t('settings.modals.backup.auto.intervalLabel')}
           />
           <TextField
-            label={t('settings.modals.backup.auto.intervalLabel')}
             size="small"
             type="number"
             value={intervalInputDraft ?? values.intervalHours.toString()}
@@ -175,7 +174,7 @@ export function AutoBackupSettings() {
                 commitIntervalInput()
               }
             }}
-            sx={{ minWidth: 160 }}
+            sx={{ width: 120, flexShrink: 0 }}
             slotProps={{
               input: {
                 endAdornment: (
@@ -185,6 +184,7 @@ export function AutoBackupSettings() {
                 ),
               },
               htmlInput: {
+                'aria-label': t('settings.modals.backup.auto.intervalLabel'),
                 min: MIN_INTERVAL_HOURS,
                 max: MAX_INTERVAL_HOURS,
                 inputMode: 'numeric',

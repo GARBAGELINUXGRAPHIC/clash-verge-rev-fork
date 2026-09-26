@@ -1,9 +1,14 @@
-import { FeaturedPlayListRounded } from '@mui/icons-material'
+import {
+  EditOutlined,
+  FeaturedPlayListRounded,
+  FolderOpenOutlined,
+} from '@mui/icons-material'
 import {
   Box,
   Badge,
   Chip,
   IconButton,
+  ListItemIcon,
   Menu,
   MenuItem,
   Typography,
@@ -82,8 +87,16 @@ export const ProfileMore = (props: Props) => {
   }
 
   const itemMenu = [
-    { label: 'profiles.components.menu.editFile', handler: onEditFile },
-    { label: 'profiles.components.menu.openFile', handler: onOpenFile },
+    {
+      label: 'profiles.components.menu.editFile',
+      handler: onEditFile,
+      icon: EditOutlined,
+    },
+    {
+      label: 'profiles.components.menu.openFile',
+      handler: onOpenFile,
+      icon: FolderOpenOutlined,
+    },
   ]
 
   const boxStyle = {
@@ -124,6 +137,7 @@ export const ProfileMore = (props: Props) => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            gap: 1,
             mb: 0.5,
           }}
         >
@@ -132,7 +146,7 @@ export const ProfileMore = (props: Props) => {
             component="h2"
             noWrap
             title={t(globalTitles[id])}
-            sx={{ width: 'calc(100% - 52px)' }}
+            sx={{ flex: 1, minWidth: 0 }}
           >
             {t(globalTitles[id])}
           </Typography>
@@ -144,6 +158,14 @@ export const ProfileMore = (props: Props) => {
             variant="outlined"
             sx={{ height: 20, textTransform: 'capitalize' }}
           />
+          <IconButton
+            size="small"
+            onClick={onEditFile}
+            title={t('profiles.components.menu.editFile')}
+            aria-label={t('profiles.components.menu.editFile')}
+          >
+            <EditOutlined fontSize="small" />
+          </IconButton>
         </Box>
 
         <Box sx={boxStyle}>
@@ -206,6 +228,9 @@ export const ProfileMore = (props: Props) => {
               ]}
               dense
             >
+              <ListItemIcon>
+                <item.icon fontSize="small" />
+              </ListItemIcon>
               {t(item.label)}
             </MenuItem>
           ))}

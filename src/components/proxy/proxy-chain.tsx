@@ -20,7 +20,6 @@ import {
   Button,
   Chip,
   IconButton,
-  Paper,
   Typography,
   keyframes,
   useTheme,
@@ -155,10 +154,8 @@ const ChainCard = ({
         alignItems: 'center',
         p: 1,
         backgroundColor: theme.palette.background.default,
-        borderRadius: 1,
-        border: roleColor
-          ? `1.5px solid ${roleColor}`
-          : `1px solid ${theme.palette.divider}`,
+        borderRadius: '6px',
+        border: `1px solid ${roleColor ?? theme.palette.divider}`,
         opacity: proxy.recordId === undefined ? 0.55 : undefined,
         transition: 'box-shadow 0.2s, background-color 0.2s',
         boxShadow: isDropping
@@ -185,9 +182,9 @@ const ChainCard = ({
           size="small"
           sx={{
             mr: 1,
-            fontWeight: 700,
-            color: '#fff',
-            backgroundColor: roleColor,
+            fontWeight: 600,
+            color: roleColor,
+            backgroundColor: theme.palette.action.hover,
           }}
         />
       ) : (
@@ -562,10 +559,11 @@ export const ProxyChain = ({
   }, [chainConfigData, onUpdateChain])
 
   return (
-    <Paper
-      elevation={1}
+    <Box
       sx={{
         height: '100%',
+        minHeight: 0,
+        boxSizing: 'border-box',
         p: 2,
         display: 'flex',
         flexDirection: 'column',
@@ -580,7 +578,9 @@ export const ProxyChain = ({
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-          <Typography variant="h6">{t('proxies.page.chain.header')}</Typography>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+            {t('proxies.page.chain.header')}
+          </Typography>
           <TooltipIcon
             title={chainWarning}
             icon={WarningRounded}
@@ -653,7 +653,7 @@ export const ProxyChain = ({
           : t('proxies.page.chain.instruction')}
       </Alert>
 
-      <Box sx={{ flex: 1, overflow: 'auto' }}>
+      <Box sx={{ flex: 1, minHeight: 0, overflow: 'auto' }}>
         {currentProxyChain.length === 0 ? (
           <Box
             sx={{
@@ -690,6 +690,6 @@ export const ProxyChain = ({
           </DragDropProvider>
         )}
       </Box>
-    </Paper>
+    </Box>
   )
 }

@@ -95,7 +95,16 @@ export const ProxyGroupTools = memo(function ProxyGroupTools(props: Props) {
   const textInput = (
     <>
       {textState === 'filter' && (
-        <Box sx={{ flex: '1 1 auto' }}>
+        <Box
+          sx={{
+            flex: '1 1 auto',
+            minWidth: 0,
+            '@container proxy-header (max-width: 560px)': { flexBasis: '100%' },
+            '@supports not (container-type: inline-size)': {
+              flexBasis: '100%',
+            },
+          }}
+        >
           <BaseSearchBox
             inputRef={inputRef}
             defaultValue={filterText}
@@ -126,7 +135,15 @@ export const ProxyGroupTools = memo(function ProxyGroupTools(props: Props) {
             e.stopPropagation()
           }}
           onChange={(e) => onHeadState({ testUrl: e.target.value })}
-          sx={{ flex: '1 1 auto', input: { py: 0.65, px: 1 } }}
+          sx={{
+            flex: '1 1 auto',
+            minWidth: 0,
+            input: { py: 0.65, px: 1 },
+            '@container proxy-header (max-width: 560px)': { flexBasis: '100%' },
+            '@supports not (container-type: inline-size)': {
+              flexBasis: '100%',
+            },
+          }}
         />
       )}
     </>
@@ -142,6 +159,22 @@ export const ProxyGroupTools = memo(function ProxyGroupTools(props: Props) {
         height: 36,
         flex: 1,
         ml: side === 'left' ? 0 : 2,
+        minWidth: 0,
+        '& > .MuiIconButton-root': { flexShrink: 0 },
+        '@container proxy-header (max-width: 560px)': {
+          ml: 0,
+          height: 'auto',
+          minHeight: 36,
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start',
+        },
+        '@supports not (container-type: inline-size)': {
+          ml: 0,
+          height: 'auto',
+          minHeight: 36,
+          flexWrap: 'wrap',
+          justifyContent: 'flex-start',
+        },
         ...sx,
       }}
     >

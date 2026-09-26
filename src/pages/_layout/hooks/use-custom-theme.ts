@@ -10,6 +10,8 @@ import { useVerge } from '@/hooks/use-verge'
 import { defaultDarkTheme, defaultTheme } from '@/pages/_theme'
 import { useSetThemeMode, useThemeMode } from '@/services/states'
 
+import { componentTheme } from '../utils/component-theme'
+
 const CSS_INJECTION_SCOPE_ROOT = '[data-css-injection-root]'
 const CSS_INJECTION_SCOPE_LIMIT =
   ':is(.monaco-editor .view-lines, .monaco-editor .view-line, .monaco-editor .margin, .monaco-editor .margin-view-overlays, .monaco-editor .view-overlays, .monaco-editor [class^="mtk"], .monaco-editor [class*=" mtk"])'
@@ -164,12 +166,13 @@ export const useCustomTheme = () => {
             secondary: setting.secondary_text || dt.secondary_text,
           },
           background: {
-            paper: dt.background_color,
+            paper: dt.surface_color,
             default: dt.background_color,
           },
         },
         shadows: Array(25).fill('none') as Shadows,
         typography: {
+          allVariants: { letterSpacing: 0 },
           fontFamily: setting.font_family
             ? `${setting.font_family}, ${dt.font_family}`
             : dt.font_family,
@@ -191,21 +194,70 @@ export const useCustomTheme = () => {
           success: { main: dt.success_color },
           text: { primary: dt.primary_text, secondary: dt.secondary_text },
           background: {
-            paper: dt.background_color,
+            paper: dt.surface_color,
             default: dt.background_color,
           },
         },
-        typography: { fontFamily: dt.font_family },
+        typography: {
+          fontFamily: dt.font_family,
+          allVariants: { letterSpacing: 0 },
+        },
       })
     }
 
+    muiTheme = createTheme(muiTheme, {
+      shape: { borderRadius: 4 },
+      palette: {
+        divider: mode === 'light' ? '#DEDEE3' : '#38383B',
+        action: {
+          hover:
+            mode === 'light'
+              ? 'rgba(0, 0, 0, 0.04)'
+              : 'rgba(255, 255, 255, 0.06)',
+          selected: alpha(muiTheme.palette.primary.main, 0.09),
+        },
+      },
+      typography: {
+        fontSize: 14,
+        allVariants: { letterSpacing: 0 },
+        h1: { fontSize: 28, fontWeight: 600 },
+        h2: { fontSize: 24, fontWeight: 600 },
+        h3: { fontSize: 22, fontWeight: 600 },
+        h4: { fontSize: 20, fontWeight: 600 },
+        h5: { fontSize: 18, fontWeight: 600 },
+        h6: { fontSize: 16, fontWeight: 600 },
+        subtitle1: { fontSize: 16, fontWeight: 600 },
+        subtitle2: { fontSize: 14, fontWeight: 600 },
+        body1: { fontSize: 16, lineHeight: 1.5 },
+        body2: { fontSize: 14, lineHeight: 1.5 },
+        caption: { fontSize: 12, lineHeight: 1.5 },
+        button: { textTransform: 'none', fontWeight: 500 },
+      },
+    })
+    muiTheme = createTheme(muiTheme, { components: componentTheme(muiTheme) })
+
     const rootEle = document.documentElement
     if (rootEle) {
-      const backgroundColor = mode === 'light' ? '#ECECEC' : dt.background_color
+      const backgroundColor = dt.background_color
       const selectColor = mode === 'light' ? '#f5f5f5' : '#3E3E3E'
       const scrollColor = mode === 'light' ? '#90939980' : '#555555'
-      const dividerColor =
-        mode === 'light' ? 'rgba(0, 0, 0, 0.06)' : 'rgba(255, 255, 255, 0.06)'
+      const dividerColor = muiTheme.palette.divider
+      rootEle.setAttribute('data-theme', mode)
+      rootEle.style.setProperty('color-scheme', mode)
+      rootEle.style.setProperty('--surface-color', dt.surface_color)
+      rootEle.style.setProperty(
+        '--sidebar-background',
+        hasUserBackground
+          ? 'transparent'
+          : mode === 'light'
+            ? '#EFEFF2'
+            : '#1D1D1F',
+      )
+      rootEle.style.setProperty('--text-primary', muiTheme.palette.text.primary)
+      rootEle.style.setProperty(
+        '--text-secondary',
+        muiTheme.palette.text.secondary,
+      )
       rootEle.style.setProperty('--divider-color', dividerColor)
       rootEle.style.setProperty('--background-color', backgroundColor)
       rootEle.style.setProperty('--selection-color', selectColor)
@@ -219,10 +271,7 @@ export const useCustomTheme = () => {
         '--window-border-color',
         mode === 'light' ? '#cccccc' : '#1E1E1E',
       )
-      rootEle.style.setProperty(
-        '--scrollbar-bg',
-        mode === 'light' ? '#f1f1f1' : '#2E303D',
-      )
+      rootEle.style.setProperty('--scrollbar-bg', 'transparent')
       rootEle.style.setProperty(
         '--scrollbar-thumb',
         mode === 'light' ? '#c1c1c1' : '#555555',
@@ -274,7 +323,7 @@ export const useCustomTheme = () => {
 
         /* 背景图处理 */
         body {
-          font-family: ${dt.font_family};
+          font-family: ${muiTheme.typography.fontFamily};
           background-color: var(--background-color);
           ${
             hasUserBackground
@@ -290,20 +339,16 @@ export const useCustomTheme = () => {
           }
         }
 
-        /* 修复可能的白色边框 */
-        .MuiPaper-root {
-          border-color: var(--window-border-color) !important;
+        body {
+          color: var(--text-primary);
         }
 
-        /* 确保模态框和对话框也使用暗色主题 */
-        .MuiDialog-paper {
-          background-color: ${mode === 'light' ? '#ffffff' : '#2E303D'} !important;
-        }
-
-        /* 移除可能的白色点或线条 */
-        * {
-          outline: none !important;
-          box-shadow: none !important;
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
         }
       `
 

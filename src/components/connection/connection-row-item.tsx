@@ -1,5 +1,5 @@
 import { CloseRounded } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
+import { Box, IconButton } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { memo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -18,7 +18,7 @@ const tagStyle = {
   boxSizing: 'border-box',
   maxWidth: '100%',
   padding: '0 4px',
-  border: '1px solid rgba(128,128,128,0.35)',
+  border: '1px solid var(--divider-color)',
   borderRadius: 4,
   fontSize: 10,
   lineHeight: 1.375,
@@ -33,7 +33,7 @@ const itemStyle = {
   display: 'flex',
   alignItems: 'center',
   gap: 8,
-  padding: '6px 48px 6px 12px',
+  padding: '10px 52px 10px 20px',
   borderBottom: '1px solid var(--divider-color)',
   position: 'relative',
   overflow: 'hidden',
@@ -80,7 +80,7 @@ export const ConnectionRowItem = memo(
     const showTraffic = row.uploadSpeed >= 100 || row.downloadSpeed >= 100
 
     return (
-      <div style={itemStyle}>
+      <Box style={itemStyle} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
         <div style={contentStyle} onClick={handleShowDetail}>
           <div style={primaryStyle}>{row.host}</div>
           <div style={tagsStyle}>
@@ -110,7 +110,7 @@ export const ConnectionRowItem = memo(
             <CloseRounded fontSize="small" />
           </IconButton>
         )}
-      </div>
+      </Box>
     )
   },
   (prev, next) =>

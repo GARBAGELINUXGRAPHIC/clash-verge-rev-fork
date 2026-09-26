@@ -70,7 +70,7 @@ export const BackupWebdavDialog = ({
     <BaseDialog
       open={open}
       title={t('settings.modals.backup.webdav.title')}
-      contentSx={{ width: { xs: 360, sm: 520 } }}
+      contentSx={{ width: 520, maxWidth: '100%' }}
       disableOk
       cancelBtn={t('shared.actions.close')}
       onCancel={onClose}

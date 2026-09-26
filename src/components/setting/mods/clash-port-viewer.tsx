@@ -2,7 +2,6 @@ import { Shuffle } from '@mui/icons-material'
 import {
   CircularProgress,
   IconButton,
-  List,
   ListItem,
   ListItemText,
   Stack,
@@ -18,6 +17,8 @@ import { useVerge } from '@/hooks/use-verge'
 import { saveProxyPorts } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
 import getSystem from '@/utils/get-system'
+
+import { SettingForm } from './setting-comp'
 
 const OS = getSystem()
 
@@ -133,7 +134,8 @@ export const ClashPortViewer = forwardRef<ClashPortViewerRef>((_, ref) => {
       open={open}
       title={t('settings.modals.clashPort.title')}
       contentSx={{
-        width: 400,
+        width: 480,
+        maxWidth: '100%',
       }}
       okBtn={
         loading ? (
@@ -150,7 +152,13 @@ export const ClashPortViewer = forwardRef<ClashPortViewerRef>((_, ref) => {
       onCancel={() => setOpen(false)}
       onOk={onSave}
     >
-      <List sx={{ width: '100%' }}>
+      <SettingForm
+        sx={{
+          width: '100%',
+          '& > .MuiListItem-root': { flexWrap: 'wrap', gap: 1 },
+          '& > .MuiListItem-root > div:last-child': { marginLeft: 'auto' },
+        }}
+      >
         <ListItem sx={{ padding: '4px 0', minHeight: 36 }}>
           <ListItemText
             primary={t('settings.modals.clashPort.fields.mixed')}
@@ -322,7 +330,7 @@ export const ClashPortViewer = forwardRef<ClashPortViewerRef>((_, ref) => {
             </div>
           </ListItem>
         )}
-      </List>
+      </SettingForm>
     </BaseDialog>
   )
 })

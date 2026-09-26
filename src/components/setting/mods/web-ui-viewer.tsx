@@ -1,4 +1,5 @@
-import { Box, Button, Typography } from '@mui/material'
+import { AddRounded } from '@mui/icons-material'
+import { Box, Button } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import type { Ref } from 'react'
 import { useImperativeHandle, useMemo, useState } from 'react'
@@ -108,11 +109,20 @@ export function WebUIViewer({ ref }: { ref?: Ref<DialogRef> }) {
     <BaseDialog
       open={open}
       title={
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 1,
+          }}
+        >
           {t('settings.modals.webUI.title')}
           <Button
             variant="contained"
             size="small"
+            startIcon={<AddRounded />}
             disabled={editing}
             onClick={() => setEditing(true)}
           >
@@ -121,9 +131,9 @@ export function WebUIViewer({ ref }: { ref?: Ref<DialogRef> }) {
         </Box>
       }
       contentSx={{
-        width: 450,
-        height: 300,
-        pb: 1,
+        width: 600,
+        maxWidth: '100%',
+        minHeight: 240,
         overflowY: 'auto',
         userSelect: 'text',
       }}
@@ -132,15 +142,7 @@ export function WebUIViewer({ ref }: { ref?: Ref<DialogRef> }) {
       onClose={() => setOpen(false)}
       onCancel={() => setOpen(false)}
     >
-      {!editing && webUIList.length === 0 && (
-        <BaseEmpty
-          extra={
-            <Typography sx={{ mt: 2, fontSize: '12px' }}>
-              {t('settings.modals.webUI.messages.placeholderInstruction')}
-            </Typography>
-          }
-        />
-      )}
+      {!editing && webUIList.length === 0 && <BaseEmpty />}
 
       {webUIEntries.map(({ item, index, key }) => (
         <WebUIItem

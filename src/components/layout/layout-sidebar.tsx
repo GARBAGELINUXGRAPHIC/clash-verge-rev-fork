@@ -1,11 +1,27 @@
 import { DragDropProvider, KeyboardSensor, PointerSensor } from '@dnd-kit/react'
-import { Box, List, Menu, MenuItem, SvgIcon } from '@mui/material'
+import {
+  ChevronLeftRounded,
+  ChevronRightRounded,
+  LockOpenRounded,
+  LockOutlined,
+  RestoreRounded,
+} from '@mui/icons-material'
+import {
+  Box,
+  IconButton,
+  List,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  SvgIcon,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import iconDark from '@/assets/image/icon_dark.svg?react'
 import iconLight from '@/assets/image/icon_light.svg?react'
-import LogoSvg from '@/assets/image/logo.svg?react'
 import { useVerge } from '@/hooks/use-verge'
 import { useNavMenuOrder } from '@/pages/_layout/hooks'
 import { navItems } from '@/pages/_navigation'
@@ -117,29 +133,22 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
   })
 
   return (
-    <div className="layout-content__left">
+    <aside className="layout-content__left">
       {/* Logo */}
       <div className="the-logo" data-tauri-drag-region="false">
-        <div
-          data-tauri-drag-region="true"
-          style={{
-            height: '27px',
-            display: 'flex',
-            justifyContent: 'space-between',
-          }}
-        >
+        <div data-tauri-drag-region="true" className="sidebar-brand">
           <SvgIcon
             component={isDark ? iconDark : iconLight}
-            style={{
-              height: '36px',
-              width: '36px',
-              marginTop: '-3px',
-              marginRight: '5px',
-              marginLeft: '-3px',
-            }}
+            sx={{ height: 30, width: 30, flexShrink: 0 }}
             inheritViewBox
           />
-          <LogoSvg fill={isDark ? 'white' : 'black'} />
+          <Typography
+            className="sidebar-brand-name"
+            sx={{ fontSize: 14, fontWeight: 600 }}
+            data-tauri-drag-region="true"
+          >
+            Clash Verge
+          </Typography>
         </div>
         <UpdateButton className="the-newbtn" />
       </div>
@@ -196,6 +205,13 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
         }}
       >
         <MenuItem onClick={handleToggleNavCollapsed} dense>
+          <ListItemIcon>
+            {isCollapsed ? (
+              <ChevronRightRounded fontSize="small" />
+            ) : (
+              <ChevronLeftRounded fontSize="small" />
+            )}
+          </ListItemIcon>
           {isCollapsed
             ? t('layout.components.navigation.menu.expandNavBar')
             : t('layout.components.navigation.menu.collapseNavBar')}
@@ -204,6 +220,13 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
           onClick={menuUnlocked ? handleLockMenu : handleUnlockMenu}
           dense
         >
+          <ListItemIcon>
+            {menuUnlocked ? (
+              <LockOutlined fontSize="small" />
+            ) : (
+              <LockOpenRounded fontSize="small" />
+            )}
+          </ListItemIcon>
           {menuUnlocked
             ? t('layout.components.navigation.menu.lock')
             : t('layout.components.navigation.menu.unlock')}
@@ -213,6 +236,9 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
           dense
           disabled={isDefaultOrder}
         >
+          <ListItemIcon>
+            <RestoreRounded fontSize="small" />
+          </ListItemIcon>
           {t('layout.components.navigation.menu.restoreDefaultOrder')}
         </MenuItem>
       </Menu>
@@ -221,6 +247,27 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
       <div className="the-traffic">
         <LayoutTraffic />
       </div>
-    </div>
+      <div className="sidebar-footer">
+        <Tooltip
+          title={t(
+            isCollapsed
+              ? 'layout.components.navigation.menu.expandNavBar'
+              : 'layout.components.navigation.menu.collapseNavBar',
+          )}
+        >
+          <IconButton
+            size="small"
+            aria-label={t(
+              isCollapsed
+                ? 'layout.components.navigation.menu.expandNavBar'
+                : 'layout.components.navigation.menu.collapseNavBar',
+            )}
+            onClick={handleToggleNavCollapsed}
+          >
+            {isCollapsed ? <ChevronRightRounded /> : <ChevronLeftRounded />}
+          </IconButton>
+        </Tooltip>
+      </div>
+    </aside>
   )
 }

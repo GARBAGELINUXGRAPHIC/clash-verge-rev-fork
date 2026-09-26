@@ -9,18 +9,15 @@ import {
 import {
   Box,
   Button,
-  Card,
   Chip,
   CircularProgress,
-  Divider,
-  Grid,
+  IconButton,
   Tooltip,
   Typography,
-  alpha,
-  useTheme,
 } from '@mui/material'
 import { Channel, invoke } from '@tauri-apps/api/core'
 import { useLockFn } from 'ahooks'
+import dayjs from 'dayjs'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -91,7 +88,6 @@ const dedupeUnlockItems = (items: UnlockItem[]) => {
 
 const UnlockPage = () => {
   const { t } = useTranslation()
-  const theme = useTheme()
 
   const [unlockItems, setUnlockItems] = useState<UnlockItem[]>([])
   const unlockItemsRef = useRef<UnlockItem[]>([])
@@ -223,21 +219,11 @@ const UnlockPage = () => {
     return <HelpOutlined />
   }
 
-  // 边框色
-  const getStatusBorderColor = (status: string) => {
-    if (status === 'Yes') return theme.palette.success.main
-    if (status === 'No') return theme.palette.error.main
-    if (status === 'Soon') return theme.palette.warning.main
-    if (status.includes('Failed')) return theme.palette.error.main
-    if (status === 'Completed') return theme.palette.info.main
-    return theme.palette.divider
-  }
-
-  const isDark = theme.palette.mode === 'dark'
-
   return (
     <BasePage
+      full
       title={t('tests.unlock.page.title')}
+      contentStyle={{ height: '100%', overflowY: 'auto' }}
       header={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Button
@@ -276,133 +262,120 @@ const UnlockPage = () => {
           <BaseEmpty textKey="tests.unlock.page.empty" />
         </Box>
       ) : (
-        <Grid container spacing={1.5} columns={{ xs: 1, sm: 2, md: 3 }}>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns:
+              'repeat(auto-fill, minmax(min(100%, 240px), 1fr))',
+            gap: 1.5,
+            p: { xs: 2, sm: 2.5 },
+            alignItems: 'start',
+          }}
+        >
           {unlockItems.map((item) => (
-            <Grid size={1} key={item.name}>
-              <Card
-                variant="outlined"
+            <Box
+              key={item.name}
+              sx={{
+                minWidth: 0,
+                px: 1.5,
+                py: 1,
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 2,
+                bgcolor: 'background.paper',
+                display: 'grid',
+                gridTemplateColumns: 'minmax(0, 1fr) 28px',
+                alignItems: 'center',
+                gap: 0.5,
+                '&:hover': { borderColor: 'text.disabled' },
+              }}
+            >
+              <Typography
+                variant="body1"
                 sx={{
-                  height: '100%',
-                  borderRadius: 2,
-                  borderLeft: `4px solid ${getStatusBorderColor(item.status)}`,
-                  backgroundColor: isDark ? '#282a36' : '#ffffff',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&:hover': {
-                    backgroundColor: isDark
-                      ? alpha(theme.palette.primary.dark, 0.05)
-                      : alpha(theme.palette.primary.light, 0.05),
-                  },
-                  display: 'flex',
-                  flexDirection: 'column',
+                  fontWeight: 600,
+                  color: 'text.primary',
+                  overflowWrap: 'anywhere',
                 }}
               >
-                <Box sx={{ p: 1.3, flex: 1 }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        fontWeight: 600,
-                        fontSize: '1rem',
-                        color: 'text.primary',
-                      }}
-                    >
-                      {item.name}
-                    </Typography>
-                    <Tooltip title={t('tests.components.item.actions.test')}>
-                      <span>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color="primary"
-                          disabled={
-                            loadingItems.includes(item.name) || isCheckingAll
-                          }
-                          sx={{
-                            minWidth: '32px',
-                            width: '32px',
-                            height: '32px',
-                            borderRadius: '50%',
-                          }}
-                          onClick={() => checkSingleMedia(item.name)}
-                        >
-                          <RefreshRounded
-                            sx={{
-                              animation: loadingItems.includes(item.name)
-                                ? 'spin 1s linear infinite'
-                                : 'none',
-                              '@keyframes spin': {
-                                '0%': { transform: 'rotate(0deg)' },
-                                '100%': { transform: 'rotate(360deg)' },
-                              },
-                            }}
-                          />
-                        </Button>
-                      </span>
-                    </Tooltip>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      flexWrap: 'wrap',
-                      gap: 1,
-                    }}
-                  >
-                    <Chip
-                      label={t(STATUS_LABEL_KEYS[item.status] ?? item.status)}
-                      color={getStatusColor(item.status)}
-                      size="small"
-                      icon={getStatusIcon(item.status)}
-                      sx={{
-                        fontWeight:
-                          item.status === 'Pending' ? 'normal' : 'bold',
-                      }}
-                    />
-
-                    {item.region && (
-                      <Chip
-                        label={item.region}
-                        size="small"
-                        variant="outlined"
-                        color="info"
-                      />
-                    )}
-                  </Box>
-                </Box>
-
-                <Divider
+                {item.name}
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: 0.75,
+                  gridColumn: '1 / -1',
+                  gridRow: 2,
+                  minWidth: 0,
+                }}
+              >
+                <Chip
+                  label={t(STATUS_LABEL_KEYS[item.status] ?? item.status)}
+                  color={getStatusColor(item.status)}
+                  size="small"
+                  icon={getStatusIcon(item.status)}
                   sx={{
-                    borderStyle: 'dashed',
-                    borderColor: alpha(theme.palette.divider, 0.2),
-                    mx: 1,
+                    maxWidth: '100%',
+                    height: 'auto',
+                    minHeight: 24,
+                    '& .MuiChip-label': { whiteSpace: 'normal', py: 0.25 },
                   }}
                 />
 
-                <Box sx={{ px: 1.5, py: 0.2 }}>
+                {item.region && (
+                  <Chip
+                    label={item.region}
+                    size="small"
+                    variant="outlined"
+                    color="info"
+                  />
+                )}
+                <Tooltip title={item.check_time || '-- --'}>
                   <Typography
                     variant="caption"
+                    noWrap
                     sx={{
-                      display: 'block',
                       color: 'text.secondary',
-                      fontSize: '0.7rem',
-                      textAlign: 'right',
+                      fontVariantNumeric: 'tabular-nums',
+                      ml: 'auto',
+                      minWidth: 0,
+                      maxWidth: '100%',
                     }}
                   >
-                    {item.check_time || '-- --'}
+                    {item.check_time && dayjs(item.check_time).isValid()
+                      ? dayjs(item.check_time).format('HH:mm:ss')
+                      : item.check_time || '-- --'}
                   </Typography>
+                </Tooltip>
+              </Box>
+              <Tooltip title={t('tests.components.item.actions.test')}>
+                <Box
+                  component="span"
+                  sx={{
+                    gridColumn: 2,
+                    gridRow: 1,
+                  }}
+                >
+                  <IconButton
+                    size="small"
+                    sx={{ width: 28, height: 28 }}
+                    aria-label={`${t('tests.components.item.actions.test')} ${item.name}`}
+                    disabled={loadingItems.includes(item.name) || isCheckingAll}
+                    onClick={() => checkSingleMedia(item.name)}
+                  >
+                    {loadingItems.includes(item.name) ? (
+                      <CircularProgress size={18} color="inherit" />
+                    ) : (
+                      <RefreshRounded fontSize="small" />
+                    )}
+                  </IconButton>
                 </Box>
-              </Card>
-            </Grid>
+              </Tooltip>
+            </Box>
           ))}
-        </Grid>
+        </Box>
       )}
     </BasePage>
   )

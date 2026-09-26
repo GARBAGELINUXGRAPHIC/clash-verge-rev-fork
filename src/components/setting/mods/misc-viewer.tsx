@@ -1,6 +1,5 @@
 import {
   InputAdornment,
-  List,
   ListItem,
   ListItemText,
   MenuItem,
@@ -14,6 +13,8 @@ import { useTranslation } from 'react-i18next'
 import { BaseDialog, DialogRef, Switch, TooltipIcon } from '@/components/base'
 import { useVerge } from '@/hooks/use-verge'
 import { showNotice } from '@/services/notice-service'
+
+import { SettingForm } from './setting-comp'
 
 export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
   const { t } = useTranslation()
@@ -90,14 +91,14 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
     <BaseDialog
       open={open}
       title={t('settings.modals.misc.title')}
-      contentSx={{ width: 450 }}
+      contentSx={{ width: 560, maxWidth: '100%' }}
       okBtn={t('shared.actions.save')}
       cancelBtn={t('shared.actions.cancel')}
       onClose={() => setOpen(false)}
       onCancel={() => setOpen(false)}
       onOk={onSave}
     >
-      <List>
+      <SettingForm>
         <ListItem sx={{ padding: '5px 2px' }}>
           <ListItemText
             primary={t('settings.modals.misc.fields.appLogLevel')}
@@ -455,7 +456,7 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
             }}
           />
         </ListItem>
-      </List>
+      </SettingForm>
     </BaseDialog>
   )
 })

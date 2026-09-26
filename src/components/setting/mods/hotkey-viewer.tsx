@@ -9,12 +9,20 @@ import { showNotice } from '@/services/notice-service'
 
 import { HotkeyInput } from './hotkey-input'
 
-const ItemWrapper = styled('div')`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-`
+const ItemWrapper = styled('div')(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 270px)',
+  alignItems: 'center',
+  gap: 16,
+  padding: '12px 0',
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  '&:last-child': { borderBottom: 0 },
+  '& > .MuiTypography-root': { minWidth: 0, overflowWrap: 'anywhere' },
+  [theme.breakpoints.down('sm')]: {
+    gridTemplateColumns: 'minmax(0, 1fr)',
+    gap: 8,
+  },
+}))
 
 const HOTKEY_FUNC = [
   'open_or_close_dashboard',
@@ -104,14 +112,20 @@ export const HotkeyViewer = forwardRef<DialogRef>((props, ref) => {
     <BaseDialog
       open={open}
       title={t('settings.modals.hotkey.title')}
-      contentSx={{ width: 450, maxHeight: 380 }}
+      contentSx={{ width: 560, maxWidth: '100%' }}
       okBtn={t('shared.actions.save')}
       cancelBtn={t('shared.actions.cancel')}
       onClose={() => setOpen(false)}
       onCancel={() => setOpen(false)}
       onOk={onSave}
     >
-      <ItemWrapper style={{ marginBottom: 16 }}>
+      <ItemWrapper
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          marginBottom: 8,
+        }}
+      >
         <Typography>
           {t('settings.modals.hotkey.toggles.enableGlobal')}
         </Typography>
@@ -126,6 +140,7 @@ export const HotkeyViewer = forwardRef<DialogRef>((props, ref) => {
         <ItemWrapper key={func}>
           <Typography>{t(HOTKEY_FUNC_LABELS[func])}</Typography>
           <HotkeyInput
+            ariaLabel={t(HOTKEY_FUNC_LABELS[func])}
             value={hotkeyMap[func] ?? []}
             onChange={(v) => setHotkeyMap((m) => ({ ...m, [func]: v }))}
           />

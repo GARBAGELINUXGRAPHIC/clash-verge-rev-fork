@@ -1,6 +1,6 @@
 import { DragDropProvider } from '@dnd-kit/react'
 import { defaultRangeExtractor, useVirtualizer } from '@tanstack/react-virtual'
-import { useLockFn } from 'ahooks'
+import { useLockFn, useSize } from 'ahooks'
 import { throttle } from 'lodash-es'
 import {
   lazy,
@@ -85,6 +85,7 @@ function useProxyRenderState(
   mode: string,
   isChainMode: boolean,
   activeSelectedGroup: string | null,
+  listWidth?: number,
 ) {
   const { verge } = useVerge()
   const { proxyView } = useProxiesData()
@@ -92,6 +93,7 @@ function useProxyRenderState(
     mode,
     isChainMode,
     activeSelectedGroup,
+    listWidth,
   )
   const scrollPositionKey = useMemo(
     () =>
@@ -186,6 +188,13 @@ function ChainProxyGroups(props: {
   const { mode, chainConfigData } = props
   const { proxyView } = useProxiesData()
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
+  const parentRef = useRef<HTMLDivElement>(null)
+  const [listElement, setListElement] = useState<HTMLDivElement | null>(null)
+  const setParentRef = useCallback((element: HTMLDivElement | null) => {
+    parentRef.current = element
+    setListElement(element)
+  }, [])
+  const listSize = useSize(listElement)
 
   const availableGroups = useMemo(() => {
     const groups = proxyView?.groups
@@ -209,10 +218,9 @@ function ChainProxyGroups(props: {
     handleCheckAll,
     getScrollPosition,
     saveScrollPosition,
-  } = useProxyRenderState(mode, true, activeSelectedGroup)
+  } = useProxyRenderState(mode, true, activeSelectedGroup, listSize?.width)
   const emptyList = useEmptyRenderList()
 
-  const parentRef = useRef<HTMLDivElement>(null)
   const scrollTopRef = useRef(0)
   const showScrollTopRef = useRef(false)
   const activeStickyIndexRef = useRef<number | null>(null)
@@ -243,7 +251,12 @@ function ChainProxyGroups(props: {
   const virtualizer = useVirtualizer({
     count: renderList.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 56,
+    estimateSize: (index) =>
+      renderList[index]?.type === 2
+        ? renderList[index]?.headState?.showType !== false
+          ? 68
+          : 48
+        : 64,
     overscan: 15,
     getItemKey: (index) => renderList[index]?.key ?? index,
     rangeExtractor,
@@ -341,7 +354,7 @@ function ChainProxyGroups(props: {
         availableGroups={availableGroups}
         activeSelectedGroup={activeSelectedGroup}
         showScrollTop={showScrollTop}
-        parentRef={parentRef}
+        parentRef={setParentRef}
         totalSize={virtualizer.getTotalSize()}
         virtualItems={virtualItems}
         renderList={renderList}
@@ -360,6 +373,7 @@ function ChainProxyGroups(props: {
 function NormalProxyGroups(props: { mode: string }) {
   const { mode } = props
   const stickyListRef = useRef<StickyVirtualListHandle>(null)
+  const listSize = useSize(() => stickyListRef.current?.getScrollElement())
   const {
     verge,
     renderList,
@@ -368,9 +382,10 @@ function NormalProxyGroups(props: { mode: string }) {
     handleCheckAll,
     getScrollPosition,
     saveScrollPosition,
-  } = useProxyRenderState(mode, false, null)
+  } = useProxyRenderState(mode, false, null, listSize?.width)
   const emptyList = useEmptyRenderList()
-  const { onDragEnd: onHeaderDragEnd } = useProxyGroupHeaderLayout()
+  const { onDragEnd: onHeaderDragEnd, estimatedHeaderHeight } =
+    useProxyGroupHeaderLayout()
   const renderFirstRef = useRef(true)
   // Do not persist intermediate positions produced while restoring virtual scroll.
   const isRestoringRef = useRef(false)
@@ -589,8 +604,8 @@ function NormalProxyGroups(props: { mode: string }) {
           items={renderList}
           isGroupItem={(item) => item.type === 0}
           getItemKey={(item) => item.key}
-          estimateGroupItemHeight={76}
-          estimateItemHeight={64}
+          estimateGroupItemHeight={estimatedHeaderHeight}
+          estimateItemHeight={68}
           renderGroupItem={renderGroupItem}
           renderItem={renderProxyItem}
         />

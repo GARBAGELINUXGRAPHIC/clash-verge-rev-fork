@@ -1,5 +1,6 @@
 import { PointerActivationConstraints } from '@dnd-kit/dom'
 import { PointerSensor, type DragEndEvent } from '@dnd-kit/react'
+import { useMediaQuery } from '@mui/material'
 import { useCallback } from 'react'
 
 import { useVerge } from '@/hooks/use-verge'
@@ -22,6 +23,7 @@ export const PROXY_GROUP_HEADER_SENSORS = [headerPointerSensor]
 export const useProxyGroupHeaderLayout = () => {
   const { verge, mutateVerge, patchVerge } = useVerge()
   const toolsOnLeft = verge?.proxy_group_tools_position === 'left'
+  const compactViewport = useMediaQuery('(max-width: 660px)')
 
   const onDragEnd = useCallback(
     async (event: DragEndEvent) => {
@@ -45,5 +47,5 @@ export const useProxyGroupHeaderLayout = () => {
     [toolsOnLeft, mutateVerge, patchVerge],
   )
 
-  return { onDragEnd }
+  return { onDragEnd, estimatedHeaderHeight: compactViewport ? 120 : 76 }
 }

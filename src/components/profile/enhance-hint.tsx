@@ -24,10 +24,8 @@ export const EnhanceHint = ({ stage }: Props) => {
           key === stage
             ? {
                 fontWeight: 'bold',
-                color: 'primary.contrastText',
-                bgcolor: 'primary.main',
-                borderRadius: 0.5,
-                px: 0.5,
+                color: 'primary.main',
+                textDecoration: 'underline',
                 boxDecorationBreak: 'clone',
               }
             : undefined
@@ -37,7 +35,14 @@ export const EnhanceHint = ({ stage }: Props) => {
   )
 
   return (
-    <Alert severity="info" sx={{ mb: 1.5, flexShrink: 0 }}>
+    <Alert
+      severity="info"
+      variant="outlined"
+      sx={{
+        flexShrink: 0,
+        py: 0.75,
+      }}
+    >
       <Typography variant="body2">{t(stageHints[stage])}</Typography>
       <Typography variant="body2" sx={{ mt: 0.5 }}>
         <Trans

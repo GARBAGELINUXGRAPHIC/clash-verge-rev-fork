@@ -1,4 +1,4 @@
-import { ClearRounded } from '@mui/icons-material'
+import { ClearRounded, SearchRounded } from '@mui/icons-material'
 import { Box, SvgIcon, TextField, styled, IconButton } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 import {
@@ -42,14 +42,14 @@ type SearchProps = {
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-root': {
-    background: theme.palette.mode === 'light' ? '#fff' : undefined,
+    background: theme.palette.background.paper,
     paddingRight: '4px',
   },
   "& .MuiInputBase-root svg[aria-label='active'] path": {
-    fill: theme.palette.primary.light,
+    fill: theme.palette.primary.main,
   },
   "& .MuiInputBase-root svg[aria-label='inactive'] path": {
-    fill: '#A7A7A7',
+    fill: theme.palette.text.secondary,
   },
 }))
 
@@ -121,9 +121,8 @@ export const BaseSearchBox = ({
 
   const iconStyle = {
     style: {
-      height: '24px',
-      width: '24px',
-      cursor: 'pointer',
+      height: '18px',
+      width: '18px',
     } as React.CSSProperties,
     inheritViewBox: true,
   }
@@ -219,13 +218,16 @@ export const BaseSearchBox = ({
         slotProps={{
           input: {
             sx: { pr: 1 },
+            startAdornment: (
+              <SearchRounded sx={{ fontSize: 18, color: 'text.secondary' }} />
+            ),
             endAdornment: (
-              <Box sx={{ display: 'flex' }}>
+              <Box sx={{ display: 'flex', flexShrink: 0, gap: 0.25 }}>
                 {!!text && (
                   <Tooltip title={t('shared.placeholders.resetInput')}>
                     <IconButton
                       size="small"
-                      {...iconStyle}
+                      aria-label={t('shared.placeholders.resetInput')}
                       onClick={handleClearInput}
                     >
                       <ClearRounded fontSize="inherit" />
@@ -233,28 +235,62 @@ export const BaseSearchBox = ({
                   </Tooltip>
                 )}
                 <Tooltip title={t('shared.placeholders.matchCase')}>
-                  <SvgIcon
-                    component={matchCaseIcon}
-                    {...iconStyle}
-                    aria-label={matchCase ? 'active' : 'inactive'}
+                  <IconButton
+                    size="small"
+                    aria-label={t('shared.placeholders.matchCase')}
+                    aria-pressed={matchCase}
                     onClick={handleToggleMatchCase}
-                  />
+                    sx={{
+                      p: 0.5,
+                      bgcolor: matchCase ? 'action.selected' : 'transparent',
+                    }}
+                  >
+                    <SvgIcon
+                      component={matchCaseIcon}
+                      {...iconStyle}
+                      aria-label={matchCase ? 'active' : 'inactive'}
+                    />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip title={t('shared.placeholders.matchWholeWord')}>
-                  <SvgIcon
-                    component={matchWholeWordIcon}
-                    {...iconStyle}
-                    aria-label={matchWholeWord ? 'active' : 'inactive'}
+                  <IconButton
+                    size="small"
+                    aria-label={t('shared.placeholders.matchWholeWord')}
+                    aria-pressed={matchWholeWord}
                     onClick={handleToggleMatchWholeWord}
-                  />
+                    sx={{
+                      p: 0.5,
+                      bgcolor: matchWholeWord
+                        ? 'action.selected'
+                        : 'transparent',
+                    }}
+                  >
+                    <SvgIcon
+                      component={matchWholeWordIcon}
+                      {...iconStyle}
+                      aria-label={matchWholeWord ? 'active' : 'inactive'}
+                    />
+                  </IconButton>
                 </Tooltip>
                 <Tooltip title={t('shared.placeholders.useRegex')}>
-                  <SvgIcon
-                    component={UseRegularExpressionIcon}
-                    aria-label={useRegularExpression ? 'active' : 'inactive'}
-                    {...iconStyle}
+                  <IconButton
+                    size="small"
+                    aria-label={t('shared.placeholders.useRegex')}
+                    aria-pressed={useRegularExpression}
                     onClick={handleToggleUseRegularExpression}
-                  />
+                    sx={{
+                      p: 0.5,
+                      bgcolor: useRegularExpression
+                        ? 'action.selected'
+                        : 'transparent',
+                    }}
+                  >
+                    <SvgIcon
+                      component={UseRegularExpressionIcon}
+                      {...iconStyle}
+                      aria-label={useRegularExpression ? 'active' : 'inactive'}
+                    />
+                  </IconButton>
                 </Tooltip>
               </Box>
             ),

@@ -1,5 +1,5 @@
 /* eslint-disable @eslint-react/set-state-in-effect */
-import { Delete, ExpandLess, ExpandMore } from '@mui/icons-material'
+import { AddRounded, Delete, ExpandLess, ExpandMore } from '@mui/icons-material'
 import {
   Button,
   Divider,
@@ -11,6 +11,8 @@ import {
   TextField,
   Select,
   MenuItem,
+  Box,
+  Typography,
 } from '@mui/material'
 import {
   forwardRef,
@@ -41,6 +43,8 @@ import {
   normalizeHost,
   normalizeListenHost,
 } from '@/utils/network'
+
+import { SettingForm } from './setting-comp'
 
 interface TunnelsViewerRef {
   open: () => void
@@ -307,7 +311,7 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
     <BaseDialog
       open={open}
       title={t('settings.sections.clash.form.fields.tunnels.title')}
-      contentSx={{ width: 450 }}
+      contentSx={{ width: 560, maxWidth: '100%' }}
       okBtn={t('shared.actions.save')}
       cancelBtn={t('shared.actions.cancel')}
       onClose={() => {
@@ -318,26 +322,30 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
       }}
       onOk={handleSave}
     >
-      <List>
+      <Box>
         {draftTunnels.length > 0 && (
           <>
-            <ListItem sx={{ padding: '4px 0', opacity: 0.6 }}>
-              <ListItemText
-                primary={t(
-                  'settings.sections.clash.form.fields.tunnels.existing',
-                )}
-              />
-            </ListItem>
-            <List component="nav">
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              {t('settings.sections.clash.form.fields.tunnels.existing')}
+            </Typography>
+            <List disablePadding>
               {tunnelEntries.map((item) => (
                 <ListItem
                   key={`${item.key}`}
-                  sx={{ padding: '4px 0' }}
+                  sx={{
+                    minHeight: 64,
+                    py: 1,
+                    pl: 0,
+                    pr: 5,
+                    borderBottom: 1,
+                    borderColor: 'divider',
+                  }}
                   secondaryAction={
                     <IconButton
                       edge="end"
                       size="small"
-                      color="error"
+                      title={t('shared.actions.delete')}
+                      aria-label={t('shared.actions.delete')}
                       onClick={() => handleDelete(item.index)}
                     >
                       <Delete fontSize="small" />
@@ -345,6 +353,7 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                   }
                 >
                   <ListItemText
+                    sx={{ overflowWrap: 'anywhere' }}
                     primary={`${item.address} → ${item.target}`}
                     secondary={`${item.network.join(', ')} · ${
                       item.proxy ??
@@ -358,8 +367,9 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
           </>
         )}
         <ListItemButton
-          sx={{ padding: '4px 0', opacity: 0.8 }}
+          sx={{ minHeight: 44, px: 0, borderBottom: 1, borderColor: 'divider' }}
           onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
         >
           <ListItemText
             primary={t(
@@ -369,8 +379,8 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
           {expanded ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
         {expanded && (
-          <ListItem sx={{ padding: '8px 0' }}>
-            <div style={{ width: '100%' }}>
+          <Box sx={{ pt: 1 }}>
+            <SettingForm>
               {/* 输入框区域 */}
               {/* 协议 */}
               <ListItem sx={{ padding: '6px 2px' }}>
@@ -482,14 +492,18 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                       {t(
                         'settings.sections.clash.form.fields.tunnels.proxyGroup',
                       )}
-                      <span style={{ fontSize: '0.9rem', color: 'gray' }}>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text.secondary"
+                      >
                         {' '}
                         (
                         {t(
                           'settings.sections.clash.form.fields.tunnels.optional',
                         )}
                         )
-                      </span>
+                      </Typography>
                     </>
                   }
                 />
@@ -544,14 +558,18 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                       {t(
                         'settings.sections.clash.form.fields.tunnels.proxyNode',
                       )}
-                      <span style={{ fontSize: '0.9rem', color: 'gray' }}>
+                      <Typography
+                        component="span"
+                        variant="caption"
+                        color="text.secondary"
+                      >
                         {' '}
                         (
                         {t(
                           'settings.sections.clash.form.fields.tunnels.optional',
                         )}
                         )
-                      </span>
+                      </Typography>
                     </>
                   }
                 />
@@ -595,26 +613,25 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                   ))}
                 </Select>
               </ListItem>
-
-              {/* 添加按钮 */}
-              <Button
-                variant="contained"
-                size="small"
-                sx={{
-                  marginTop: '6px',
-                  marginRight: '2px',
-                  marginLeft: 'auto',
-                  display: 'block',
-                }}
-                color="success"
-                onClick={handleAdd}
-              >
-                {t('settings.sections.clash.form.fields.tunnels.actions.add')}
-              </Button>
-            </div>
-          </ListItem>
+            </SettingForm>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                marginTop: '6px',
+                marginRight: '2px',
+                marginLeft: 'auto',
+                display: 'flex',
+              }}
+              color="primary"
+              startIcon={<AddRounded />}
+              onClick={handleAdd}
+            >
+              {t('settings.sections.clash.form.fields.tunnels.actions.add')}
+            </Button>
+          </Box>
         )}
-      </List>
+      </Box>
     </BaseDialog>
   )
 })

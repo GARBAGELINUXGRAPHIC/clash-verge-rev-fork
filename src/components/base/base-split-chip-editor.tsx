@@ -1,12 +1,13 @@
-import { CodeRounded, ViewModuleRounded } from '@mui/icons-material'
+import { AddRounded, CodeRounded, ViewModuleRounded } from '@mui/icons-material'
 import {
   Box,
-  Button,
   Chip,
   FormHelperText,
   IconButton,
   TextField,
   Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import type { ReactNode } from 'react'
@@ -106,28 +107,45 @@ export const BaseSplitChipEditor = ({
     onChange(nextValue.join(separator))
   }
 
-  const nextMode = mode === 'visual' ? 'advanced' : 'visual'
-  const toggleLabel =
-    nextMode === 'visual' ? resolvedLabels.visual : resolvedLabels.advanced
-  const ToggleIcon = nextMode === 'visual' ? ViewModuleRounded : CodeRounded
-  const resolvedAriaLabel =
-    ariaLabel ?? (typeof toggleLabel === 'string' ? toggleLabel : undefined)
-
   const modeToggle = showModeToggle ? (
-    <Tooltip title={toggleLabel}>
-      <IconButton
-        size="small"
-        aria-label={resolvedAriaLabel}
-        onClick={() => {
+    <ToggleButtonGroup
+      exclusive
+      size="small"
+      value={mode}
+      aria-label={ariaLabel}
+      onChange={(_, nextMode: BaseSplitChipEditorMode | null) => {
+        if (nextMode) {
           setMode(nextMode)
-          if (nextMode === 'visual') {
-            setDraft('')
+          if (nextMode === 'visual') setDraft('')
+        }
+      }}
+      sx={{ '& .MuiToggleButton-root': { p: 0.5, width: 30, height: 28 } }}
+    >
+      <Tooltip title={resolvedLabels.visual}>
+        <ToggleButton
+          value="visual"
+          aria-label={
+            typeof resolvedLabels.visual === 'string'
+              ? resolvedLabels.visual
+              : undefined
           }
-        }}
-      >
-        <ToggleIcon fontSize="small" />
-      </IconButton>
-    </Tooltip>
+        >
+          <ViewModuleRounded sx={{ fontSize: 18 }} />
+        </ToggleButton>
+      </Tooltip>
+      <Tooltip title={resolvedLabels.advanced}>
+        <ToggleButton
+          value="advanced"
+          aria-label={
+            typeof resolvedLabels.advanced === 'string'
+              ? resolvedLabels.advanced
+              : undefined
+          }
+        >
+          <CodeRounded sx={{ fontSize: 18 }} />
+        </ToggleButton>
+      </Tooltip>
+    </ToggleButtonGroup>
   ) : null
 
   return (
@@ -148,7 +166,9 @@ export const BaseSplitChipEditor = ({
                 <Chip
                   key={item.key}
                   label={item.value}
+                  title={item.value}
                   size="small"
+                  sx={{ maxWidth: '100%' }}
                   onDelete={
                     disabled ? undefined : () => handleRemoveItem(index)
                   }
@@ -182,15 +202,23 @@ export const BaseSplitChipEditor = ({
                 }
               }}
             />
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={handleAddDraft}
-              disabled={disabled || !draft.trim()}
-              sx={{ minHeight: 32, padding: '2px 8px' }}
-            >
-              {resolvedLabels.add}
-            </Button>
+            <Tooltip title={resolvedLabels.add}>
+              <span>
+                <IconButton
+                  size="small"
+                  onClick={handleAddDraft}
+                  disabled={disabled || !draft.trim()}
+                  aria-label={
+                    typeof resolvedLabels.add === 'string'
+                      ? resolvedLabels.add
+                      : undefined
+                  }
+                  sx={{ width: 32, height: 32 }}
+                >
+                  <AddRounded />
+                </IconButton>
+              </span>
+            </Tooltip>
           </Box>
           {helperText && (
             <FormHelperText error={error}>{helperText}</FormHelperText>
@@ -203,7 +231,13 @@ export const BaseSplitChipEditor = ({
           size="small"
           multiline
           rows={rows}
-          sx={{ width: '100%' }}
+          sx={{
+            width: '100%',
+            '& textarea': {
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+              fontSize: 12,
+            },
+          }}
           value={value}
           helperText={helperText}
           onChange={(event) => {

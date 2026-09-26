@@ -1,4 +1,5 @@
-import { alpha, Box, Button, LinearProgress } from '@mui/material'
+import { OpenInNewRounded } from '@mui/icons-material'
+import { Box, IconButton, LinearProgress, Tooltip } from '@mui/material'
 import type { DownloadEvent } from '@tauri-apps/plugin-updater'
 import { useLockFn } from 'ahooks'
 import type { Ref } from 'react'
@@ -32,23 +33,23 @@ type MarkdownNode = {
 const GITHUB_ALERTS = {
   note: {
     labelKey: 'settings.modals.update.alerts.note',
-    color: '#0969da',
+    color: 'info',
   },
   tip: {
     labelKey: 'settings.modals.update.alerts.tip',
-    color: '#1a7f37',
+    color: 'success',
   },
   important: {
     labelKey: 'settings.modals.update.alerts.important',
-    color: '#8250df',
+    color: 'secondary',
   },
   warning: {
     labelKey: 'settings.modals.update.alerts.warning',
-    color: '#9a6700',
+    color: 'warning',
   },
   caution: {
     labelKey: 'settings.modals.update.alerts.caution',
-    color: '#cf222e',
+    color: 'error',
   },
 } as const
 
@@ -309,23 +310,24 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
               version: updateInfo?.version ?? '',
             })}
           </Box>
-          <Button
-            variant="contained"
-            size="small"
-            sx={{ whiteSpace: 'nowrap' }}
-            onClick={() => {
-              openUrlWithNotice(
-                `https://github.com/clash-verge-rev/clash-verge-rev/releases/tag/v${updateInfo?.version}`,
-              )
-            }}
-          >
-            {t('settings.modals.update.actions.goToRelease')}
-          </Button>
+          <Tooltip title={t('settings.modals.update.actions.goToRelease')}>
+            <IconButton
+              size="small"
+              aria-label={t('settings.modals.update.actions.goToRelease')}
+              onClick={() => {
+                openUrlWithNotice(
+                  `https://github.com/clash-verge-rev/clash-verge-rev/releases/tag/v${updateInfo?.version}`,
+                )
+              }}
+            >
+              <OpenInNewRounded />
+            </IconButton>
+          </Tooltip>
         </Box>
       }
       contentSx={{
-        width: { xs: 'calc(100vw - 56px)', sm: 560 },
-        maxWidth: 'calc(100vw - 56px)',
+        width: 640,
+        maxWidth: '100%',
         height: 'min(64vh, 680px)',
         display: 'flex',
         flexDirection: 'column',
@@ -348,10 +350,10 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
           lineHeight: 1.65,
           color: 'text.primary',
           overflowWrap: 'break-word',
-          '& > :first-child': {
+          '& > :first-of-type': {
             mt: 0,
           },
-          '& > :last-child': {
+          '& > :last-of-type': {
             mb: 0,
           },
           '& h1': {
@@ -448,7 +450,7 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
             m: '12px 0 18px',
             pl: 2,
             color: 'text.secondary',
-            borderLeft: '4px solid',
+            borderLeft: '2px solid',
             borderColor: 'divider',
           },
         }}
@@ -504,17 +506,13 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
                       component="blockquote"
                       className={className}
                       sx={(theme) => {
-                        const color = GITHUB_ALERTS[alertType].color
+                        const color =
+                          theme.palette[GITHUB_ALERTS[alertType].color].main
                         return {
                           m: '12px 0 18px',
                           px: 2,
                           py: 1,
-                          borderLeft: `4px solid ${color}`,
-                          borderRadius: 1,
-                          bgcolor: alpha(
-                            color,
-                            theme.palette.mode === 'dark' ? 0.16 : 0.08,
-                          ),
+                          borderLeft: `2px solid ${color}`,
                           '& p': {
                             my: 0.75,
                           },
@@ -523,6 +521,7 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
                             alignItems: 'center',
                             gap: 0.75,
                             fontWeight: 700,
+                            color,
                             lineHeight: 1.4,
                           },
                         }

@@ -23,8 +23,10 @@ export const BaseFieldset: React.FC<Props> = ({
       component="fieldset"
       sx={{
         position: 'relative',
-        border: '1px solid #bbb',
-        borderRadius: '5px',
+        border: '1px solid',
+        borderColor: 'divider',
+        borderRadius: '6px',
+        minWidth: 0,
         width: width ?? 'auto',
         padding: fieldsetPadding,
       }}
@@ -32,14 +34,9 @@ export const BaseFieldset: React.FC<Props> = ({
       <Box
         component="legend"
         sx={{
-          position: 'absolute',
-          top: '-10px',
-          left: fieldsetPadding,
-          backgroundColor: 'background.paper',
-          backgroundImage:
-            'linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.16))',
-          color: 'text.primary',
-          fontSize: fontSize ?? '1em',
+          px: 0.75,
+          color: 'text.secondary',
+          fontSize: fontSize ?? '12px',
         }}
       >
         {label}

@@ -113,7 +113,7 @@ export function BackupViewer({ ref }: { ref?: Ref<DialogRef> }) {
     <BaseDialog
       open={open}
       title={t('settings.modals.backup.title')}
-      contentSx={{ width: { xs: 360, sm: 520 } }}
+      contentSx={{ width: 560, maxWidth: '100%' }}
       disableOk
       cancelBtn={t('shared.actions.close')}
       onCancel={() => setOpen(false)}
@@ -123,9 +123,9 @@ export function BackupViewer({ ref }: { ref?: Ref<DialogRef> }) {
         <Stack
           spacing={1}
           sx={{
-            border: (theme) => `1px solid ${theme.palette.divider}`,
-            borderRadius: 2,
-            p: 2,
+            borderBottom: 1,
+            borderColor: 'divider',
+            pb: 2,
           }}
         >
           <Typography variant="subtitle1">
@@ -139,9 +139,7 @@ export function BackupViewer({ ref }: { ref?: Ref<DialogRef> }) {
         <Stack
           spacing={1}
           sx={{
-            border: (theme) => `1px solid ${theme.palette.divider}`,
-            borderRadius: 2,
-            p: 2,
+            pt: 1,
           }}
         >
           <Typography variant="subtitle1">
@@ -226,7 +224,7 @@ export function BackupViewer({ ref }: { ref?: Ref<DialogRef> }) {
               }>
             ).map((item, idx) => (
               <ListItem key={item.key} disableGutters divider={idx === 0}>
-                <Stack spacing={1} sx={{ width: '100%' }}>
+                <Stack spacing={1.5} sx={{ width: '100%', py: 1 }}>
                   <ListItemText
                     primary={item.title}
                     slotProps={{ secondary: { component: 'span' } }}

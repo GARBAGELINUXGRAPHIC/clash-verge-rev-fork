@@ -7,7 +7,7 @@ import {
 } from '@mui/icons-material'
 import {
   Button,
-  ButtonGroup,
+  Box,
   Dialog,
   DialogActions,
   DialogContent,
@@ -197,19 +197,25 @@ export const EditorViewer = ({
       maxWidth="xl"
       fullWidth
       disableEnforceFocus
+      slotProps={{
+        paper: { sx: { height: 'min(820px, calc(100dvh - 48px))' } },
+      }}
     >
       <DialogTitle>{resolvedTitle}</DialogTitle>
 
       <DialogContent
         sx={{
           width: 'auto',
-          height: 'calc(100vh - 185px)',
+          flex: 1,
+          minHeight: 0,
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
         }}
       >
-        {description}
+        {description && (
+          <Box sx={{ mb: 1.5, flexShrink: 0 }}>{description}</Box>
+        )}
         <div style={{ position: 'relative', flex: '1 1 auto', minHeight: 0 }}>
           <BaseLoadingOverlay isLoading={loading} />
           {!loading && (
@@ -257,13 +263,14 @@ export const EditorViewer = ({
             />
           )}
         </div>
+      </DialogContent>
 
-        <ButtonGroup
-          variant="contained"
-          sx={{ position: 'absolute', left: '14px', bottom: '8px' }}
+      <DialogActions sx={{ flexWrap: 'wrap', gap: 1 }}>
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mr: 'auto' }}
         >
           <IconButton
-            size="medium"
+            size="small"
             color="inherit"
             sx={{ display: readOnly ? 'none' : '' }}
             title={t('profiles.page.importForm.actions.paste')}
@@ -275,7 +282,7 @@ export const EditorViewer = ({
             <ContentPasteRounded fontSize="inherit" />
           </IconButton>
           <IconButton
-            size="medium"
+            size="small"
             color="inherit"
             sx={{ display: readOnly ? 'none' : '' }}
             title={t('profiles.modals.editor.actions.format')}
@@ -287,7 +294,7 @@ export const EditorViewer = ({
             <FormatPaintRounded fontSize="inherit" />
           </IconButton>
           <IconButton
-            size="medium"
+            size="small"
             color="inherit"
             title={t(
               isMaximized ? 'shared.window.minimize' : 'shared.window.maximize',
@@ -298,10 +305,7 @@ export const EditorViewer = ({
           >
             {isMaximized ? <CloseFullscreenRounded /> : <OpenInFullRounded />}
           </IconButton>
-        </ButtonGroup>
-      </DialogContent>
-
-      <DialogActions>
+        </Box>
         {!readOnly && onResetToDefault && (
           <Button
             onClick={onResetToDefault}

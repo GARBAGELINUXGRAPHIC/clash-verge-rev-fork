@@ -1,3 +1,4 @@
+import { UploadFileRounded } from '@mui/icons-material'
 import { Box, Button, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useRef, useState } from 'react'
@@ -36,9 +37,22 @@ export const FileInput = (props: Props) => {
   })
 
   return (
-    <Box sx={{ mt: 2, mb: 1, display: 'flex', alignItems: 'center' }}>
+    <Box
+      sx={{
+        py: 1.5,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1.5,
+        minWidth: 0,
+        borderTop: '1px solid',
+        borderBottom: '1px solid',
+        borderColor: 'divider',
+      }}
+    >
       <Button
         variant="outlined"
+        size="small"
+        startIcon={<UploadFileRounded />}
         sx={{ flex: 'none' }}
         onClick={() => inputRef.current?.click()}
       >
@@ -53,7 +67,12 @@ export const FileInput = (props: Props) => {
         onChange={onFileInput}
       />
 
-      <Typography noWrap sx={{ ml: 1 }}>
+      <Typography
+        variant="body2"
+        noWrap
+        title={fileName}
+        sx={{ minWidth: 0, color: 'text.secondary' }}
+      >
         {loading ? t('shared.statuses.loading') : fileName}
       </Typography>
     </Box>

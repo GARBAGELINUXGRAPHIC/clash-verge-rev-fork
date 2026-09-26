@@ -61,7 +61,8 @@ const RulesPage = () => {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'auto',
+        overflow: 'hidden',
+        minHeight: 0,
       }}
       header={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -71,10 +72,12 @@ const RulesPage = () => {
     >
       <Box
         sx={{
-          pt: 1,
-          mb: 0.5,
-          mx: '10px',
-          height: '36px',
+          px: 2.5,
+          py: 1.5,
+          flexShrink: 0,
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'background.paper',
           display: 'flex',
           alignItems: 'center',
         }}
@@ -87,9 +90,9 @@ const RulesPage = () => {
           <VirtualList
             ref={virtuosoRef}
             count={filteredRules.length}
-            estimateSize={40}
+            estimateSize={44}
             renderItem={(i) => <RuleItem value={filteredRules[i]} />}
-            style={{ flex: 1 }}
+            style={{ flex: 1, minHeight: 0 }}
             onScroll={handleScroll}
           />
           <ScrollTopButton onClick={scrollToTop} show={showScrollTop} />

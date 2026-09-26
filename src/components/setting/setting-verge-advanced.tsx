@@ -155,6 +155,9 @@ const SettingVergeAdvanced = ({ onError: _ }: Props) => {
         extra={
           <TooltipIcon
             icon={ContentCopyRounded}
+            title={t(
+              'settings.components.verge.advanced.fields.exportDiagnostics',
+            )}
             onClick={onExportDiagnosticInfo}
           />
         }

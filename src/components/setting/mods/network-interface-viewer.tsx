@@ -1,5 +1,12 @@
 import { ContentCopyRounded } from '@mui/icons-material'
-import { alpha, Box, Button, CircularProgress, IconButton } from '@mui/material'
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from '@mui/material'
 import { writeText } from '@tauri-apps/plugin-clipboard-manager'
 import type { Ref } from 'react'
 import { useImperativeHandle, useState } from 'react'
@@ -30,22 +37,29 @@ export function NetworkInterfaceViewer({ ref }: { ref?: Ref<DialogRef> }) {
     <BaseDialog
       open={open}
       title={
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 1,
+          }}
+        >
           {t('settings.modals.networkInterface.title')}
-          <Box>
-            <Button
-              variant="contained"
-              size="small"
-              onClick={() => {
-                setIsV4((prev) => !prev)
-              }}
-            >
-              {isV4 ? 'Ipv6' : 'Ipv4'}
-            </Button>
-          </Box>
+          <ToggleButtonGroup
+            exclusive
+            value={isV4 ? 'v4' : 'v6'}
+            onChange={(_, value: string | null) =>
+              value && setIsV4(value === 'v4')
+            }
+          >
+            <ToggleButton value="v4">IPv4</ToggleButton>
+            <ToggleButton value="v6">IPv6</ToggleButton>
+          </ToggleButtonGroup>
         </Box>
       }
-      contentSx={{ width: 450 }}
+      contentSx={{ width: 560, maxWidth: '100%' }}
       disableOk
       cancelBtn={t('shared.actions.close')}
       onClose={() => setOpen(false)}
@@ -61,8 +75,18 @@ export function NetworkInterfaceViewer({ ref }: { ref?: Ref<DialogRef> }) {
         </Box>
       ) : (
         networkInterfaces.map((item) => (
-          <Box key={item.name}>
-            <h4>{item.name}</h4>
+          <Box
+            key={item.name}
+            sx={{
+              py: 1.5,
+              borderBottom: 1,
+              borderColor: 'divider',
+              '&:last-child': { borderBottom: 0 },
+            }}
+          >
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              {item.name}
+            </Typography>
             <Box>
               {item.addr.map((address) => {
                 const ip = getAddressIp(address)
@@ -97,28 +121,39 @@ const AddressDisplay = ({
   label: string
   content: string
 }) => {
+  const { t } = useTranslation()
   return (
     <Box
       sx={{
         display: 'flex',
         justifyContent: 'space-between',
         margin: '8px 0',
+        alignItems: 'center',
+        gap: 2,
+        flexWrap: 'wrap',
       }}
     >
-      <Box>{label}</Box>
+      <Typography variant="body2" color="text.secondary">
+        {label}
+      </Typography>
       <Box
-        sx={({ palette }) => ({
-          borderRadius: '8px',
-          padding: '2px 2px 2px 8px',
-          background:
-            palette.mode === 'dark'
-              ? alpha(palette.background.paper, 0.3)
-              : alpha(palette.grey[400], 0.3),
-        })}
+        sx={{ display: 'flex', alignItems: 'center', minWidth: 0, gap: 0.5 }}
       >
-        <Box sx={{ display: 'inline', userSelect: 'text' }}>{content}</Box>
+        <Typography
+          variant="body2"
+          sx={{
+            minWidth: 0,
+            overflowWrap: 'anywhere',
+            userSelect: 'text',
+            fontFamily: 'monospace',
+          }}
+        >
+          {content}
+        </Typography>
         <IconButton
           size="small"
+          aria-label={t('settings.sections.externalController.tooltips.copy')}
+          title={t('settings.sections.externalController.tooltips.copy')}
           onClick={async () => {
             await writeText(content)
             showNotice.success(

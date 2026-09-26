@@ -2,7 +2,14 @@ import { useSortable } from '@dnd-kit/react/sortable'
 import {
   CheckBoxOutlineBlankRounded,
   CheckBoxRounded,
+  CheckRounded,
+  CodeRounded,
+  DeleteOutlineRounded,
   DragIndicatorRounded,
+  EditOutlined,
+  FolderOpenRounded,
+  OpenInNewRounded,
+  QrCodeRounded,
   RefreshRounded,
 } from '@mui/icons-material'
 import {
@@ -11,6 +18,7 @@ import {
   IconButton,
   keyframes,
   LinearProgress,
+  ListItemIcon,
   Menu,
   MenuItem,
   Typography,
@@ -435,6 +443,18 @@ const ProfileItemBase = (props: ProfileItemProps) => {
     delete: 'shared.actions.delete',
   } as const
 
+  const menuIcons = {
+    [menuLabels.delete]: DeleteOutlineRounded,
+    [menuLabels.home]: OpenInNewRounded,
+    [menuLabels.select]: CheckRounded,
+    [menuLabels.shareQrCode]: QrCodeRounded,
+    [menuLabels.openFile]: FolderOpenRounded,
+    [menuLabels.update]: RefreshRounded,
+    [menuLabels.updateViaProxy]: RefreshRounded,
+    [menuLabels.extendConfig]: CodeRounded,
+    [menuLabels.extendScript]: CodeRounded,
+  }
+
   const urlModeMenu: ContextMenuItem[] = [
     ...(hasHome
       ? [
@@ -650,8 +670,7 @@ const ProfileItemBase = (props: ProfileItemProps) => {
               inset: 0,
               borderRadius: 'inherit',
               zIndex: 10,
-              backdropFilter: 'blur(2px)',
-              backgroundColor: 'rgba(0, 0, 0, 0.1)',
+              backgroundColor: 'action.hover',
             }}
           >
             <CircularProgress
@@ -693,9 +712,9 @@ const ProfileItemBase = (props: ProfileItemProps) => {
             >
               <DragIndicatorRounded
                 sx={[
-                  { cursor: 'move', marginLeft: '-6px' },
+                  { cursor: 'move', marginLeft: '-6px', fontSize: 18 },
                   ({ palette: { text } }) => {
-                    return { color: text.primary }
+                    return { color: text.disabled }
                   },
                 ]}
               />
@@ -749,7 +768,7 @@ const ProfileItemBase = (props: ProfileItemProps) => {
                 <Typography
                   noWrap
                   title={description}
-                  sx={{ fontSize: '14px' }}
+                  sx={{ fontSize: '14px', minWidth: 0 }}
                 >
                   {description}
                 </Typography>
@@ -769,6 +788,8 @@ const ProfileItemBase = (props: ProfileItemProps) => {
                     display: 'flex',
                     justifyContent: 'flex-end',
                     ml: 'auto',
+                    pl: 1,
+                    flexShrink: 0,
                   }}
                 >
                   <Typography
@@ -805,7 +826,13 @@ const ProfileItemBase = (props: ProfileItemProps) => {
           }
         </Box>
         {hasExtra ? (
-          <Box sx={{ ...boxStyle, fontSize: 14 }}>
+          <Box
+            sx={{
+              ...boxStyle,
+              fontSize: 14,
+              fontVariantNumeric: 'tabular-nums',
+            }}
+          >
             <span title={t('shared.labels.usedTotal')}>
               {parseTraffic(upload + download)} / {parseTraffic(total)}
             </span>
@@ -838,29 +865,45 @@ const ProfileItemBase = (props: ProfileItemProps) => {
           e.preventDefault()
         }}
       >
-        {(hasUrl ? urlModeMenu : fileModeMenu).map((item) => (
-          <MenuItem
-            key={item.label}
-            onClick={item.handler}
-            disabled={item.disabled}
-            sx={[
-              {
-                minWidth: 120,
-              },
-              (theme) => {
-                return {
-                  color:
-                    item.label === menuLabels.delete
-                      ? theme.palette.error.main
-                      : undefined,
-                }
-              },
-            ]}
-            dense
-          >
-            {t(item.label)}
-          </MenuItem>
-        ))}
+        {(hasUrl ? urlModeMenu : fileModeMenu).map((item) => {
+          const MenuIcon = menuIcons[item.label] ?? EditOutlined
+          return (
+            <MenuItem
+              key={item.label}
+              onClick={item.handler}
+              disabled={item.disabled}
+              sx={[
+                {
+                  minWidth: 200,
+                  ...(item.label === menuLabels.editInfo ||
+                  item.label === menuLabels.update ||
+                  item.label === menuLabels.delete
+                    ? {
+                        borderTop: '1px solid',
+                        borderColor: 'divider',
+                        mt: 0.5,
+                        pt: 1,
+                      }
+                    : {}),
+                },
+                (theme) => {
+                  return {
+                    color:
+                      item.label === menuLabels.delete
+                        ? theme.palette.error.main
+                        : undefined,
+                  }
+                },
+              ]}
+              dense
+            >
+              <ListItemIcon sx={{ color: 'inherit' }}>
+                <MenuIcon fontSize="small" />
+              </ListItemIcon>
+              {t(item.label)}
+            </MenuItem>
+          )
+        })}
       </Menu>
       {fileOpen && (
         <EditorViewer

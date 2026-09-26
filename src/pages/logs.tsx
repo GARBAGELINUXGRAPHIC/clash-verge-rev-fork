@@ -2,8 +2,9 @@ import {
   PlayCircleOutlineRounded,
   PauseCircleOutlineRounded,
   SwapVertRounded,
+  DeleteOutlineRounded,
 } from '@mui/icons-material'
-import { Box, Button, IconButton, MenuItem } from '@mui/material'
+import { Box, IconButton, MenuItem, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -95,10 +96,11 @@ const LogPage = () => {
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'auto',
+        overflow: 'hidden',
+        minHeight: 0,
       }}
       header={
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
           <IconButton
             title={t(
               enableLog ? 'shared.actions.pause' : 'shared.actions.resume',
@@ -139,24 +141,27 @@ const LogPage = () => {
             />
           </IconButton>
 
-          <Button
-            size="small"
-            variant="contained"
-            onClick={() => {
-              refreshGetClashLog(true)
-            }}
-          >
-            {t('shared.actions.clear')}
-          </Button>
+          <Tooltip title={t('shared.actions.clear')}>
+            <IconButton
+              size="small"
+              aria-label={t('shared.actions.clear')}
+              onClick={() => refreshGetClashLog(true)}
+            >
+              <DeleteOutlineRounded />
+            </IconButton>
+          </Tooltip>
         </Box>
       }
     >
       <Box
         sx={{
-          pt: 1,
-          mb: 0.5,
-          mx: '10px',
-          height: '39px',
+          px: 2.5,
+          py: 1.5,
+          gap: 1.5,
+          flexShrink: 0,
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'background.paper',
           display: 'flex',
           alignItems: 'center',
         }}
@@ -195,7 +200,7 @@ const LogPage = () => {
               element.scrollHeight - element.scrollTop - element.clientHeight <=
               20
           }}
-          style={{ flex: 1 }}
+          style={{ flex: 1, minHeight: 0 }}
         />
       ) : (
         <BaseEmpty />

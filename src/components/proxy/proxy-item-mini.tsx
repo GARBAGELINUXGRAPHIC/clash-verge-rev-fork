@@ -48,16 +48,15 @@ export const ProxyItemMini = (props: Props) => {
       sx={[
         {
           height: 56,
-          borderRadius: 1.5,
+          borderRadius: '6px',
+          minWidth: 0,
           pl: 1.5,
           pr: 1,
           justifyContent: 'space-between',
           alignItems: 'center',
         },
-        ({ palette: { mode, primary } }) => {
-          const bgcolor = mode === 'light' ? '#ffffff' : '#24252f'
+        ({ palette: { primary, background, divider } }) => {
           const showDelay = delayValue > 0
-          const selectColor = mode === 'light' ? primary.main : primary.light
 
           return {
             '&:hover .the-check': { display: !showDelay ? 'block' : 'none' },
@@ -71,15 +70,20 @@ export const ProxyItemMini = (props: Props) => {
             },
             '& .the-unpin': { filter: 'grayscale(1)' },
             '&.Mui-selected': {
-              width: `calc(100% + 3px)`,
-              marginLeft: `-3px`,
-              borderLeft: `3px solid ${selectColor}`,
-              bgcolor:
-                mode === 'light'
-                  ? alpha(primary.main, 0.15)
-                  : alpha(primary.main, 0.35),
+              borderColor: alpha(primary.main, 0.45),
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                inset: 0,
+                borderRadius: 'inherit',
+                background: `linear-gradient(to right, ${primary.main} 3px, transparent 3px)`,
+                pointerEvents: 'none',
+              },
+              bgcolor: alpha(primary.main, 0.07),
+              '&:hover': { bgcolor: alpha(primary.main, 0.11) },
             },
-            backgroundColor: bgcolor,
+            border: `1px solid ${divider}`,
+            backgroundColor: background.paper,
           }
         },
       ]}
@@ -101,6 +105,7 @@ export const ProxyItemMini = (props: Props) => {
           }}
         >
           {name}
+          {showType && now && ` - ${now}`}
         </Typography>
 
         {showType && (
@@ -112,23 +117,6 @@ export const ProxyItemMini = (props: Props) => {
               marginTop: '4px',
             }}
           >
-            {now && (
-              <Typography
-                variant="body2"
-                component="div"
-                color="text.secondary"
-                sx={{
-                  display: 'block',
-                  textOverflow: 'ellipsis',
-                  wordBreak: 'break-all',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  marginRight: '8px',
-                }}
-              >
-                {now}
-              </Typography>
-            )}
             <ProxyUptime member={member} />
             <ProxyProtocol member={member}>
               {(props) => (
@@ -245,16 +233,17 @@ const Widget = styled(Box)(({ theme: { typography } }) => ({
 
 const TypeBox = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'component',
-})<{ component?: React.ElementType }>(({ theme: { typography } }) => ({
+})<{ component?: React.ElementType }>(({ theme }) => ({
   display: 'inline-block',
   border: '1px solid #ccc',
-  borderColor: 'text.secondary',
-  color: 'text.secondary',
+  borderColor: theme.palette.divider,
+  color: theme.palette.text.secondary,
   borderRadius: 4,
   fontSize: 10,
-  fontFamily: typography.fontFamily,
+  fontFamily: theme.typography.fontFamily,
   marginRight: '4px',
   marginTop: 'auto',
   padding: '0 4px',
   lineHeight: 1.5,
+  flexShrink: 0,
 }))

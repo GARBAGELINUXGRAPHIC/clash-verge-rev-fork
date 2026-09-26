@@ -1,4 +1,12 @@
-import { Box, useTheme } from '@mui/material'
+import { InfoOutlined, ShowChartRounded } from '@mui/icons-material'
+import {
+  Box,
+  ButtonBase,
+  IconButton,
+  Tooltip,
+  alpha,
+  useTheme,
+} from '@mui/material'
 import type { Ref } from 'react'
 import {
   memo,
@@ -52,9 +60,9 @@ const TARGET_FPS = 15
 const LINE_WIDTH_UP = 2.5
 const LINE_WIDTH_DOWN = 2.5
 const LINE_WIDTH_GRID = 0.5
-const ALPHA_GRADIENT = 0.15
+const ALPHA_FILL = 0.06
 const ALPHA_LINE = 0.9
-const PADDING_TOP = 16
+const PADDING_TOP = 42
 const PADDING_RIGHT = 16
 const PADDING_BOTTOM = 32
 const PADDING_LEFT = 35
@@ -68,7 +76,7 @@ const GRAPH_CONFIG = {
     grid: LINE_WIDTH_GRID,
   },
   alpha: {
-    gradient: ALPHA_GRADIENT,
+    fill: ALPHA_FILL,
     line: ALPHA_LINE,
   },
   padding: {
@@ -146,7 +154,7 @@ export const EnhancedCanvasTrafficGraph = memo(
 
     const colors = useMemo(
       () => ({
-        up: theme.palette.secondary.main,
+        up: theme.palette.success.main,
         down: theme.palette.primary.main,
         grid: theme.palette.divider,
         text: theme.palette.text.secondary,
@@ -650,7 +658,7 @@ export const EnhancedCanvasTrafficGraph = memo(
         width: number,
         height: number,
         color: string,
-        withGradient = false,
+        withFill = false,
         topValue: number,
         bottomValue: number,
       ) => {
@@ -666,21 +674,7 @@ export const EnhancedCanvasTrafficGraph = memo(
 
         ctx.save()
 
-        if (withGradient && chartStyle === 'bezier') {
-          const gradient = ctx.createLinearGradient(
-            0,
-            padding.top,
-            0,
-            height - padding.bottom,
-          )
-          gradient.addColorStop(
-            0,
-            `${color}${Math.round(GRAPH_CONFIG.alpha.gradient * 255)
-              .toString(16)
-              .padStart(2, '0')}`,
-          )
-          gradient.addColorStop(1, `${color}00`)
-
+        if (withFill && chartStyle === 'bezier') {
           ctx.beginPath()
           ctx.moveTo(getX(0), getY(0))
 
@@ -702,7 +696,7 @@ export const EnhancedCanvasTrafficGraph = memo(
           ctx.lineTo(getX(lastIndex), height - padding.bottom)
           ctx.lineTo(getX(0), height - padding.bottom)
           ctx.closePath()
-          ctx.fillStyle = gradient
+          ctx.fillStyle = alpha(color, GRAPH_CONFIG.alpha.fill)
           ctx.fill()
         }
 
@@ -1012,8 +1006,7 @@ export const EnhancedCanvasTrafficGraph = memo(
           width: '100%',
           height: '100%',
           position: 'relative',
-          bgcolor: 'action.hover',
-          borderRadius: 1,
+          bgcolor: 'background.paper',
           cursor: 'pointer',
           overflow: 'hidden',
         }}
@@ -1028,7 +1021,6 @@ export const EnhancedCanvasTrafficGraph = memo(
             height: '100%',
             display: 'block',
           }}
-          onClick={toggleStyle}
         />
 
         {tooltipData.visible && (
@@ -1055,29 +1047,28 @@ export const EnhancedCanvasTrafficGraph = memo(
             pointerEvents: 'none',
           }}
         >
-          <Box
-            component="div"
+          <ButtonBase
             onClick={handleTimeRangeClick}
             sx={{
               position: 'absolute',
               top: 6,
               left: 40,
               fontSize: '11px',
-              fontWeight: 'bold',
+              fontWeight: 500,
               color: 'text.secondary',
               cursor: 'pointer',
               pointerEvents: 'all',
               px: 1,
               py: 0.5,
-              borderRadius: 0.5,
-              bgcolor: 'rgba(0,0,0,0.05)',
+              borderRadius: 1,
+              bgcolor: 'action.hover',
               '&:hover': {
-                bgcolor: 'rgba(0,0,0,0.1)',
+                bgcolor: 'action.selected',
               },
             }}
           >
             {getTimeRangeText()}
-          </Box>
+          </ButtonBase>
 
           <Box
             sx={{
@@ -1085,14 +1076,14 @@ export const EnhancedCanvasTrafficGraph = memo(
               top: 6,
               right: 8,
               display: 'flex',
-              flexDirection: 'column',
-              gap: 0.5,
+              alignItems: 'center',
+              gap: 1.5,
             }}
           >
             <Box
               sx={{
                 fontSize: '11px',
-                fontWeight: 'bold',
+                fontWeight: 500,
                 color: colors.up,
                 textAlign: 'right',
               }}
@@ -1102,7 +1093,7 @@ export const EnhancedCanvasTrafficGraph = memo(
             <Box
               sx={{
                 fontSize: '11px',
-                fontWeight: 'bold',
+                fontWeight: 500,
                 color: colors.down,
                 textAlign: 'right',
               }}
@@ -1111,40 +1102,54 @@ export const EnhancedCanvasTrafficGraph = memo(
             </Box>
           </Box>
 
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 6,
-              right: 8,
-              fontSize: '10px',
-              color: 'text.disabled',
-              opacity: 0.7,
-            }}
-          >
-            {t(
+          <Tooltip
+            title={t(
               chartStyle === 'bezier'
                 ? 'home.components.traffic.chartStyles.smooth'
                 : 'home.components.traffic.chartStyles.linear',
             )}
-          </Box>
-
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 6,
-              left: 8,
-              fontSize: '9px',
-              color: 'text.disabled',
-              opacity: 0.6,
-              lineHeight: 1.2,
-            }}
           >
-            {t('home.components.traffic.diagnostics', {
+            <IconButton
+              size="small"
+              onClick={(event) => {
+                event.stopPropagation()
+                toggleStyle()
+              }}
+              aria-label={t(
+                chartStyle === 'bezier'
+                  ? 'home.components.traffic.chartStyles.smooth'
+                  : 'home.components.traffic.chartStyles.linear',
+              )}
+              sx={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                pointerEvents: 'auto',
+              }}
+            >
+              <ShowChartRounded sx={{ fontSize: 16 }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip
+            title={t('home.components.traffic.diagnostics', {
               points: displayData.length,
               compressed: samplerStats.compressedBufferSize,
               fps: currentFPS,
             })}
-          </Box>
+          >
+            <Box
+              component="span"
+              sx={{
+                position: 'absolute',
+                bottom: 4,
+                left: 0,
+                color: 'text.disabled',
+                pointerEvents: 'auto',
+              }}
+            >
+              <InfoOutlined sx={{ fontSize: 14 }} />
+            </Box>
+          </Tooltip>
 
           {tooltipData.visible && (
             <Box
@@ -1164,7 +1169,7 @@ export const EnhancedCanvasTrafficGraph = memo(
                 pointerEvents: 'none',
                 transform:
                   tooltipData.x > 200 ? 'translateX(-100%)' : 'translateX(0)',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                boxShadow: 1,
                 backdropFilter: 'none',
                 opacity: 1,
                 whiteSpace: 'nowrap',
@@ -1173,7 +1178,7 @@ export const EnhancedCanvasTrafficGraph = memo(
               <Box sx={{ color: 'text.secondary', mb: 0.2 }}>
                 {tooltipData.timestamp}
               </Box>
-              <Box sx={{ color: 'secondary.main', fontWeight: 500 }}>
+              <Box sx={{ color: 'success.main', fontWeight: 500 }}>
                 ↑ {tooltipData.upSpeed}
               </Box>
               <Box sx={{ color: 'primary.main', fontWeight: 500 }}>

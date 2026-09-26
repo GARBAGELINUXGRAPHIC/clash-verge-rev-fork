@@ -6,6 +6,7 @@ import {
   useCallback,
   useImperativeHandle,
 } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { useWindowControls } from '@/hooks/use-window'
 import getSystem from '@/utils/get-system'
@@ -64,6 +65,7 @@ export const WindowResizeHandles = () => {
 }
 
 export const WindowControls = forwardRef(function WindowControls(props, ref) {
+  const { t } = useTranslation()
   const OS = getSystem()
   const {
     currentWindow,
@@ -101,25 +103,43 @@ export const WindowControls = forwardRef(function WindowControls(props, ref) {
     <Box
       sx={{
         display: 'flex',
-        gap: 1,
+        gap: 0.5,
         alignItems: 'center',
         '> button': {
           cursor: 'default',
+          width: 32,
+          height: 28,
+          borderRadius: '5px',
         },
       }}
     >
       {OS === 'macos' && (
         <>
           {/* macOS 风格：关闭 → 最小化 → 全屏 */}
-          <IconButton size="small" sx={{ fontSize: 14 }} onClick={close}>
+          <IconButton
+            size="small"
+            aria-label={t('shared.actions.close')}
+            sx={{
+              fontSize: 14,
+              '&:hover': { bgcolor: 'error.main', color: 'error.contrastText' },
+            }}
+            onClick={close}
+          >
             <Close fontSize="inherit" color="inherit" />
           </IconButton>
-          <IconButton size="small" sx={{ fontSize: 14 }} onClick={minimize}>
+          <IconButton
+            size="small"
+            aria-label={t('shared.window.minimize')}
+            sx={{ fontSize: 14 }}
+            onClick={minimize}
+          >
             <Minimize fontSize="inherit" color="inherit" />
           </IconButton>
           <IconButton
             size="small"
             sx={{ fontSize: 14 }}
+            aria-label={t('shared.window.maximize')}
+            aria-pressed={maximized ?? false}
             onClick={toggleMaximize}
           >
             {maximized ? (
@@ -134,12 +154,19 @@ export const WindowControls = forwardRef(function WindowControls(props, ref) {
       {OS === 'windows' && (
         <>
           {/* Windows 风格：最小化 → 最大化 → 关闭 */}
-          <IconButton size="small" sx={{ fontSize: 16 }} onClick={minimize}>
+          <IconButton
+            size="small"
+            aria-label={t('shared.window.minimize')}
+            sx={{ fontSize: 16 }}
+            onClick={minimize}
+          >
             <Minimize fontSize="inherit" color="inherit" />
           </IconButton>
           <IconButton
             size="small"
             sx={{ fontSize: 16 }}
+            aria-label={t('shared.window.maximize')}
+            aria-pressed={maximized ?? false}
             onClick={toggleMaximize}
           >
             {maximized ? (
@@ -150,7 +177,11 @@ export const WindowControls = forwardRef(function WindowControls(props, ref) {
           </IconButton>
           <IconButton
             size="small"
-            sx={{ fontSize: 16, ':hover': { bgcolor: 'red', color: 'white' } }}
+            aria-label={t('shared.actions.close')}
+            sx={{
+              fontSize: 16,
+              ':hover': { bgcolor: 'error.main', color: 'error.contrastText' },
+            }}
             onClick={close}
           >
             <Close fontSize="inherit" color="inherit" />
@@ -161,12 +192,19 @@ export const WindowControls = forwardRef(function WindowControls(props, ref) {
       {OS === 'linux' && (
         <>
           {/* Linux 桌面常见布局（GNOME/KDE 多为：最小化 → 最大化 → 关闭） */}
-          <IconButton size="small" sx={{ fontSize: 16 }} onClick={minimize}>
+          <IconButton
+            size="small"
+            aria-label={t('shared.window.minimize')}
+            sx={{ fontSize: 16 }}
+            onClick={minimize}
+          >
             <Minimize fontSize="inherit" color="inherit" />
           </IconButton>
           <IconButton
             size="small"
             sx={{ fontSize: 16 }}
+            aria-label={t('shared.window.maximize')}
+            aria-pressed={maximized ?? false}
             onClick={toggleMaximize}
           >
             {maximized ? (
@@ -177,7 +215,11 @@ export const WindowControls = forwardRef(function WindowControls(props, ref) {
           </IconButton>
           <IconButton
             size="small"
-            sx={{ fontSize: 16, ':hover': { bgcolor: 'red', color: 'white' } }}
+            aria-label={t('shared.actions.close')}
+            sx={{
+              fontSize: 16,
+              ':hover': { bgcolor: 'error.main', color: 'error.contrastText' },
+            }}
             onClick={close}
           >
             <Close fontSize="inherit" color="inherit" />

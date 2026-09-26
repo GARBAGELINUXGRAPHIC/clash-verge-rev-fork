@@ -1,4 +1,5 @@
-import { useTheme } from '@mui/material/styles'
+import { ArrowDownwardRounded, ArrowUpwardRounded } from '@mui/icons-material'
+import { Box, useTheme } from '@mui/material'
 import { useLocalStorage } from 'foxact/use-local-storage'
 import {
   memo,
@@ -270,6 +271,7 @@ const RowComponent = memo(
 
     return (
       <div
+        className="connection-table-row"
         style={{
           display: 'flex',
           position: 'absolute',
@@ -277,6 +279,7 @@ const RowComponent = memo(
           left: 0,
           right: 0,
           height: ROW_HEIGHT,
+          boxSizing: 'border-box',
           cursor: 'pointer',
           borderBottom: `1px solid ${borderColor}`,
         }}
@@ -749,7 +752,8 @@ export const ConnectionTable = (props: Props) => {
 
   return (
     <>
-      <div
+      <Box
+        sx={{ '& .connection-table-row:hover': { bgcolor: 'action.hover' } }}
         style={{
           display: 'flex',
           flexDirection: 'column',
@@ -757,6 +761,7 @@ export const ConnectionTable = (props: Props) => {
           minHeight: 0,
           position: 'relative',
           fontFamily: theme.typography.fontFamily,
+          fontVariantNumeric: 'tabular-nums',
         }}
       >
         <div
@@ -768,7 +773,6 @@ export const ConnectionTable = (props: Props) => {
             overflow: 'auto',
             WebkitOverflowScrolling: 'touch',
             overscrollBehavior: 'contain',
-            borderRadius: 8,
           }}
         >
           <div
@@ -828,11 +832,13 @@ export const ConnectionTable = (props: Props) => {
                       }}
                     >
                       {column.headerName}
-                      {sorting?.id === column.field
-                        ? sorting.desc
-                          ? '▼'
-                          : '▲'
-                        : null}
+                      {sorting?.id === column.field ? (
+                        sorting.desc ? (
+                          <ArrowDownwardRounded sx={{ fontSize: 13 }} />
+                        ) : (
+                          <ArrowUpwardRounded sx={{ fontSize: 13 }} />
+                        )
+                      ) : null}
                     </button>
                     <div
                       onMouseDown={(event) =>
@@ -884,7 +890,7 @@ export const ConnectionTable = (props: Props) => {
             </div>
           </div>
         </div>
-      </div>
+      </Box>
       <ConnectionColumnManager
         open={columnManagerOpen}
         columns={managerColumns}

@@ -159,6 +159,7 @@ export const SysproxyPrivilegeDialog = () => {
       // Keep the primary spinner visible; only cancellation is unavailable.
       disableCancel={loading}
       loading={loading}
+      contentSx={{ width: 480 }}
       onOk={() => void handleFix()}
       onCancel={close}
       onClose={close}

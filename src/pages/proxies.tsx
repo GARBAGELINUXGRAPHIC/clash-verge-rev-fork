@@ -1,5 +1,5 @@
 import { LanOutlined, LanRounded, WarningRounded } from '@mui/icons-material'
-import { Box, Button, ButtonGroup } from '@mui/material'
+import { Box, Button, ButtonGroup, IconButton, Tooltip } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -132,7 +132,7 @@ const ProxyPage = () => {
   return (
     <BasePage
       full
-      contentStyle={{ height: '100%' }}
+      contentStyle={{ height: '100%', overflow: 'hidden', minHeight: 0 }}
       title={
         isChainMode ? (
           <Box
@@ -153,7 +153,14 @@ const ProxyPage = () => {
         )
       }
       header={
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            flexWrap: 'wrap',
+          }}
+        >
           <ProviderButton />
 
           <ButtonGroup size="small">
@@ -169,21 +176,21 @@ const ProxyPage = () => {
             ))}
           </ButtonGroup>
 
-          <Button
-            size="small"
-            variant={isChainMode ? 'contained' : 'outlined'}
-            onClick={onToggleChainMode}
-            sx={{ ml: 1 }}
-            startIcon={
-              isChainMode ? (
+          <Tooltip title={t('proxies.page.actions.toggleChain')}>
+            <IconButton
+              size="small"
+              color={isChainMode ? 'primary' : 'default'}
+              onClick={onToggleChainMode}
+              aria-label={t('proxies.page.actions.toggleChain')}
+              aria-pressed={isChainMode}
+            >
+              {isChainMode ? (
                 <LanRounded fontSize="small" />
               ) : (
                 <LanOutlined fontSize="small" />
-              )
-            }
-          >
-            {t('proxies.page.actions.toggleChain')}
-          </Button>
+              )}
+            </IconButton>
+          </Tooltip>
         </Box>
       }
     >

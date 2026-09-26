@@ -22,7 +22,6 @@ import {
   useHeadStateNew,
   type HeadState,
 } from './use-head-state'
-import { useWindowWidth } from './use-window-width'
 
 export interface ResolvedMemberOccurrence {
   memberIndex: number
@@ -89,12 +88,10 @@ const memberKey = (
 }
 
 const calculateColumns = (width: number, configCol: number): number => {
-  if (configCol > 0 && configCol < 6) return configCol
-  if (width > 1920) return 5
-  if (width > 1450) return 4
-  if (width > 1024) return 3
-  if (width >= 600) return 2
-  return 1
+  const availableWidth = Math.max(0, width - 40)
+  const fittingColumns = Math.max(1, Math.floor((availableWidth + 8) / 288))
+  const preferredColumns = configCol > 0 && configCol < 6 ? configCol : 5
+  return Math.min(preferredColumns, fittingColumns)
 }
 
 const groupOccurrences = <T>(list: T[], size: number): T[][] =>
@@ -124,11 +121,11 @@ export const useRenderList = (
   mode: string,
   isChainMode?: boolean,
   selectedGroup?: string | null,
+  listWidth = 0,
 ) => {
   const { proxyView } = useProxiesData()
   const { refreshProxy } = useAppRefreshers()
   const { verge } = useVerge()
-  const { width } = useWindowWidth()
   const [headStates, setHeadState] = useHeadStateNew()
   const latencyTimeout = verge?.default_latency_timeout
   const { data: runtimeConfig } = useRuntimeConfig(!!isChainMode)
@@ -137,8 +134,8 @@ export const useRenderList = (
   )?.proxies
 
   const col = useMemo(
-    () => calculateColumns(width, verge?.proxy_layout_column || 6),
-    [width, verge?.proxy_layout_column],
+    () => calculateColumns(listWidth, verge?.proxy_layout_column || 6),
+    [listWidth, verge?.proxy_layout_column],
   )
 
   const chainOccurrences = useMemo(() => {

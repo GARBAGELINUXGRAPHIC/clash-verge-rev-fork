@@ -14,7 +14,7 @@ import { useTheme } from '@mui/material/styles'
 import {
   type Key,
   type MouseEvent,
-  type RefObject,
+  type Ref,
   useCallback,
   useEffect,
   useMemo,
@@ -81,7 +81,7 @@ interface ProxyGroupsChainProps {
   showScrollTop: boolean
 
   // Virtual list data (from parent's virtualizer)
-  parentRef: RefObject<HTMLDivElement | null>
+  parentRef: Ref<HTMLDivElement>
   totalSize: number
   virtualItems: VirtualListItem[]
   renderList: IRenderItem[]
@@ -235,7 +235,7 @@ function ProxyVirtualList({
   onHeadState,
   onChangeProxy,
 }: {
-  parentRef: RefObject<HTMLDivElement | null>
+  parentRef: Ref<HTMLDivElement>
   height: string
   totalSize: number
   virtualItems: VirtualListItem[]
@@ -249,8 +249,7 @@ function ProxyVirtualList({
   onChangeProxy: (group: ProxyGroupView, member: ResolvedProxyMember) => void
 }) {
   const theme = useTheme()
-  const stickyBackground =
-    theme.palette.mode === 'dark' ? '#1e1f27' : 'var(--background-color)'
+  const stickyBackground = theme.palette.background.default
 
   return (
     <div ref={parentRef} style={{ height, overflow: 'auto' }}>
@@ -486,8 +485,22 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
 
   return (
     <>
-      <Box sx={{ display: 'flex', height: '100%', gap: 2 }}>
-        <Box sx={{ flex: 1, position: 'relative' }}>
+      <Box
+        sx={{
+          display: 'grid',
+          height: '100%',
+          minHeight: 0,
+          gridTemplateColumns: {
+            xs: 'minmax(0, 1fr)',
+            md: 'minmax(0, 1fr) minmax(300px, 38%)',
+          },
+          gridTemplateRows: {
+            xs: 'minmax(0, 1fr) minmax(0, 1fr)',
+            md: 'minmax(0, 1fr)',
+          },
+        }}
+      >
+        <Box sx={{ minWidth: 0, minHeight: 0, position: 'relative' }}>
           {showRuleHeader && (
             <ChainRuleHeader
               title={t('proxies.page.rules.title')}
@@ -504,7 +517,15 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
           <ScrollTopButton show={showScrollTop} onClick={onScrollToTop} />
         </Box>
 
-        <Box sx={{ width: '400px', minWidth: '300px' }}>
+        <Box
+          sx={{
+            minWidth: 0,
+            minHeight: 0,
+            borderLeft: { md: '1px solid' },
+            borderTop: { xs: '1px solid', md: 'none' },
+            borderColor: 'divider',
+          }}
+        >
           <ProxyChain
             proxyChain={currentProxyChain}
             onUpdateChain={setProxyChain}

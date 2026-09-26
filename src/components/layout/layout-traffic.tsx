@@ -57,19 +57,26 @@ export const LayoutTraffic = () => {
     },
   }
   const iconStyle: Pick<SvgIconProps, 'sx'> = {
-    sx: { mr: '8px', fontSize: 16 },
+    sx: { mr: '8px', fontSize: 18 },
   }
   const valStyle: Pick<TypographyProps, 'component' | 'sx'> = {
     component: 'span',
-    sx: { flex: '1 1 56px', userSelect: 'none', textAlign: 'center' },
+    sx: {
+      flex: '1 1 56px',
+      userSelect: 'none',
+      textAlign: 'right',
+      fontSize: 14,
+      fontVariantNumeric: 'tabular-nums',
+      mr: 1,
+    },
   }
   const unitStyle: Pick<TypographyProps, 'component' | 'color' | 'sx'> = {
     component: 'span',
-    color: 'grey.500',
+    color: 'text.secondary',
     sx: {
-      flex: '0 1 27px',
+      flex: '0 0 36px',
       userSelect: 'none',
-      fontSize: '12px',
+      fontSize: '13px',
       textAlign: 'right',
     },
   }
@@ -86,7 +93,7 @@ export const LayoutTraffic = () => {
           </div>
         )}
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Box
             title={`${t('home.components.traffic.metrics.uploadSpeed')}`}
             {...boxStyle}

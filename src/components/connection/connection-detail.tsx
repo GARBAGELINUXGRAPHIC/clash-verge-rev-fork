@@ -1,4 +1,12 @@
-import { Box, Button, Snackbar, useTheme } from '@mui/material'
+import { CloseRounded } from '@mui/icons-material'
+import {
+  Box,
+  Button,
+  Chip,
+  Drawer,
+  IconButton,
+  Typography,
+} from '@mui/material'
 import { useLockFn } from 'ahooks'
 import dayjs from 'dayjs'
 import { useCallback, useImperativeHandle, useState, type Ref } from 'react'
@@ -16,7 +24,7 @@ export function ConnectionDetail({ ref }: { ref?: Ref<ConnectionDetailRef> }) {
   const [open, setOpen] = useState(false)
   const [detail, setDetail] = useState<IConnectionsItem | null>(null)
   const [closed, setClosed] = useState(false)
-  const theme = useTheme()
+  const { t } = useTranslation()
 
   const onClose = useCallback(() => {
     setOpen(false)
@@ -35,29 +43,63 @@ export function ConnectionDetail({ ref }: { ref?: Ref<ConnectionDetailRef> }) {
   }))
 
   return (
-    <Snackbar
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    <Drawer
+      anchor="right"
       open={open}
       onClose={onClose}
-      sx={{
-        '.MuiSnackbarContent-root': {
-          maxWidth: '520px',
-          maxHeight: '480px',
-          overflowY: 'auto',
-          backgroundColor: theme.palette.background.paper,
-          color: theme.palette.text.primary,
+      slotProps={{
+        paper: {
+          sx: {
+            width: 460,
+            maxWidth: '100vw',
+            borderRadius: 0,
+            borderLeft: '1px solid',
+            borderColor: 'divider',
+            backgroundImage: 'none',
+          },
         },
       }}
-      message={
-        detail ? (
-          <InnerConnectionDetail
-            data={detail}
-            closed={closed}
-            onClose={onClose}
-          />
-        ) : null
-      }
-    />
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5,
+          px: 2.5,
+          py: 2,
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          flexShrink: 0,
+        }}
+      >
+        <Typography variant="subtitle1" sx={{ fontWeight: 600, flex: 1 }}>
+          {t('connections.page.title')}
+        </Typography>
+        <Chip
+          size="small"
+          label={t(
+            closed
+              ? 'connections.components.actions.closed'
+              : 'connections.components.actions.active',
+          )}
+          variant="outlined"
+        />
+        <IconButton
+          size="small"
+          onClick={onClose}
+          aria-label={t('shared.actions.close')}
+        >
+          <CloseRounded fontSize="small" />
+        </IconButton>
+      </Box>
+      {detail && (
+        <InnerConnectionDetail
+          data={detail}
+          closed={closed}
+          onClose={onClose}
+        />
+      )}
+    </Drawer>
   )
 }
 
@@ -70,7 +112,6 @@ interface InnerProps {
 const InnerConnectionDetail = ({ data, closed, onClose }: InnerProps) => {
   const { t } = useTranslation()
   const { metadata, rulePayload } = data
-  const theme = useTheme()
   const chains = [...data.chains].reverse().join(' / ')
   const rule = rulePayload ? `${data.rule}(${rulePayload})` : data.rule
   const hostAddress =
@@ -132,25 +173,65 @@ const InnerConnectionDetail = ({ data, closed, onClose }: InnerProps) => {
   const onDelete = useLockFn(async () => closeConnection(data.id))
 
   return (
-    <Box sx={{ userSelect: 'text', color: theme.palette.text.secondary }}>
-      {information.map((each) => (
-        <div key={each.label}>
-          <b>{each.label}</b>
-          <span
-            style={{
-              wordBreak: 'break-all',
-              color: theme.palette.text.primary,
+    <Box
+      sx={{ display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}
+    >
+      <Box
+        component="dl"
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          overflowY: 'auto',
+          m: 0,
+          px: 2.5,
+          userSelect: 'text',
+        }}
+      >
+        {information.map((each) => (
+          <Box
+            key={each.label}
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: '100px minmax(0, 1fr)',
+              gap: 2,
+              py: 1.5,
+              borderBottom: '1px solid',
+              borderColor: 'divider',
             }}
           >
-            : {each.value}
-          </span>
-        </div>
-      ))}
+            <Typography component="dt" variant="body2" color="text.secondary">
+              {each.label}
+            </Typography>
+            <Typography
+              component="dd"
+              variant="body2"
+              sx={{
+                m: 0,
+                overflowWrap: 'anywhere',
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              {each.value}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
 
       {!closed && (
-        <Box sx={{ textAlign: 'right' }}>
+        <Box
+          sx={{
+            px: 2.5,
+            py: 1.5,
+            borderTop: '1px solid',
+            borderColor: 'divider',
+            display: 'flex',
+            justifyContent: 'flex-end',
+            flexShrink: 0,
+          }}
+        >
           <Button
             variant="contained"
+            color="error"
             title={t('connections.components.actions.closeConnection')}
             onClick={() => {
               onDelete()

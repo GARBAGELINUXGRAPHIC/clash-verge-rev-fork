@@ -92,6 +92,54 @@ export const loadMonacoEditor = () => {
           if (monacoConfigured) return
 
           patchCreateWebWorker(monaco)
+          monaco.editor.defineTheme('verge-light', {
+            base: 'vs',
+            inherit: true,
+            rules: [],
+            colors: {
+              'editor.background': '#FFFFFF',
+              'editor.foreground': '#1D1D1F',
+              'editorGutter.background': '#FFFFFF',
+              'editorLineNumber.foreground': '#86868B',
+              'editorLineNumber.activeForeground': '#1D1D1F',
+              'editor.lineHighlightBackground': '#F5F5F7',
+              'editor.selectionBackground': '#0071E326',
+              'editorWidget.background': '#FFFFFF',
+              'editorWidget.border': '#DEDEE3',
+              'editorSuggestWidget.background': '#FFFFFF',
+              'editorSuggestWidget.border': '#DEDEE3',
+              'menu.background': '#FFFFFF',
+              'menu.foreground': '#1D1D1F',
+              'menu.border': '#DEDEE3',
+              'menu.selectionBackground': '#F0F5FC',
+              'menu.selectionForeground': '#0071E3',
+              'scrollbar.shadow': '#00000000',
+            },
+          })
+          monaco.editor.defineTheme('verge-dark', {
+            base: 'vs-dark',
+            inherit: true,
+            rules: [],
+            colors: {
+              'editor.background': '#222224',
+              'editor.foreground': '#F5F5F7',
+              'editorGutter.background': '#222224',
+              'editorLineNumber.foreground': '#86868B',
+              'editorLineNumber.activeForeground': '#F5F5F7',
+              'editor.lineHighlightBackground': '#2C2C2E',
+              'editor.selectionBackground': '#2997FF33',
+              'editorWidget.background': '#222224',
+              'editorWidget.border': '#48484A',
+              'editorSuggestWidget.background': '#222224',
+              'editorSuggestWidget.border': '#48484A',
+              'menu.background': '#222224',
+              'menu.foreground': '#F5F5F7',
+              'menu.border': '#48484A',
+              'menu.selectionBackground': '#2C3542',
+              'menu.selectionForeground': '#2997FF',
+              'scrollbar.shadow': '#00000000',
+            },
+          })
           monaco.typescript.javascriptDefaults.addExtraLib(pac, 'pac.d.ts')
 
           configureMonacoYaml(monaco, {

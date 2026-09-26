@@ -10,6 +10,7 @@ import {
   List,
   ListItemButton,
   ListItemText,
+  Radio,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import type { Ref } from 'react'
@@ -114,9 +115,17 @@ export function ClashCoreViewer({ ref }: { ref?: Ref<DialogRef> }) {
     <BaseDialog
       open={open}
       title={
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 1,
+          }}
+        >
           {t('settings.sections.clash.form.fields.clashCore')}
-          <Box>
+          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             <Button
               variant="contained"
               size="small"
@@ -124,13 +133,12 @@ export function ClashCoreViewer({ ref }: { ref?: Ref<DialogRef> }) {
               loadingPosition="start"
               loading={upgrading}
               disabled={restarting || changingCore !== null}
-              sx={{ marginRight: '8px' }}
               onClick={onUpgrade}
             >
               {t('shared.actions.upgrade')}
             </Button>
             <Button
-              variant="contained"
+              variant="outlined"
               size="small"
               startIcon={<RestartAltRounded />}
               loadingPosition="start"
@@ -144,26 +152,43 @@ export function ClashCoreViewer({ ref }: { ref?: Ref<DialogRef> }) {
         </Box>
       }
       contentSx={{
-        pb: 0,
-        width: 400,
-        height: 180,
+        width: 520,
+        maxWidth: '100%',
         overflowY: 'auto',
         userSelect: 'text',
-        marginTop: '-8px',
       }}
       disableOk
       cancelBtn={t('shared.actions.close')}
       onClose={() => setOpen(false)}
       onCancel={() => setOpen(false)}
     >
-      <List component="nav">
+      <List
+        disablePadding
+        role="radiogroup"
+        aria-label={t('settings.sections.clash.form.fields.clashCore')}
+      >
         {VALID_CORE.map((each) => (
           <ListItemButton
             key={each.core}
             selected={each.core === clash_core}
             onClick={() => onCoreChange(each.core)}
             disabled={changingCore !== null || restarting || upgrading}
+            role="radio"
+            aria-checked={each.core === clash_core}
+            sx={{
+              minHeight: 72,
+              px: 1,
+              gap: 1,
+              borderBottom: 1,
+              borderColor: 'divider',
+              '&:last-child': { borderBottom: 0 },
+            }}
           >
+            <Radio
+              checked={each.core === clash_core}
+              tabIndex={-1}
+              slotProps={{ input: { readOnly: true, 'aria-label': each.name } }}
+            />
             <ListItemText primary={each.name} secondary={`/${each.core}`} />
             {changingCore === each.core ? (
               <CircularProgress size={20} sx={{ mr: 1 }} />

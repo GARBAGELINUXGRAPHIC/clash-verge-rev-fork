@@ -108,7 +108,7 @@ export const TestViewer = forwardRef<TestViewerRef, Props>(
     const text = {
       fullWidth: true,
       size: 'small',
-      margin: 'normal',
+      margin: 'none',
       variant: 'outlined',
       autoComplete: 'off',
       autoCorrect: 'off',
@@ -122,7 +122,15 @@ export const TestViewer = forwardRef<TestViewerRef, Props>(
             ? t('tests.modals.test.title.create')
             : t('tests.modals.test.title.edit')
         }
-        contentSx={{ width: 375, pb: 0, maxHeight: '80%' }}
+        contentSx={{
+          width: 440,
+          maxWidth: '100%',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          py: 2.5,
+        }}
         okBtn={t('shared.actions.save')}
         cancelBtn={t('shared.actions.cancel')}
         onClose={handleClose}

@@ -93,18 +93,20 @@ export const ProxyGroupNavigator = ({
     <Box
       sx={{
         position: 'absolute',
-        right: 2,
+        right: 4,
         top: '50%',
         transform: 'translateY(-50%)',
         zIndex: 10,
         display: 'flex',
         flexDirection: 'column',
         gap: 0.25,
-        bgcolor: 'transparent',
-        borderRadius: 0.5,
+        bgcolor: 'background.paper',
+        borderRadius: '6px',
+        border: '1px solid',
+        borderColor: 'divider',
         boxShadow: 0,
         p: 0.25,
-        maxHeight: '70vh',
+        maxHeight: '60%',
         overflowY: 'auto',
         scrollbarWidth: 'none',
         '&::-webkit-scrollbar': {
@@ -119,6 +121,7 @@ export const ProxyGroupNavigator = ({
           <Button
             size="small"
             variant="text"
+            aria-label={name}
             onClick={() => handleGroupClick(name)}
             onMouseEnter={() => handleGroupHover(name)}
             onFocus={() => handleGroupHover(name)}
@@ -138,8 +141,8 @@ export const ProxyGroupNavigator = ({
               justifyContent: 'center',
               textTransform: 'none',
               '&:hover': {
-                bgcolor: 'primary.light',
-                color: 'primary.contrastText',
+                bgcolor: 'action.selected',
+                color: 'primary.main',
               },
             }}
           >

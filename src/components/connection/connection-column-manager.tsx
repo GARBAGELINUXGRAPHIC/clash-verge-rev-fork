@@ -82,7 +82,7 @@ export const ConnectionColumnManager = ({
       <DialogTitle>
         {t('connections.components.columnManager.title')}
       </DialogTitle>
-      <DialogContent sx={{ pt: 1 }}>
+      <DialogContent sx={{ p: 0 }}>
         <DragDropProvider
           sensors={[columnPointerSensor]}
           onDragEnd={handleDragEnd}
@@ -90,7 +90,7 @@ export const ConnectionColumnManager = ({
           <List
             dense
             disablePadding
-            sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}
+            sx={{ display: 'flex', flexDirection: 'column' }}
           >
             {columns.map((column, index) => (
               <SortableColumnItem
@@ -107,7 +107,7 @@ export const ConnectionColumnManager = ({
           </List>
         </DragDropProvider>
       </DialogContent>
-      <DialogActions sx={{ px: 3, pb: 2 }}>
+      <DialogActions sx={{ justifyContent: 'space-between', gap: 1 }}>
         <Button variant="text" onClick={onReset}>
           {t('shared.actions.resetToDefault')}
         </Button>
@@ -148,15 +148,16 @@ const SortableColumnItem = ({
       ref={setElement}
       disableGutters
       sx={{
-        px: 1,
-        py: 0.5,
-        borderRadius: 1,
-        border: (theme) => `1px solid ${theme.palette.divider}`,
+        px: 2.5,
+        py: 0.75,
+        minHeight: 46,
+        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
         // 拖拽中的行置为不透明背景，避免透出下方内容；投影由全局 [data-dnd-dragging] 规则统一施加。
         backgroundColor: isDragging ? 'background.paper' : 'transparent',
         display: 'flex',
         alignItems: 'center',
         gap: 1,
+        '&:hover': { bgcolor: 'action.hover' },
       }}
     >
       <Checkbox
@@ -174,7 +175,10 @@ const SortableColumnItem = ({
         edge="end"
         size="small"
         ref={handleRef}
-        sx={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+        sx={{
+          cursor: isDragging ? 'grabbing' : 'grab',
+          color: 'text.secondary',
+        }}
         aria-label={dragHandleLabel}
       >
         <DragIndicatorRounded fontSize="small" />

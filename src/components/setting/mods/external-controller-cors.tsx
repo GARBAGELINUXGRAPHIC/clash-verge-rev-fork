@@ -1,5 +1,5 @@
-import { Delete as DeleteIcon } from '@mui/icons-material'
-import { Box, Button, Divider, List, ListItem, TextField } from '@mui/material'
+import { AddRounded, Delete as DeleteIcon } from '@mui/icons-material'
+import { Box, Button, IconButton, ListItem, TextField } from '@mui/material'
 import { useLockFn, useRequest } from 'ahooks'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -8,6 +8,8 @@ import { BaseDialog, Switch } from '@/components/base'
 import { useClash } from '@/hooks/use-clash'
 import { restartCore } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
+
+import { SettingForm } from './setting-comp'
 
 // Development origins must never be persisted into production configuration.
 const DEV_URLS = [
@@ -24,38 +26,6 @@ const getFullOrigins = (origins: string[]) => {
 
 const filterBaseOriginsForUI = (origins: string[]) => {
   return origins.filter((origin: string) => !DEV_URLS.includes(origin.trim()))
-}
-
-const buttonStyle = {
-  borderRadius: '8px',
-  textTransform: 'none',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    boxShadow: '0 4px 8px rgba(0,0,0,0.15)',
-    transform: 'translateY(-1px)',
-  },
-  '&:active': {
-    transform: 'translateY(0)',
-  },
-}
-
-const addButtonStyle = {
-  ...buttonStyle,
-  backgroundColor: '#4CAF50',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: '#388E3C',
-  },
-}
-
-const deleteButtonStyle = {
-  ...buttonStyle,
-  backgroundColor: '#FF5252',
-  color: 'white',
-  '&:hover': {
-    backgroundColor: '#D32F2F',
-  },
 }
 
 interface ClashHeaderConfigingRef {
@@ -175,14 +145,14 @@ export const HeaderConfiguration = forwardRef<ClashHeaderConfigingRef>(
       <BaseDialog
         open={open}
         title={t('settings.sections.externalCors.title')}
-        contentSx={{ width: 500 }}
+        contentSx={{ width: 520, maxWidth: '100%' }}
         okBtn={loading ? t('shared.statuses.saving') : t('shared.actions.save')}
         cancelBtn={t('shared.actions.cancel')}
         onClose={() => setOpen(false)}
         onCancel={() => setOpen(false)}
         onOk={handleSave}
       >
-        <List sx={{ width: '90%', padding: 2 }}>
+        <SettingForm>
           <ListItem sx={{ padding: '8px 0' }}>
             <Box
               sx={{
@@ -190,6 +160,7 @@ export const HeaderConfiguration = forwardRef<ClashHeaderConfigingRef>(
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 width: '100%',
+                gap: 2,
               }}
             >
               <span style={{ fontWeight: 'normal' }}>
@@ -208,8 +179,6 @@ export const HeaderConfiguration = forwardRef<ClashHeaderConfigingRef>(
             </Box>
           </ListItem>
 
-          <Divider sx={{ my: 2 }} />
-
           <ListItem sx={{ padding: '8px 0' }}>
             <div style={{ width: '100%' }}>
               <div style={{ marginBottom: 8, fontWeight: 'bold' }}>
@@ -227,54 +196,55 @@ export const HeaderConfiguration = forwardRef<ClashHeaderConfigingRef>(
                   <TextField
                     fullWidth
                     size="small"
-                    sx={{ fontSize: 14, marginRight: 2 }}
+                    sx={{ marginRight: 1 }}
                     value={origin}
                     onChange={(e) => handleUpdateOrigin(index, e.target.value)}
                     placeholder={t(
                       'settings.sections.externalCors.placeholders.origin',
                     )}
-                    slotProps={{ htmlInput: { style: { fontSize: 14 } } }}
+                    slotProps={{
+                      htmlInput: {
+                        'aria-label': t(
+                          'settings.sections.externalCors.fields.allowedOrigins',
+                        ),
+                      },
+                    }}
                   />
-                  <Button
-                    variant="contained"
-                    color="error"
+                  <IconButton
                     size="small"
+                    title={t('shared.actions.delete')}
+                    aria-label={t('shared.actions.delete')}
                     onClick={() => handleDeleteOrigin(index)}
                     disabled={corsConfig.allowOrigins.length <= 0}
-                    sx={deleteButtonStyle}
                   >
                     <DeleteIcon fontSize="small" />
-                  </Button>
+                  </IconButton>
                 </div>
               ))}
               <Button
-                variant="contained"
+                variant="outlined"
                 size="small"
+                startIcon={<AddRounded />}
                 onClick={handleAddOrigin}
-                sx={addButtonStyle}
               >
                 {t('settings.sections.externalCors.actions.add')}
               </Button>
 
-              <div
-                style={{
-                  marginTop: 12,
-                  padding: 8,
-                  backgroundColor: '#f5f5f5',
-                  borderRadius: 4,
+              <Box
+                sx={{
+                  mt: 1.5,
+                  color: 'text.secondary',
+                  fontSize: 12,
+                  overflowWrap: 'anywhere',
                 }}
               >
-                <div
-                  style={{ color: '#666', fontSize: 12, fontStyle: 'italic' }}
-                >
-                  {t('settings.sections.externalCors.messages.alwaysIncluded', {
-                    urls: DEV_URLS.join(', '),
-                  })}
-                </div>
-              </div>
+                {t('settings.sections.externalCors.messages.alwaysIncluded', {
+                  urls: DEV_URLS.join(', '),
+                })}
+              </Box>
             </div>
           </ListItem>
-        </List>
+        </SettingForm>
       </BaseDialog>
     )
   },

@@ -1,50 +1,79 @@
 .base-page {
   width: 100%;
   height: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
+  background: var(--surface-color);
+
   > header {
-    flex: 0 0 58px;
-    width: 100%;
-    // max-width: 850px;
-    margin: 0 auto;
-    padding: 0 20px;
+    flex: 0 0 auto;
+    min-height: 72px;
+    padding: 16px 28px;
     box-sizing: border-box;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
     border-bottom: 1px solid var(--divider-color);
   }
 
+  .base-page-toolbar {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
   .base-container {
-    height: 100%;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
-    // border-radius: 10px;
-    // border-top-left-radius: var(--border-radius);
 
     > section {
       position: relative;
-      flex: 1 1 100%;
       width: 100%;
       height: 100%;
       overflow: auto;
-      padding: 10px 0;
+      padding: 24px 28px;
       box-sizing: border-box;
       scrollbar-gutter: stable;
+
       .base-content {
-        width: calc(100% - 10px * 2);
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
         margin: 0 auto;
       }
     }
 
-    &.no-padding {
-      > section {
-        padding: 0;
-        overflow: visible;
-        .base-content {
-          width: 100%;
-        }
-      }
+    &.no-padding > section {
+      padding: 0;
+      overflow: visible;
     }
+  }
+}
+
+@media (max-width: 900px) {
+  .base-page > header {
+    padding: 14px 20px;
+    min-height: 64px;
+  }
+
+  .base-page .base-container > section {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .base-page > header {
+    padding: 12px 14px;
+    flex-wrap: wrap;
+  }
+
+  .base-page .base-container > section {
+    padding: 16px 14px;
   }
 }

@@ -1,16 +1,22 @@
-import { styled, Box } from '@mui/material'
+import { alpha, styled, Box } from '@mui/material'
 import type { ReactNode } from 'react'
 
 import type { SearchState } from '@/components/base'
 
-const Item = styled(Box)(({ theme: { palette, typography } }) => ({
-  padding: '8px 0',
-  margin: '0 12px',
-  lineHeight: 1.35,
+const Item = styled(Box)(({ theme: { palette, breakpoints } }) => ({
+  display: 'grid',
+  gridTemplateColumns: '180px minmax(0, 1fr)',
+  alignItems: 'baseline',
+  gap: 16,
+  padding: '11px 20px',
+  lineHeight: 1.5,
   borderBottom: `1px solid ${palette.divider}`,
   fontSize: '0.875rem',
-  fontFamily: typography.fontFamily,
+  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
   userSelect: 'text',
+  '&:hover': { backgroundColor: palette.action.hover },
+  [breakpoints.down('md')]: { gridTemplateColumns: '1fr', gap: 3 },
+  '& > div': { minWidth: 0 },
   '& .time': {
     color: palette.text.secondary,
   },
@@ -36,7 +42,7 @@ const Item = styled(Box)(({ theme: { palette, typography } }) => ({
     overflowWrap: 'anywhere',
   },
   '& .highlight': {
-    backgroundColor: palette.mode === 'dark' ? '#ffeb3b40' : '#ffeb3b90',
+    backgroundColor: alpha(palette.warning.main, 0.2),
     borderRadius: 2,
     padding: '0 2px',
   },

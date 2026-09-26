@@ -3,6 +3,7 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -98,8 +99,14 @@ export function ProxyProtocol({
         anchorEl={anchor}
         onClose={() => setAnchor(null)}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        slotProps={{
+          paper: { sx: { maxWidth: 'min(320px, calc(100vw - 32px))' } },
+        }}
       >
-        <Typography sx={{ px: 2, py: 1.5 }}>
+        <Typography
+          variant="body2"
+          sx={{ px: 2, py: 1.5, overflowWrap: 'anywhere' }}
+        >
           {t('proxies.protocol.unavailable')}
         </Typography>
       </Popover>
@@ -209,7 +216,7 @@ function Hy2Dialog({
       maxWidth="xs"
       aria-labelledby="hy2-settings-title"
     >
-      <DialogTitle id="hy2-settings-title" sx={{ pr: 6 }}>
+      <DialogTitle id="hy2-settings-title" sx={{ pr: 6, position: 'relative' }}>
         {t('proxies.protocol.title')}
         <IconButton
           aria-label={t('shared.actions.close')}
@@ -220,20 +227,43 @@ function Hy2Dialog({
           <CloseRounded />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <Box
+        sx={{
+          px: 2.5,
+          py: 1.75,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1.5,
+          borderBottom: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'action.hover',
+        }}
+      >
         <Typography
           variant="body2"
-          color="text.secondary"
-          sx={{ mb: 2, overflowWrap: 'anywhere' }}
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            fontWeight: 600,
+            overflowWrap: 'anywhere',
+          }}
         >
           {node.name}
         </Typography>
+        <Chip
+          label="Hysteria2"
+          variant="outlined"
+          size="small"
+          sx={{ flexShrink: 0 }}
+        />
+      </Box>
+      <DialogContent sx={{ py: 2.5 }}>
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
             <CircularProgress size={24} />
           </Box>
         ) : (
-          <Stack spacing={2} sx={{ pt: 0.5 }}>
+          <Stack spacing={2}>
             {error && (
               <Alert severity="error" sx={{ overflowWrap: 'anywhere' }}>
                 {error}
@@ -300,7 +330,16 @@ function Hy2Dialog({
               </Box>
             )}
             {mode !== 'original' && (
-              <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                  pt: 2,
+                  borderTop: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
                 <TextField
                   select
                   label={t('proxies.protocol.duration')}
@@ -347,7 +386,7 @@ function Hy2Dialog({
                     fullWidth
                   />
                 )}
-              </>
+              </Box>
             )}
           </Stack>
         )}

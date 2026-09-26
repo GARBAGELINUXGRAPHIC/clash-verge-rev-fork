@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next'
 
 import { useIconCache } from '@/hooks/use-icon-cache'
 import { useVerge } from '@/hooks/use-verge'
-import { useThemeMode } from '@/services/states'
 import type { ResolvedProxyMember } from '@/types/proxy-view'
 
 import { ProxyGroupHeaderBlock } from './proxy-group-header-block'
@@ -60,9 +59,6 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
   const enable_group_icon = verge?.enable_group_icon ?? true
   const toolsOnLeft = verge?.proxy_group_tools_position === 'left'
   const headerId = useId()
-  const mode = useThemeMode()
-  const isDark = mode === 'dark'
-  const itembackgroundcolor = isDark ? '#282A36' : '#ffffff'
   const iconCachePath = useIconCache({
     icon: group.icon,
     cacheKey: group.name.replaceAll(' ', ''),
@@ -93,7 +89,7 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
         key="name"
         group={headerId}
         block="name"
-        sx={{ flex: '0 1 auto', mr: toolsOnLeft ? 1 : 0 }}
+        sx={{ gridArea: 'name', mr: toolsOnLeft ? 1 : 0 }}
       >
         {enable_group_icon && group.icon?.trim().startsWith('http') && (
           <img
@@ -152,7 +148,7 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
               sx: {
                 display: 'flex',
                 alignItems: 'center',
-                color: '#ccc',
+                color: 'text.secondary',
               },
             },
           }}
@@ -175,9 +171,9 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
             label={`${group.members.length}`}
             sx={{
               mr: toolsOnLeft ? 0 : 1,
-              backgroundColor: (theme) =>
-                alpha(theme.palette.primary.main, 0.1),
-              color: (theme) => theme.palette.primary.main,
+              backgroundColor: 'action.hover',
+              color: 'text.secondary',
+              fontVariantNumeric: 'tabular-nums',
             }}
           />
         </div>
@@ -190,9 +186,12 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
         group={headerId}
         block="tools"
         sx={{
+          gridArea: 'tools',
           flex: '1 1 auto',
           justifyContent: toolsOnLeft ? 'start' : 'end',
           mr: toolsOnLeft ? 2 : 0,
+          '@container proxy-header (max-width: 560px)': { mr: 0 },
+          '@supports not (container-type: inline-size)': { mr: 0 },
         }}
       >
         {toolsOnLeft && proxyCount}
@@ -210,19 +209,23 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
     )
 
     return (
-      <div style={{ padding: '4px 8px' }}>
+      <div style={{ padding: '6px 12px' }}>
         <ListItemButton
           dense
           sx={{
+            px: 2.5,
+            py: 1.25,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            backgroundColor: 'background.paper',
+            height: '100%',
+            borderRadius: 0,
+            containerType: 'inline-size',
+            containerName: 'proxy-header',
             boxShadow:
               stickyed && headState?.open
-                ? '0 4px 8px rgba(0, 0, 0, 0.2) !important'
-                : undefined,
-          }}
-          style={{
-            background: itembackgroundcolor,
-            height: '100%',
-            borderRadius: '8px',
+                ? '0 1px 0 var(--divider-color)'
+                : 'none',
           }}
           onClick={() => {
             if (headState?.open) {
@@ -232,10 +235,36 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
           }}
         >
           <Box sx={{ width: '100%' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+            <Box
+              sx={{
+                display: 'grid',
+                alignItems: 'center',
+                width: '100%',
+                gridTemplateColumns: toolsOnLeft
+                  ? 'minmax(250px, auto) minmax(0, 1fr) 24px'
+                  : 'minmax(0, 1fr) minmax(250px, auto) 24px',
+                gridTemplateAreas: toolsOnLeft
+                  ? '"tools name toggle"'
+                  : '"name tools toggle"',
+                '@container proxy-header (max-width: 560px)': {
+                  gridTemplateColumns: 'minmax(0, 1fr) 24px',
+                  gridTemplateAreas: '"name toggle" "tools tools"',
+                  rowGap: 0.75,
+                },
+                '@supports not (container-type: inline-size)': {
+                  gridTemplateColumns: 'minmax(0, 1fr) 24px',
+                  gridTemplateAreas: '"name toggle" "tools tools"',
+                  rowGap: 0.75,
+                },
+              }}
+            >
               {toolsOnLeft ? toolsBlock : nameBlock}
               {toolsOnLeft ? nameBlock : toolsBlock}
-              {headState?.open ? <ExpandLessRounded /> : <ExpandMoreRounded />}
+              {headState?.open ? (
+                <ExpandLessRounded sx={{ gridArea: 'toggle' }} />
+              ) : (
+                <ExpandMoreRounded sx={{ gridArea: 'toggle' }} />
+              )}
             </Box>
           </Box>
         </ListItemButton>
@@ -246,7 +275,7 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
   if (type === 1) {
     return (
       <ProxyHead
-        sx={{ pl: 2, pr: 3, mt: 0.5, mb: 1 }}
+        sx={{ px: 2.5, mt: 0.5, mb: 1 }}
         url={group.testUrl}
         groupName={group.name}
         headState={headState!}
@@ -264,7 +293,7 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
         member={member!.member}
         selected={group.now === member?.member.ref.name}
         showType={headState?.showType}
-        sx={{ py: 0, pl: 2 }}
+        sx={{ py: 0, px: 2.5 }}
         onClick={(nextMember) => onChangeProxy(group, nextMember)}
       />
     )
@@ -298,8 +327,8 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
           display: 'grid',
           my: 0.5,
           gap: 1,
-          px: 2,
-          gridTemplateColumns: `repeat(${item.col! || 2}, 1fr)`,
+          px: 2.5,
+          gridTemplateColumns: `repeat(${item.col! || 2}, minmax(0, 1fr))`,
         }}
       >
         {memberColItemsMemo}
@@ -312,7 +341,7 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
 
 const StyledPrimary = styled('span')`
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;

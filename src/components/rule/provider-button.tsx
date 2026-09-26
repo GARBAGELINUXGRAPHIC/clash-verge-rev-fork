@@ -6,13 +6,11 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   IconButton,
   List,
   ListItem,
   ListItemText,
   Typography,
-  alpha,
   styled,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -28,10 +26,12 @@ import { showNotice } from '@/services/notice-service'
 const TypeBox = styled(Box)<{ component?: React.ElementType }>(({ theme }) => ({
   display: 'inline-block',
   border: '1px solid #ccc',
-  borderColor: alpha(theme.palette.secondary.main, 0.5),
-  color: alpha(theme.palette.secondary.main, 0.8),
+  borderColor: theme.palette.divider,
+  color: theme.palette.text.secondary,
   borderRadius: 4,
-  fontSize: 10,
+  fontSize: 11,
+  fontFamily: theme.typography.fontFamily,
+  fontWeight: 500,
   marginRight: '4px',
   padding: '0 2px',
   lineHeight: 1.25,
@@ -136,9 +136,11 @@ export const ProviderButton = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 1.5,
             }}
           >
-            <Typography variant="h6">
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {t('rules.page.provider.dialogTitle')}
             </Typography>
             <Button
@@ -151,7 +153,7 @@ export const ProviderButton = () => {
           </Box>
         </DialogTitle>
 
-        <DialogContent>
+        <DialogContent sx={{ px: 0, py: 0 }}>
           <List sx={{ py: 0, minHeight: 250 }}>
             {Object.entries(ruleProviders || {})
               .sort()
@@ -163,39 +165,27 @@ export const ProviderButton = () => {
                 return (
                   <ListItem
                     key={key}
-                    sx={[
-                      {
-                        p: 0,
-                        mb: '8px',
-                        borderRadius: 2,
-                        overflow: 'hidden',
-                        transition: 'all 0.2s',
-                      },
-                      ({ palette: { mode, primary } }) => {
-                        const bgcolor = mode === 'light' ? '#ffffff' : '#24252f'
-                        const hoverColor =
-                          mode === 'light'
-                            ? alpha(primary.main, 0.1)
-                            : alpha(primary.main, 0.2)
-
-                        return {
-                          backgroundColor: bgcolor,
-                          '&:hover': {
-                            backgroundColor: hoverColor,
-                            borderColor: alpha(primary.main, 0.3),
-                          },
-                        }
-                      },
-                    ]}
+                    sx={{
+                      p: 0,
+                      borderBottom: '1px solid',
+                      borderColor: 'divider',
+                      overflow: 'hidden',
+                      '&:hover': { bgcolor: 'action.hover' },
+                    }}
                   >
                     <ListItemText
-                      sx={{ px: 2, py: 1 }}
+                      sx={{ px: 2.5, py: 1.5, minWidth: 0 }}
+                      slotProps={{
+                        primary: { component: 'div' },
+                        secondary: { component: 'div' },
+                      }}
                       primary={
                         <Box
                           sx={{
                             display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
+                            flexDirection: 'column',
+                            alignItems: 'stretch',
+                            gap: 0.5,
                           }}
                         >
                           <Typography
@@ -203,9 +193,25 @@ export const ProviderButton = () => {
                             component="div"
                             noWrap
                             title={key}
-                            sx={{ display: 'flex', alignItems: 'center' }}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              minWidth: 0,
+                              gap: 0.5,
+                            }}
                           >
-                            <span style={{ marginRight: '8px' }}>{key}</span>
+                            <Box
+                              component="span"
+                              sx={{
+                                minWidth: 0,
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                mr: 0.5,
+                                fontWeight: 500,
+                              }}
+                            >
+                              {key}
+                            </Box>
                             <TypeBox component="span">
                               {provider.ruleCount}
                             </TypeBox>
@@ -216,8 +222,7 @@ export const ProviderButton = () => {
                             color="text.secondary"
                             noWrap
                           >
-                            <small>{t('shared.labels.updateAt')}: </small>
-                            {time.fromNow()}
+                            {t('shared.labels.updateAt')}: {time.fromNow()}
                           </Typography>
                         </Box>
                       }
@@ -236,10 +241,11 @@ export const ProviderButton = () => {
                         </Box>
                       }
                     />
-                    <Divider orientation="vertical" flexItem />
                     <Box
                       sx={{
-                        width: 40,
+                        width: 44,
+                        mr: 1,
+                        flexShrink: 0,
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',

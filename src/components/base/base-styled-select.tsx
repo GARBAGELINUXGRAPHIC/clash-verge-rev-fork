@@ -7,7 +7,7 @@ export const BaseStyledSelect = styled((props: SelectProps<string>) => {
       autoComplete="new-password"
       sx={{
         width: 120,
-        height: 33.375,
+        height: 34,
         mr: 1,
         '[role="button"]': { py: 0.65 },
       }}
@@ -15,5 +15,5 @@ export const BaseStyledSelect = styled((props: SelectProps<string>) => {
     />
   )
 })(({ theme }) => ({
-  background: theme.palette.mode === 'light' ? '#fff' : undefined,
+  background: theme.palette.background.paper,
 }))

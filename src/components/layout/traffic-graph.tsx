@@ -5,13 +5,13 @@ import { Traffic } from 'tauri-plugin-mihomo-api'
 const maxPoint = 30
 
 const refLineAlpha = 1
-const refLineWidth = 2
+const refLineWidth = 1
 
-const upLineAlpha = 0.6
-const upLineWidth = 4
+const upLineAlpha = 1
+const upLineWidth = 2
 
 const downLineAlpha = 1
-const downLineWidth = 4
+const downLineWidth = 2
 const sampleIntervalMs = 1000
 const frameIntervalMs = 1000 / 15
 const animationDurationMs = sampleIntervalMs
@@ -99,8 +99,8 @@ export function TrafficGraph({ ref }: { ref?: Ref<TrafficRef> }) {
 
     const { primary, secondary, divider } = palette
     const refLineColor = divider || 'rgba(0, 0, 0, 0.12)'
-    const upLineColor = secondary.main || '#9c27b0'
-    const downLineColor = primary.main || '#5b5c9d'
+    const upLineColor = secondary.main
+    const downLineColor = primary.main
 
     const cancelPendingDraw = () => {
       if (frameTimer !== null) {
