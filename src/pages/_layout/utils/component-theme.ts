@@ -128,8 +128,8 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
               : palette.background.paper,
             0.7,
           ),
-          backdropFilter: 'blur(12px) saturate(160%)',
-          WebkitBackdropFilter: 'blur(12px) saturate(160%)',
+          backdropFilter: 'blur(2px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(2px) saturate(200%)',
           boxShadow: '0 8px 28px rgba(0, 0, 0, 0.14)',
         },
         list: { padding: 5 },
@@ -140,6 +140,10 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
         paper: {
           border,
           borderRadius: 8,
+          '&:not(.MuiMenu-paper)': {
+            backgroundColor:
+              palette.mode === 'light' ? '#ffffff' : palette.background.paper,
+          },
           boxShadow: '0 8px 28px rgba(0, 0, 0, 0.14)',
           backgroundImage: 'none',
         },
@@ -172,6 +176,9 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
         paper: {
           border,
           borderRadius: 8,
+          backgroundColor:
+            palette.mode === 'light' ? '#ffffff' : palette.background.paper,
+          backgroundImage: 'none',
           boxShadow: '0 20px 64px rgba(0, 0, 0, 0.2)',
         },
       },

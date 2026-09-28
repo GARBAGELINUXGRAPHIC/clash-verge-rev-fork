@@ -198,6 +198,7 @@ export interface TranslationResources {
         navigation: {
           menu: {
             collapseNavBar: string
+            done: string
             expandNavBar: string
             lock: string
             reorderMode: string

@@ -33,30 +33,10 @@ export const LayoutItem = (props: Props) => {
       : menu_icon
 
   return (
-    <ListItem
-      ref={sortable?.ref}
-      style={sortable?.style}
-      sx={{ p: 0, mb: 0.5 }}
-    >
+    <ListItem ref={sortable?.ref} style={sortable?.style} sx={{ p: 0 }}>
       <ListItemButton
         ref={sortable?.handleRef}
         selected={!!match}
-        sx={{
-          borderRadius: '6px',
-          minHeight: 38,
-          px: 1.25,
-          py: 0.75,
-          color: 'text.secondary',
-          gap: 1.25,
-          '& .MuiListItemText-primary': {
-            fontWeight: match ? 600 : 400,
-            fontSize: 16,
-          },
-          '&.Mui-selected, &.Mui-selected:hover': {
-            bgcolor: 'action.selected',
-            color: 'primary.main',
-          },
-        }}
         title={children}
         aria-label={children}
         aria-current={match ? 'page' : undefined}
@@ -66,8 +46,8 @@ export const LayoutItem = (props: Props) => {
           <ListItemIcon
             sx={{
               color: 'inherit',
-              minWidth: 20,
-              '& svg': { width: 20, height: 20 },
+              minWidth: 24,
+              '& svg': { width: 24, height: 24 },
               cursor: 'inherit',
             }}
           >
@@ -78,8 +58,8 @@ export const LayoutItem = (props: Props) => {
           <ListItemIcon
             sx={{
               cursor: 'inherit',
-              minWidth: 20,
-              '& svg': { width: 20, height: 20 },
+              minWidth: 24,
+              '& svg': { width: 24, height: 24 },
             }}
           >
             {icon[1]}

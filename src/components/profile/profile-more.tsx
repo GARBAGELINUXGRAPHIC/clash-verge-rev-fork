@@ -124,7 +124,8 @@ export const ProfileMore = (props: Props) => {
   return (
     <>
       <ProfileBox
-        onDoubleClick={onEditFile}
+        component="div"
+        onClick={onEditFile}
         onContextMenu={(event) => {
           const { clientX, clientY } = event
           setPosition({ top: clientY, left: clientX })
@@ -160,7 +161,10 @@ export const ProfileMore = (props: Props) => {
           />
           <IconButton
             size="small"
-            onClick={onEditFile}
+            onClick={(event) => {
+              event.stopPropagation()
+              onEditFile()
+            }}
             title={t('profiles.components.menu.editFile')}
             aria-label={t('profiles.components.menu.editFile')}
           >
@@ -177,7 +181,10 @@ export const ProfileMore = (props: Props) => {
                   edge="start"
                   color="error"
                   title={t('profiles.modals.logViewer.title')}
-                  onClick={() => setLogOpen(true)}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    setLogOpen(true)
+                  }}
                 >
                   <FeaturedPlayListRounded fontSize="inherit" />
                 </IconButton>
@@ -188,7 +195,10 @@ export const ProfileMore = (props: Props) => {
                 edge="start"
                 color="inherit"
                 title={t('profiles.modals.logViewer.title')}
-                onClick={() => setLogOpen(true)}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setLogOpen(true)
+                }}
               >
                 <FeaturedPlayListRounded fontSize="inherit" />
               </IconButton>

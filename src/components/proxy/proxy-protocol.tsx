@@ -10,15 +10,17 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Menu,
   MenuItem,
-  Popover,
   Stack,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material'
 import { useEffect, useState, type HTMLAttributes, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { useHy2Override } from '@/hooks/use-hy2-override'
 import {
   getHy2Settings,
   setHy2Settings,
@@ -27,7 +29,6 @@ import {
 } from '@/services/hy2'
 import { errorDetail } from '@/services/notice-service'
 import {
-  memberDetails,
   type ProxyNodeView,
   type ResolvedProxyMember,
 } from '@/types/proxy-view'
@@ -48,26 +49,64 @@ function nextMidnight() {
 export function ProxyProtocol({
   member,
   children,
+  contextOnly = false,
 }: {
   member: ResolvedProxyMember
   children: (props: HTMLAttributes<HTMLElement>) => ReactNode
+  contextOnly?: boolean
 }) {
   const { t } = useTranslation()
   const [node, setNode] = useState<ProxyNodeView | null>(null)
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null)
-  const type =
-    member.kind === 'unresolved'
-      ? member.ref.reason
-      : memberDetails(member)?.type
+  const [position, setPosition] = useState<{
+    top: number
+    left: number
+  } | null>(null)
+  const [data, setData] = useState<Hy2SettingsResponse | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const isHy2 =
+    member.kind === 'node' && member.node.type.toLowerCase() === 'hysteria2'
+  const theme = useTheme()
+  const hasOverride = useHy2Override(
+    isHy2 && !contextOnly ? member.node.source : undefined,
+  )
 
-  const open = (element: HTMLElement) => {
-    if (
-      member.kind === 'node' &&
-      member.node.type.toLowerCase() === 'hysteria2'
-    ) {
-      setNode(member.node)
-    } else {
-      setAnchor(element)
+  useEffect(() => {
+    if (!position || member.kind !== 'node') return
+    let cancelled = false
+    getHy2Settings(member.node.source)
+      .then((result) => {
+        if (!cancelled) setData(result)
+      })
+      .catch((failure) => {
+        if (!cancelled) setError(errorDetail(failure))
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [position, member])
+
+  const selectMode = async (mode: Exclude<Mode, 'brutal'>) => {
+    if (!data || busy) return
+    setBusy(true)
+    setError('')
+    try {
+      await setHy2Settings(
+        data.target,
+        mode === 'original'
+          ? null
+          : {
+              congestion: { mode },
+              expiresAt:
+                data.settings?.expiresAt ??
+                Math.floor(nextMidnight().getTime() / 1000),
+            },
+      )
+      setPosition(null)
+    } catch (failure) {
+      setError(errorDetail(failure))
+    } finally {
+      setBusy(false)
     }
   }
 
@@ -75,41 +114,70 @@ export function ProxyProtocol({
     <Box
       component="span"
       sx={{ display: 'contents' }}
-      onClick={(event) => event.stopPropagation()}
-      onKeyDown={(event) => event.stopPropagation()}
+      onClick={contextOnly ? undefined : (event) => event.stopPropagation()}
+      onKeyDown={contextOnly ? undefined : (event) => event.stopPropagation()}
+      onContextMenu={(event) => {
+        if (!isHy2) return
+        event.preventDefault()
+        event.stopPropagation()
+        setData(null)
+        setError('')
+        setPosition({ top: event.clientY, left: event.clientX })
+      }}
     >
-      {children({
-        role: 'button',
-        tabIndex: member.kind === 'unresolved' ? -1 : 0,
-        'aria-label': t('proxies.protocol.settings', { protocol: type }),
-        style: { cursor: 'pointer' },
-        onClick: (event) => {
-          event.preventDefault()
-          open(event.currentTarget)
-        },
-        onKeyDown: (event) => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault()
-            open(event.currentTarget)
-          }
-        },
-      })}
-      <Popover
-        open={Boolean(anchor)}
-        anchorEl={anchor}
-        onClose={() => setAnchor(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        slotProps={{
-          paper: { sx: { maxWidth: 'min(320px, calc(100vw - 32px))' } },
-        }}
+      {children(
+        contextOnly
+          ? {}
+          : {
+              style: {
+                ...(hasOverride && {
+                  color: theme.palette.warning.main,
+                  borderColor: theme.palette.warning.main,
+                }),
+              },
+            },
+      )}
+      <Menu
+        open={Boolean(position)}
+        anchorReference="anchorPosition"
+        anchorPosition={position ?? undefined}
+        onClose={busy ? undefined : () => setPosition(null)}
+        onClick={(event) => event.stopPropagation()}
       >
-        <Typography
-          variant="body2"
-          sx={{ px: 2, py: 1.5, overflowWrap: 'anywhere' }}
+        {(['original', 'standard', 'conservative', 'aggressive'] as const).map(
+          (mode) => (
+            <MenuItem
+              key={mode}
+              disabled={!data || busy}
+              selected={
+                Boolean(data) &&
+                (data?.settings?.congestion.mode ?? 'original') === mode
+              }
+              onClick={() => void selectMode(mode)}
+            >
+              {t(`proxies.protocol.${mode}`)}
+            </MenuItem>
+          ),
+        )}
+        <MenuItem
+          disabled={busy}
+          onClick={() => {
+            if (member.kind !== 'node') return
+            setPosition(null)
+            setNode(member.node)
+          }}
         >
-          {t('proxies.protocol.unavailable')}
-        </Typography>
-      </Popover>
+          Brutal...
+        </MenuItem>
+        {error && (
+          <Alert
+            severity="error"
+            sx={{ maxWidth: 320, overflowWrap: 'anywhere' }}
+          >
+            {error}
+          </Alert>
+        )}
+      </Menu>
       {node && <Hy2Dialog node={node} onClose={() => setNode(null)} />}
     </Box>
   )
@@ -127,7 +195,7 @@ function Hy2Dialog({
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
-  const [mode, setMode] = useState<Mode>('original')
+  const [mode, setMode] = useState<Mode>('brutal')
   const [up, setUp] = useState('')
   const [down, setDown] = useState('')
   const [duration, setDuration] = useState('midnight')
@@ -141,7 +209,6 @@ function Hy2Dialog({
         setData(result)
         if (result.settings) {
           const { congestion, expiresAt } = result.settings
-          setMode(congestion.mode)
           if (congestion.mode === 'brutal') {
             setUp(String(congestion.up))
             setDown(String(congestion.down))

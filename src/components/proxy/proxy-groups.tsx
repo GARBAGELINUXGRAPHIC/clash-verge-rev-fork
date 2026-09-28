@@ -37,10 +37,6 @@ import {
   resolveEmptyListReason,
   resolveProxyListState,
 } from './proxy-empty-state-model'
-import {
-  DEFAULT_HOVER_DELAY,
-  ProxyGroupNavigator,
-} from './proxy-group-navigator'
 import { ProxyRender } from './proxy-render'
 import {
   PROXY_GROUP_HEADER_SENSORS,
@@ -375,7 +371,6 @@ function NormalProxyGroups(props: { mode: string }) {
   const stickyListRef = useRef<StickyVirtualListHandle>(null)
   const listSize = useSize(() => stickyListRef.current?.getScrollElement())
   const {
-    verge,
     renderList,
     onProxies,
     onHeadState,
@@ -521,13 +516,6 @@ function NormalProxyGroups(props: { mode: string }) {
     [renderList],
   )
 
-  const proxyGroupNames = useMemo(() => {
-    const names = renderList
-      .filter((item) => item.type === 0 && item.group?.name)
-      .map((item) => item.group!.name)
-    return Array.from(new Set(names))
-  }, [renderList])
-
   const handleGroupToggle = useCallback(
     async (group: ProxyGroupView) => {
       const index = renderList.findIndex(
@@ -557,6 +545,17 @@ function NormalProxyGroups(props: { mode: string }) {
         onLocation={handleLocation}
         onCheckAll={handleCheckAll}
         onHeadState={async (groupName, patch) => {
+          if (patch.open !== undefined && stickyListRef.current) {
+            const index = renderList.findIndex(
+              (row) => row.type === 0 && row.group.name === groupName,
+            )
+            if (index >= 0) {
+              stickyListRef.current.transitionGroup(index, patch.open, () =>
+                onHeadState(groupName, patch),
+              )
+              return
+            }
+          }
           if (stickyed && patch.filterText !== undefined) {
             handleGroupLocationByName(groupName)
             await stickyListRef.current?.waitForScrollEnd()
@@ -574,6 +573,7 @@ function NormalProxyGroups(props: { mode: string }) {
       handleLocation,
       handleGroupToggle,
       handleGroupLocationByName,
+      renderList,
     ],
   )
 
@@ -610,15 +610,6 @@ function NormalProxyGroups(props: { mode: string }) {
           renderItem={renderProxyItem}
         />
       </DragDropProvider>
-
-      {mode === 'rule' && (
-        <ProxyGroupNavigator
-          proxyGroupNames={proxyGroupNames}
-          onGroupLocation={handleGroupLocationByName}
-          enableHoverJump={verge?.enable_hover_jump_navigator ?? true}
-          hoverDelay={verge?.hover_jump_navigator_delay ?? DEFAULT_HOVER_DELAY}
-        />
-      )}
     </div>
   )
 }

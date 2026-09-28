@@ -1,23 +1,27 @@
 import { DragDropProvider, KeyboardSensor, PointerSensor } from '@dnd-kit/react'
 import {
-  ChevronLeftRounded,
-  ChevronRightRounded,
+  ArrowBackIosNewRounded,
   LockOpenRounded,
   LockOutlined,
   RestoreRounded,
 } from '@mui/icons-material'
 import {
   Box,
-  IconButton,
+  alpha,
+  Button,
+  Portal,
   List,
+  ListItem,
+  ListItemButton,
   ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   SvgIcon,
   Tooltip,
   Typography,
 } from '@mui/material'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import iconDark from '@/assets/image/icon_dark.svg?react'
@@ -25,6 +29,7 @@ import iconLight from '@/assets/image/icon_light.svg?react'
 import { useVerge } from '@/hooks/use-verge'
 import { useNavMenuOrder } from '@/pages/_layout/hooks'
 import { navItems } from '@/pages/_navigation'
+import { navigationItems } from '@/pages/_navigation-meta'
 
 import { SortableItem } from '../base'
 
@@ -106,17 +111,78 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
     setMenuContextPosition(null)
   }, [])
 
+  useEffect(() => {
+    if (!menuUnlocked) return
+    const content = document.querySelector<HTMLElement>(
+      '.layout-content__right',
+    )
+    const wasInert = content?.inert ?? false
+    if (content) content.inert = true
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') handleLockMenu()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      if (content) content.inert = wasInert
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [menuUnlocked, handleLockMenu])
+
   const handleToggleNavCollapsed = useCallback(() => {
     setMenuContextPosition(null)
     void patchVerge({ collapse_navbar: !isCollapsed })
   }, [isCollapsed, patchVerge])
 
-  // Navigation menu items
-  const navMenuItems = menuOrder.map((path, index) => {
-    const item = navItemMap.get(path)
-    if (!item) return null
+  const collapseLabel = t(
+    isCollapsed
+      ? 'layout.components.navigation.menu.expandNavBar'
+      : 'layout.components.navigation.menu.collapseNavBar',
+  )
 
-    return (
+  const collapseNavItem = (
+    <ListItem
+      key="collapse-navigation"
+      className="nav-collapse-item"
+      sx={{ p: 0 }}
+    >
+      <Tooltip title={isCollapsed ? collapseLabel : ''} placement="right">
+        <ListItemButton
+          onClick={handleToggleNavCollapsed}
+          aria-label={collapseLabel}
+        >
+          <ListItemIcon
+            sx={{
+              color: 'inherit',
+              minWidth: 24,
+              '& svg': {
+                width: 24,
+                height: 24,
+                transform: isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 220ms ease',
+              },
+              cursor: 'inherit',
+            }}
+          >
+            <ArrowBackIosNewRounded />
+          </ListItemIcon>
+          <ListItemText
+            primary={collapseLabel}
+            sx={{
+              m: 0,
+              minWidth: 0,
+              '& span': { overflowWrap: 'anywhere' },
+            }}
+          />
+        </ListItemButton>
+      </Tooltip>
+    </ListItem>
+  )
+
+  const navMenuItems = menuOrder.flatMap((path, index) => {
+    const item = navItemMap.get(path)
+    if (!item) return []
+
+    const navItem = (
       <SortableItem
         key={item.path}
         id={item.path}
@@ -130,6 +196,10 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
         )}
       </SortableItem>
     )
+
+    return item.path === navigationItems.settings.path
+      ? [navItem, collapseNavItem]
+      : [navItem]
   })
 
   return (
@@ -144,7 +214,7 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
           />
           <Typography
             className="sidebar-brand-name"
-            sx={{ fontSize: 14, fontWeight: 600 }}
+            sx={{ fontSize: 16, fontWeight: 600 }}
             data-tauri-drag-region="true"
           >
             Clash Verge
@@ -153,28 +223,32 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
         <UpdateButton className="the-newbtn" />
       </div>
 
-      {/* Edit navigation menu badge */}
       {menuUnlocked && (
-        <Box
-          sx={(theme) => ({
-            px: 1.5,
-            py: 0.75,
-            mx: 'auto',
-            mb: 1,
-            maxWidth: 250,
-            borderRadius: 1.5,
-            fontSize: 12,
-            fontWeight: 600,
-            textAlign: 'center',
-            color: theme.palette.warning.contrastText,
-            bgcolor:
-              theme.palette.mode === 'light'
-                ? theme.palette.warning.main
-                : theme.palette.warning.dark,
-          })}
-        >
-          {t('layout.components.navigation.menu.reorderMode')}
-        </Box>
+        <Portal>
+          <Box
+            sx={(theme) => ({
+              position: 'fixed',
+              inset: 0,
+              left: isCollapsed ? 64 : 180,
+              zIndex: theme.zIndex.drawer,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 2,
+              bgcolor: alpha(theme.palette.background.paper, 0.7),
+              backdropFilter: 'blur(2px) saturate(160%)',
+              WebkitBackdropFilter: 'blur(2px) saturate(160%)',
+            })}
+          >
+            <Typography sx={{ fontSize: 18, fontWeight: 600 }}>
+              {t('layout.components.navigation.menu.reorderMode')}
+            </Typography>
+            <Button variant="contained" onClick={handleLockMenu}>
+              {t('layout.components.navigation.menu.done', { defaultValue: 'Done' })}
+            </Button>
+          </Box>
+        </Portal>
       )}
 
       {/* Navigation menu */}
@@ -206,11 +280,12 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
       >
         <MenuItem onClick={handleToggleNavCollapsed} dense>
           <ListItemIcon>
-            {isCollapsed ? (
-              <ChevronRightRounded fontSize="small" />
-            ) : (
-              <ChevronLeftRounded fontSize="small" />
-            )}
+            <ArrowBackIosNewRounded
+              fontSize="small"
+              sx={{
+                transform: isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)',
+              }}
+            />
           </ListItemIcon>
           {isCollapsed
             ? t('layout.components.navigation.menu.expandNavBar')
@@ -246,27 +321,6 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
       {/* Traffic */}
       <div className="the-traffic">
         <LayoutTraffic />
-      </div>
-      <div className="sidebar-footer">
-        <Tooltip
-          title={t(
-            isCollapsed
-              ? 'layout.components.navigation.menu.expandNavBar'
-              : 'layout.components.navigation.menu.collapseNavBar',
-          )}
-        >
-          <IconButton
-            size="small"
-            aria-label={t(
-              isCollapsed
-                ? 'layout.components.navigation.menu.expandNavBar'
-                : 'layout.components.navigation.menu.collapseNavBar',
-            )}
-            onClick={handleToggleNavCollapsed}
-          >
-            {isCollapsed ? <ChevronRightRounded /> : <ChevronLeftRounded />}
-          </IconButton>
-        </Tooltip>
       </div>
     </aside>
   )

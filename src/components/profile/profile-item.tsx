@@ -644,6 +644,7 @@ const ProfileItemBase = (props: ProfileItemProps) => {
   return (
     <Box ref={setElement} sx={{ position: 'relative', borderRadius: '8px' }}>
       <ProfileBox
+        component="div"
         aria-selected={selected}
         onClick={(e) => {
           if (activating) {
