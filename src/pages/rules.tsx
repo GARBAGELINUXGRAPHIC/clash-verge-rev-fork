@@ -75,9 +75,7 @@ const RulesPage = () => {
           px: 2.5,
           py: 1.5,
           flexShrink: 0,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
+          bgcolor: 'background.default',
           display: 'flex',
           alignItems: 'center',
         }}

@@ -208,7 +208,7 @@ export const useCustomTheme = () => {
     muiTheme = createTheme(muiTheme, {
       shape: { borderRadius: 4 },
       palette: {
-        divider: mode === 'light' ? '#DEDEE3' : '#38383B',
+        divider: mode === 'light' ? defaultTheme.background_color : '#303034',
         action: {
           hover:
             mode === 'light'
@@ -250,8 +250,8 @@ export const useCustomTheme = () => {
         hasUserBackground
           ? 'transparent'
           : mode === 'light'
-            ? '#EFEFF2'
-            : '#1D1D1F',
+            ? dt.surface_color
+            : backgroundColor,
       )
       rootEle.style.setProperty('--text-primary', muiTheme.palette.text.primary)
       rootEle.style.setProperty(

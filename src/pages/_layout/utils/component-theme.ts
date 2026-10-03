@@ -168,7 +168,22 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
     MuiTooltip: {
       defaultProps: { arrow: false },
       styleOverrides: {
-        tooltip: { fontSize: 12, borderRadius: 5, padding: '6px 9px' },
+        tooltip: {
+          fontSize: 12,
+          borderRadius: 5,
+          padding: '6px 9px',
+          color: palette.text.primary,
+          border,
+          backgroundColor: alpha(
+            palette.mode === 'light'
+              ? palette.background.default
+              : palette.background.paper,
+            0.7,
+          ),
+          backdropFilter: 'blur(2px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(2px) saturate(200%)',
+          boxShadow: '0 8px 28px rgba(0, 0, 0, 0.14)',
+        },
       },
     },
     MuiDialog: {
@@ -202,7 +217,7 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
     },
     MuiDialogActions: {
       styleOverrides: {
-        root: { padding: '12px 24px', borderTop: border, gap: 4 },
+        root: { padding: '12px 24px', gap: 4 },
       },
     },
     MuiBackdrop: {

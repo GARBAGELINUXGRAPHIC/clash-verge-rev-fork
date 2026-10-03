@@ -45,7 +45,6 @@ export const ProxyUptime = ({ member }: Props) => {
           border: '1px solid',
           borderColor: alpha(color, 0.55),
           borderRadius: '4px',
-          backgroundColor: alpha(color, 0.12),
           color,
           fontSize: 10,
           fontVariantNumeric: 'tabular-nums',

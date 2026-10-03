@@ -57,7 +57,7 @@ export const ProxyItemMini = (props: Props) => {
               justifyContent: 'space-between',
               alignItems: 'center',
             },
-            ({ palette: { primary, background, divider } }) => {
+            ({ palette: { primary, background, mode } }) => {
               const showDelay = delayValue > 0
 
               return {
@@ -80,14 +80,33 @@ export const ProxyItemMini = (props: Props) => {
                     position: 'absolute',
                     inset: 0,
                     borderRadius: 'inherit',
-                    background: `linear-gradient(to right, ${primary.main} 3px, transparent 3px)`,
+                    background: `linear-gradient(to right, ${primary.main} 4px, transparent 4px)`,
                     pointerEvents: 'none',
                   },
-                  bgcolor: alpha(primary.main, 0.07),
-                  '&:hover': { bgcolor: alpha(primary.main, 0.11) },
+                  bgcolor: alpha(primary.main, mode === 'dark' ? 0.16 : 0.07),
+                  '&:hover': {
+                    bgcolor: alpha(primary.main, mode === 'dark' ? 0.22 : 0.11),
+                  },
                 },
-                border: `1px solid ${divider}`,
+                border: '1px solid transparent',
                 backgroundColor: background.paper,
+                boxShadow:
+                  mode === 'dark'
+                    ? '2px 4px 12px #00000040'
+                    : '2px 4px 12px #00000014',
+                transition:
+                  'transform .15s cubic-bezier(0,0,.5,1), box-shadow .3s cubic-bezier(0,0,.5,1), background-color .3s cubic-bezier(0,0,.5,1)',
+                '&:hover': {
+                  transform: 'scale(1.01)',
+                  boxShadow:
+                    mode === 'dark'
+                      ? '2px 4px 16px #00000066'
+                      : '2px 4px 16px #00000029',
+                },
+                '@media (prefers-reduced-motion: reduce)': {
+                  transition: 'none',
+                  '&:hover': { transform: 'none' },
+                },
               }
             },
           ]}
@@ -246,7 +265,7 @@ const TypeBox = styled(Box, {
 })<{ component?: React.ElementType }>(({ theme }) => ({
   display: 'inline-block',
   border: '1px solid #ccc',
-  borderColor: theme.palette.divider,
+  borderColor: '#bbbbbbbb',
   color: theme.palette.text.secondary,
   borderRadius: 4,
   fontSize: 10,

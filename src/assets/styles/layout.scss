@@ -26,8 +26,7 @@
       box-sizing: border-box;
       user-select: none;
       overflow: hidden;
-      border-right: 1px solid var(--divider-color);
-      background: var(--surface-color);
+      background: var(--sidebar-background);
       transition: flex-basis 220ms ease, width 220ms ease;
 
       .the-logo {
@@ -79,7 +78,7 @@
         flex: 0 1 auto;
         min-height: 0;
         overflow-y: auto;
-        padding: 12px 0;
+        padding: 0;
         scrollbar-width: none;
 
         .MuiListItemButton-root {
@@ -136,10 +135,9 @@
         max-height: 240px;
         overflow: hidden;
         opacity: 1;
-        border-top: 1px solid var(--divider-color);
         padding-top: 12px;
         padding-bottom: 16px;
-        transition: max-height 220ms ease, opacity 160ms ease, padding-top 220ms ease, border-color 160ms ease;
+        transition: max-height 220ms ease, opacity 160ms ease, padding-top 220ms ease;
 
         > div {
           padding: 0 18px;
@@ -258,7 +256,6 @@
   align-items: center;
   padding: 0 8px;
   box-sizing: border-box;
-  border-bottom: 1px solid var(--divider-color);
   background: var(--sidebar-background);
 
   &-drag-region {
@@ -302,7 +299,6 @@
       max-height: 0;
       padding-top: 0;
       padding-bottom: 0;
-      border-top-color: transparent;
       opacity: 0;
       pointer-events: none;
     }

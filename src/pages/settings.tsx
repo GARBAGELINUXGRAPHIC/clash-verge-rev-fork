@@ -1,5 +1,5 @@
 import { GitHub, HelpOutlineRounded, Telegram } from '@mui/icons-material'
-import { Box, IconButton } from '@mui/material'
+import { Box, IconButton, Tooltip } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useTranslation } from 'react-i18next'
 
@@ -42,31 +42,37 @@ const SettingPage = () => {
           sx={{ display: 'flex', gap: 0.5 }}
           aria-label={t('settings.page.actionsGroupLabel')}
         >
-          <IconButton
-            size="medium"
-            color="inherit"
-            title={t('settings.page.actions.manual')}
-            onClick={toGithubDoc}
-          >
-            <HelpOutlineRounded fontSize="inherit" />
-          </IconButton>
-          <IconButton
-            size="medium"
-            color="inherit"
-            title={t('settings.page.actions.telegram')}
-            onClick={toTelegramChannel}
-          >
-            <Telegram fontSize="inherit" />
-          </IconButton>
+          <Tooltip title={t('settings.page.actions.manual')}>
+            <IconButton
+              size="medium"
+              color="inherit"
+              aria-label={t('settings.page.actions.manual')}
+              onClick={toGithubDoc}
+            >
+              <HelpOutlineRounded fontSize="inherit" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('settings.page.actions.telegram')}>
+            <IconButton
+              size="medium"
+              color="inherit"
+              aria-label={t('settings.page.actions.telegram')}
+              onClick={toTelegramChannel}
+            >
+              <Telegram fontSize="inherit" />
+            </IconButton>
+          </Tooltip>
 
-          <IconButton
-            size="medium"
-            color="inherit"
-            title={t('settings.page.actions.github')}
-            onClick={toGithubRepo}
-          >
-            <GitHub fontSize="inherit" />
-          </IconButton>
+          <Tooltip title={t('settings.page.actions.github')}>
+            <IconButton
+              size="medium"
+              color="inherit"
+              aria-label={t('settings.page.actions.github')}
+              onClick={toGithubRepo}
+            >
+              <GitHub fontSize="inherit" />
+            </IconButton>
+          </Tooltip>
         </Box>
       }
     >

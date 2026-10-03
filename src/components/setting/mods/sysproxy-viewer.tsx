@@ -406,7 +406,7 @@ export const SysproxyViewer = forwardRef<DialogRef>((props, ref) => {
       disableOk={saving}
     >
       <SettingForm>
-        <Box sx={{ pb: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <Box sx={{ pb: 2 }}>
           <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
             {t('settings.modals.sysproxy.fieldsets.currentStatus')}
           </Typography>

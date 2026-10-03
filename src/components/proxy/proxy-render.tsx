@@ -10,8 +10,6 @@ import {
   ListItemButton,
   Typography,
   styled,
-  Chip,
-  Tooltip,
 } from '@mui/material'
 import { memo, useId, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -46,7 +44,6 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
   const { t } = useTranslation()
   const {
     item,
-    stickyed = false,
     onLocation,
     onCheckAll,
     onHeadState,
@@ -156,30 +153,6 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
       </ProxyGroupHeaderBlock>
     )
 
-    const proxyCount = (
-      <Tooltip title={t('proxies.page.labels.proxyCount')} arrow>
-        <div
-          style={{
-            minWidth: '50px',
-            display: 'flex',
-            justifyContent: toolsOnLeft ? 'start' : 'end',
-            alignItems: 'center',
-          }}
-        >
-          <Chip
-            size="small"
-            label={`${group.members.length}`}
-            sx={{
-              mr: toolsOnLeft ? 0 : 1,
-              backgroundColor: 'action.hover',
-              color: 'text.secondary',
-              fontVariantNumeric: 'tabular-nums',
-            }}
-          />
-        </div>
-      </Tooltip>
-    )
-
     const toolsBlock = (
       <ProxyGroupHeaderBlock
         key="tools"
@@ -194,7 +167,6 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
           '@supports not (container-type: inline-size)': { mr: 0 },
         }}
       >
-        {toolsOnLeft && proxyCount}
         <ProxyGroupTools
           side={toolsOnLeft ? 'left' : 'right'}
           url={group.testUrl}
@@ -204,28 +176,33 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
           onCheckDelay={() => onCheckAll(group.name)}
           onHeadState={(p) => onHeadState(group.name, p)}
         />
-        {!toolsOnLeft && proxyCount}
       </ProxyGroupHeaderBlock>
     )
 
     return (
-      <div style={{ padding: '6px 12px' }}>
+      <div style={{ padding: '6px 20px' }}>
         <ListItemButton
           dense
           sx={{
             px: 2.5,
             py: 1.25,
-            borderBottom: '1px solid',
-            borderColor: 'divider',
             backgroundColor: 'background.paper',
             height: '100%',
-            borderRadius: 0,
+            borderRadius: '8px',
+            transition: 'box-shadow .3s cubic-bezier(0,0,.5,1)',
+            boxShadow: (theme) =>
+              theme.palette.mode === 'dark'
+                ? '2px 4px 12px #00000040'
+                : '2px 4px 12px #00000014',
+            '&:hover, &:focus-visible': {
+              backgroundColor: 'background.paper',
+              boxShadow: (theme) =>
+                theme.palette.mode === 'dark'
+                  ? '2px 4px 16px #00000066'
+                  : '2px 4px 16px #00000029',
+            },
             containerType: 'inline-size',
             containerName: 'proxy-header',
-            boxShadow:
-              stickyed && headState?.open
-                ? '0 1px 0 var(--divider-color)'
-                : 'none',
           }}
           onClick={() => {
             if (headState?.open) {
@@ -293,7 +270,7 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
         member={member!.member}
         selected={group.now === member?.member.ref.name}
         showType={headState?.showType}
-        sx={{ py: 0, px: 2.5 }}
+        sx={{ py: '5px', px: 2.5 }}
         onClick={(nextMember) => onChangeProxy(group, nextMember)}
       />
     )
@@ -323,10 +300,9 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
     return (
       <Box
         sx={{
-          height: 56,
           display: 'grid',
-          my: 0.5,
-          gap: 1,
+          py: '5px',
+          columnGap: '8px',
           px: 2.5,
           gridTemplateColumns: `repeat(${item.col! || 2}, minmax(0, 1fr))`,
         }}

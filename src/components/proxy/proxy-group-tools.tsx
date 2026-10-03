@@ -9,7 +9,13 @@ import VisibilityOffRounded from '@mui/icons-material/VisibilityOffRounded'
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded'
 import WifiTetheringOffRounded from '@mui/icons-material/WifiTetheringOffRounded'
 import WifiTetheringRounded from '@mui/icons-material/WifiTetheringRounded'
-import { Box, IconButton, type SxProps, TextField } from '@mui/material'
+import {
+  Box,
+  IconButton,
+  type SxProps,
+  TextField,
+  Tooltip,
+} from '@mui/material'
 import { useDebounceFn } from 'ahooks'
 import { memo, useEffect, useRef } from 'react'
 import { flushSync } from 'react-dom'
@@ -179,49 +185,51 @@ export const ProxyGroupTools = memo(function ProxyGroupTools(props: Props) {
       }}
     >
       {side === 'right' && textInput}
-      <IconButton
-        size="small"
-        color="inherit"
-        title={t('proxies.page.tooltips.locate')}
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          if (!headState.open)
-            // eslint-disable-next-line @eslint-react/dom-no-flush-sync
-            flushSync(() => onHeadState({ open: true }))
-          onLocation()
-        }}
-      >
-        <MyLocationRounded fontSize="inherit" />
-      </IconButton>
+      <Tooltip title={t('proxies.page.tooltips.locate')}>
+        <IconButton
+          size="small"
+          color="inherit"
+          aria-label={t('proxies.page.tooltips.locate')}
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (!headState.open)
+              // eslint-disable-next-line @eslint-react/dom-no-flush-sync
+              flushSync(() => onHeadState({ open: true }))
+            onLocation()
+          }}
+        >
+          <MyLocationRounded fontSize="inherit" />
+        </IconButton>
+      </Tooltip>
 
-      <IconButton
-        size="small"
-        color="inherit"
-        title={t('proxies.page.tooltips.delayCheck')}
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          if (!headState.open)
-            // eslint-disable-next-line @eslint-react/dom-no-flush-sync
-            flushSync(() => onHeadState({ open: true }))
-          // Remind the user that it is custom test url
-          if (testUrl?.trim() && textState !== 'filter') {
-            onHeadState({ textState: 'url' })
-          }
-          if (testUrl?.trim() && !isValidUrl(testUrl)) {
-            showNotice.warning('proxies.feedback.warnings.invalidTestUrl')
-            return
-          }
-          onCheckDelay()
-        }}
-      >
-        <NetworkCheckRounded fontSize="inherit" />
-      </IconButton>
+      <Tooltip title={t('proxies.page.tooltips.delayCheck')}>
+        <IconButton
+          size="small"
+          color="inherit"
+          aria-label={t('proxies.page.tooltips.delayCheck')}
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (!headState.open)
+              // eslint-disable-next-line @eslint-react/dom-no-flush-sync
+              flushSync(() => onHeadState({ open: true }))
+            // Remind the user that it is custom test url
+            if (testUrl?.trim() && textState !== 'filter') {
+              onHeadState({ textState: 'url' })
+            }
+            if (testUrl?.trim() && !isValidUrl(testUrl)) {
+              showNotice.warning('proxies.feedback.warnings.invalidTestUrl')
+              return
+            }
+            onCheckDelay()
+          }}
+        >
+          <NetworkCheckRounded fontSize="inherit" />
+        </IconButton>
+      </Tooltip>
 
-      <IconButton
-        size="small"
-        color="inherit"
+      <Tooltip
         title={
           [
             t('proxies.page.tooltips.sortDefault'),
@@ -229,86 +237,112 @@ export const ProxyGroupTools = memo(function ProxyGroupTools(props: Props) {
             t('proxies.page.tooltips.sortName'),
           ][sortType]
         }
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          if (!headState.open)
-            // eslint-disable-next-line @eslint-react/dom-no-flush-sync
-            flushSync(() => onHeadState({ open: true }))
-          onHeadState({
-            sortType: ((sortType + 1) % 3) as ProxySortType,
-          })
-        }}
       >
-        {sortType !== 1 && sortType !== 2 && <SortRounded fontSize="inherit" />}
-        {sortType === 1 && <AccessTimeRounded fontSize="inherit" />}
-        {sortType === 2 && <SortByAlphaRounded fontSize="inherit" />}
-      </IconButton>
+        <IconButton
+          size="small"
+          color="inherit"
+          aria-label={
+            [
+              t('proxies.page.tooltips.sortDefault'),
+              t('proxies.page.tooltips.sortDelay'),
+              t('proxies.page.tooltips.sortName'),
+            ][sortType]
+          }
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (!headState.open)
+              // eslint-disable-next-line @eslint-react/dom-no-flush-sync
+              flushSync(() => onHeadState({ open: true }))
+            onHeadState({
+              sortType: ((sortType + 1) % 3) as ProxySortType,
+            })
+          }}
+        >
+          {sortType !== 1 && sortType !== 2 && (
+            <SortRounded fontSize="inherit" />
+          )}
+          {sortType === 1 && <AccessTimeRounded fontSize="inherit" />}
+          {sortType === 2 && <SortByAlphaRounded fontSize="inherit" />}
+        </IconButton>
+      </Tooltip>
 
-      <IconButton
-        size="small"
-        color="inherit"
-        title={t('proxies.page.tooltips.delayCheckUrl')}
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          onHeadState({
-            textState: textState === 'url' ? null : 'url',
-          })
-          setTimeout(() => inputRef.current?.focus())
-        }}
-      >
-        {textState === 'url' ? (
-          <WifiTetheringRounded fontSize="inherit" />
-        ) : (
-          <WifiTetheringOffRounded fontSize="inherit" />
-        )}
-      </IconButton>
+      <Tooltip title={t('proxies.page.tooltips.delayCheckUrl')}>
+        <IconButton
+          size="small"
+          color="inherit"
+          aria-label={t('proxies.page.tooltips.delayCheckUrl')}
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            onHeadState({
+              textState: textState === 'url' ? null : 'url',
+            })
+            setTimeout(() => inputRef.current?.focus())
+          }}
+        >
+          {textState === 'url' ? (
+            <WifiTetheringRounded fontSize="inherit" />
+          ) : (
+            <WifiTetheringOffRounded fontSize="inherit" />
+          )}
+        </IconButton>
+      </Tooltip>
 
-      <IconButton
-        size="small"
-        color="inherit"
+      <Tooltip
         title={
           showType
             ? t('proxies.page.tooltips.showBasic')
             : t('proxies.page.tooltips.showDetail')
         }
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          if (!headState.open)
-            // eslint-disable-next-line @eslint-react/dom-no-flush-sync
-            flushSync(() => onHeadState({ open: true }))
-          onHeadState({ showType: !showType })
-        }}
       >
-        {showType ? (
-          <VisibilityRounded fontSize="inherit" />
-        ) : (
-          <VisibilityOffRounded fontSize="inherit" />
-        )}
-      </IconButton>
+        <IconButton
+          size="small"
+          color="inherit"
+          aria-label={
+            showType
+              ? t('proxies.page.tooltips.showBasic')
+              : t('proxies.page.tooltips.showDetail')
+          }
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (!headState.open)
+              // eslint-disable-next-line @eslint-react/dom-no-flush-sync
+              flushSync(() => onHeadState({ open: true }))
+            onHeadState({ showType: !showType })
+          }}
+        >
+          {showType ? (
+            <VisibilityRounded fontSize="inherit" />
+          ) : (
+            <VisibilityOffRounded fontSize="inherit" />
+          )}
+        </IconButton>
+      </Tooltip>
 
-      <IconButton
-        size="small"
-        color="inherit"
-        title={t('proxies.page.tooltips.filter')}
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          if (!headState.open && textState !== 'filter')
-            // eslint-disable-next-line @eslint-react/dom-no-flush-sync
-            flushSync(() => onHeadState({ open: true }))
-          onHeadState({ textState: textState === 'filter' ? null : 'filter' })
-          setTimeout(() => inputRef.current?.focus())
-        }}
-      >
-        {textState === 'filter' ? (
-          <SearchOffRounded fontSize="inherit" />
-        ) : (
-          <SearchRounded fontSize="inherit" />
-        )}
-      </IconButton>
+      <Tooltip title={t('proxies.page.tooltips.filter')}>
+        <IconButton
+          size="small"
+          color="inherit"
+          aria-label={t('proxies.page.tooltips.filter')}
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (!headState.open && textState !== 'filter')
+              // eslint-disable-next-line @eslint-react/dom-no-flush-sync
+              flushSync(() => onHeadState({ open: true }))
+            onHeadState({ textState: textState === 'filter' ? null : 'filter' })
+            setTimeout(() => inputRef.current?.focus())
+          }}
+        >
+          {textState === 'filter' ? (
+            <SearchOffRounded fontSize="inherit" />
+          ) : (
+            <SearchRounded fontSize="inherit" />
+          )}
+        </IconButton>
+      </Tooltip>
       {side === 'left' && textInput}
     </Box>
   )

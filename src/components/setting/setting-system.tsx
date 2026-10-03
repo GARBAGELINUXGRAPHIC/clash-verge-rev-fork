@@ -38,11 +38,13 @@ const SettingSystem = ({ onError }: Props) => {
       <TunViewer ref={tunRef} />
 
       <ProxyControlSwitches
+        noRightPadding
         label={t('settings.sections.system.toggles.tunMode')}
         onError={onError}
       />
 
       <ProxyControlSwitches
+        noRightPadding
         label={t('settings.sections.system.toggles.systemProxy')}
         onError={onError}
       />

@@ -250,9 +250,11 @@ function ChainProxyGroups(props: {
     estimateSize: (index) =>
       renderList[index]?.type === 2
         ? renderList[index]?.headState?.showType !== false
-          ? 68
-          : 48
-        : 64,
+          ? 70
+          : 50
+        : renderList[index]?.type === 4
+          ? 66
+          : 64,
     overscan: 15,
     getItemKey: (index) => renderList[index]?.key ?? index,
     rangeExtractor,
@@ -605,7 +607,7 @@ function NormalProxyGroups(props: { mode: string }) {
           isGroupItem={(item) => item.type === 0}
           getItemKey={(item) => item.key}
           estimateGroupItemHeight={estimatedHeaderHeight}
-          estimateItemHeight={68}
+          estimateItemHeight={70}
           renderGroupItem={renderGroupItem}
           renderItem={renderProxyItem}
         />

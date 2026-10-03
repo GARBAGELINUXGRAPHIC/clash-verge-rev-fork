@@ -2,7 +2,7 @@ import { alpha, ButtonBase, styled } from '@mui/material'
 
 export const ProfileBox = styled(ButtonBase)<{ component?: 'div' }>(
   ({ theme, 'aria-selected': selected }) => {
-    const { primary, text, background, divider } = theme.palette
+    const { primary, text, background } = theme.palette
 
     return {
       position: 'relative',
@@ -14,14 +14,14 @@ export const ProfileBox = styled(ButtonBase)<{ component?: 'div' }>(
       width: '100%',
       height: '100%',
       backgroundColor: selected ? alpha(primary.main, 0.07) : background.paper,
-      border: `1px solid ${selected ? alpha(primary.main, 0.45) : divider}`,
+      border: `1px solid ${selected ? alpha(primary.main, 0.45) : 'transparent'}`,
       '&::before': selected
         ? {
             content: '""',
             position: 'absolute',
             inset: 0,
             borderRadius: 'inherit',
-            background: `linear-gradient(to right, ${primary.main} 3px, transparent 3px)`,
+            background: `linear-gradient(to right, ${primary.main} 4px, transparent 4px)`,
             pointerEvents: 'none',
           }
         : undefined,

@@ -252,8 +252,6 @@ export const BackupConfigViewer = memo(
                 justifyContent: 'flex-end',
                 flexWrap: 'wrap',
                 pt: 2,
-                borderTop: 1,
-                borderColor: 'divider',
               }}
             >
               {webdavChanged ||

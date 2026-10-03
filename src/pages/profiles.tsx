@@ -16,7 +16,7 @@ import {
   RefreshRounded,
   TextSnippetOutlined,
 } from '@mui/icons-material'
-import { Box, Button, Divider, Grid, IconButton, Stack } from '@mui/material'
+import { Box, Button, Grid, IconButton, Stack, Tooltip } from '@mui/material'
 import { TauriEvent } from '@tauri-apps/api/event'
 import { readText } from '@tauri-apps/plugin-clipboard-manager'
 import { readTextFile } from '@tauri-apps/plugin-fs'
@@ -711,95 +711,121 @@ const ProfilePage = () => {
           {!batchMode ? (
             <>
               {/* Batch mode toggle button */}
-              <IconButton
-                size="small"
-                color="inherit"
-                title={t('profiles.page.batch.title')}
-                onClick={toggleBatchMode}
-              >
-                <CheckBoxOutlineBlankRounded />
-              </IconButton>
+              <Tooltip title={t('profiles.page.batch.title')}>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  aria-label={t('profiles.page.batch.title')}
+                  onClick={toggleBatchMode}
+                >
+                  <CheckBoxOutlineBlankRounded />
+                </IconButton>
+              </Tooltip>
 
-              <IconButton
-                size="small"
-                color="inherit"
-                title={t('profiles.page.actions.updateAll')}
-                onClick={onUpdateAll}
-              >
-                <RefreshRounded />
-              </IconButton>
+              <Tooltip title={t('profiles.page.actions.updateAll')}>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  aria-label={t('profiles.page.actions.updateAll')}
+                  onClick={onUpdateAll}
+                >
+                  <RefreshRounded />
+                </IconButton>
+              </Tooltip>
 
-              <IconButton
-                size="small"
-                color="inherit"
-                title={t('profiles.page.actions.viewRuntimeConfig')}
-                onClick={() => configRef.current?.open()}
-              >
-                <TextSnippetOutlined />
-              </IconButton>
+              <Tooltip title={t('profiles.page.actions.viewRuntimeConfig')}>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  aria-label={t('profiles.page.actions.viewRuntimeConfig')}
+                  onClick={() => configRef.current?.open()}
+                >
+                  <TextSnippetOutlined />
+                </IconButton>
+              </Tooltip>
 
-              <IconButton
-                size="small"
-                color="primary"
-                title={t('profiles.page.actions.reactivate')}
-                onClick={() => onEnhance(true)}
-              >
-                <LocalFireDepartmentRounded />
-              </IconButton>
+              <Tooltip title={t('profiles.page.actions.reactivate')}>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  aria-label={t('profiles.page.actions.reactivate')}
+                  onClick={() => onEnhance(true)}
+                >
+                  <LocalFireDepartmentRounded />
+                </IconButton>
+              </Tooltip>
 
               {/* 故障检测和紧急恢复按钮 */}
               {(error || isStale) && (
-                <IconButton
-                  size="small"
-                  color="warning"
+                <Tooltip
                   title={t(
                     'profiles.page.feedback.tooltips.forceRefreshStaleData',
                   )}
-                  onClick={onEmergencyRefresh}
-                  sx={{
-                    animation: 'pulse 2s infinite',
-                    '@keyframes pulse': {
-                      '0%': { opacity: 1 },
-                      '50%': { opacity: 0.5 },
-                      '100%': { opacity: 1 },
-                    },
-                  }}
                 >
-                  <ClearRounded />
-                </IconButton>
+                  <IconButton
+                    size="small"
+                    color="warning"
+                    aria-label={t(
+                      'profiles.page.feedback.tooltips.forceRefreshStaleData',
+                    )}
+                    onClick={onEmergencyRefresh}
+                    sx={{
+                      animation: 'pulse 2s infinite',
+                      '@keyframes pulse': {
+                        '0%': { opacity: 1 },
+                        '50%': { opacity: 0.5 },
+                        '100%': { opacity: 1 },
+                      },
+                    }}
+                  >
+                    <ClearRounded />
+                  </IconButton>
+                </Tooltip>
               )}
             </>
           ) : (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <IconButton
-                size="small"
-                color="inherit"
+              <Tooltip
                 title={
                   isAllSelected()
                     ? t('profiles.page.batch.actions.deselectAll')
                     : t('profiles.page.batch.actions.selectAll')
                 }
-                onClick={
-                  isAllSelected() ? clearAllSelections : selectAllProfiles
-                }
               >
-                {getSelectionState() === 'all' ? (
-                  <CheckBoxRounded />
-                ) : getSelectionState() === 'partial' ? (
-                  <IndeterminateCheckBoxRounded />
-                ) : (
-                  <CheckBoxOutlineBlankRounded />
-                )}
-              </IconButton>
-              <IconButton
-                size="small"
-                color="error"
-                title={t('profiles.page.batch.actions.delete')}
-                onClick={deleteSelectedProfiles}
-                disabled={selectedProfiles.size === 0}
-              >
-                <DeleteRounded />
-              </IconButton>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  aria-label={
+                    isAllSelected()
+                      ? t('profiles.page.batch.actions.deselectAll')
+                      : t('profiles.page.batch.actions.selectAll')
+                  }
+                  onClick={
+                    isAllSelected() ? clearAllSelections : selectAllProfiles
+                  }
+                >
+                  {getSelectionState() === 'all' ? (
+                    <CheckBoxRounded />
+                  ) : getSelectionState() === 'partial' ? (
+                    <IndeterminateCheckBoxRounded />
+                  ) : (
+                    <CheckBoxOutlineBlankRounded />
+                  )}
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('profiles.page.batch.actions.delete')}>
+                <span style={{ display: 'inline-flex' }}>
+                  <IconButton
+                    size="small"
+                    color="error"
+                    aria-label={t('profiles.page.batch.actions.delete')}
+                    onClick={deleteSelectedProfiles}
+                    disabled={selectedProfiles.size === 0}
+                  >
+                    <DeleteRounded />
+                  </IconButton>
+                </span>
+              </Tooltip>
               <Button size="small" variant="outlined" onClick={toggleBatchMode}>
                 {t('profiles.page.batch.actions.done')}
               </Button>
@@ -821,9 +847,7 @@ const ProfilePage = () => {
           px: 2.5,
           py: 1.5,
           flexShrink: 0,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
+          bgcolor: 'background.default',
           display: 'flex',
           alignItems: 'center',
           '& > .MuiTextField-root': { flex: 1, minWidth: 0 },
@@ -849,23 +873,27 @@ const ProfilePage = () => {
             input: {
               sx: { pr: 1 },
               endAdornment: !url ? (
-                <IconButton
-                  size="small"
-                  sx={{ p: 0.5 }}
-                  title={t('profiles.page.importForm.actions.paste')}
-                  onClick={onCopyLink}
-                >
-                  <ContentPasteRounded fontSize="inherit" />
-                </IconButton>
+                <Tooltip title={t('profiles.page.importForm.actions.paste')}>
+                  <IconButton
+                    size="small"
+                    sx={{ p: 0.5 }}
+                    aria-label={t('profiles.page.importForm.actions.paste')}
+                    onClick={onCopyLink}
+                  >
+                    <ContentPasteRounded fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
               ) : (
-                <IconButton
-                  size="small"
-                  sx={{ p: 0.5 }}
-                  title={t('shared.actions.clear')}
-                  onClick={() => setUrl('')}
-                >
-                  <ClearRounded fontSize="inherit" />
-                </IconButton>
+                <Tooltip title={t('shared.actions.clear')}>
+                  <IconButton
+                    size="small"
+                    sx={{ p: 0.5 }}
+                    aria-label={t('shared.actions.clear')}
+                    onClick={() => setUrl('')}
+                  >
+                    <ClearRounded fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
               ),
             },
           }}
@@ -949,7 +977,6 @@ const ProfilePage = () => {
             ))}
           </Box>
         </DragDropProvider>
-        <Divider flexItem sx={{ borderColor: 'divider' }} />
         <Box sx={{ mt: 2.5 }}>
           <Grid container spacing={1.5}>
             <Grid size={{ xs: 12, sm: 6, md: 6, lg: 6 }}>

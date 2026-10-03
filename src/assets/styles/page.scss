@@ -4,9 +4,10 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  background: var(--surface-color);
+  background: var(--background-color);
 
   > header {
+    background: var(--sidebar-background);
     flex: 0 0 auto;
     min-height: 72px;
     padding: 16px 28px;
@@ -15,7 +16,6 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    border-bottom: 1px solid var(--divider-color);
   }
 
   .base-page-toolbar {

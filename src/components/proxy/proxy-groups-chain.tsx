@@ -106,13 +106,11 @@ function ChainRuleHeader({
   onMenuOpen,
 }: ChainRuleHeaderProps) {
   return (
-    <Box sx={{ borderBottom: '1px solid', borderColor: 'divider' }}>
+    <Box>
       <Box
         sx={{
           px: 2,
           py: 1.5,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -521,9 +519,6 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
           sx={{
             minWidth: 0,
             minHeight: 0,
-            borderLeft: { md: '1px solid' },
-            borderTop: { xs: '1px solid', md: 'none' },
-            borderColor: 'divider',
           }}
         >
           <ProxyChain

@@ -101,45 +101,51 @@ const LogPage = () => {
       }}
       header={
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          <IconButton
+          <Tooltip
             title={t(
               enableLog ? 'shared.actions.pause' : 'shared.actions.resume',
             )}
-            aria-label={t(
-              enableLog ? 'shared.actions.pause' : 'shared.actions.resume',
-            )}
-            size="small"
-            color="inherit"
-            onClick={handleToggleLog}
           >
-            {enableLog ? (
-              <PauseCircleOutlineRounded />
-            ) : (
-              <PlayCircleOutlineRounded />
-            )}
-          </IconButton>
-          <IconButton
+            <IconButton
+              aria-label={t(
+                enableLog ? 'shared.actions.pause' : 'shared.actions.resume',
+              )}
+              size="small"
+              color="inherit"
+              onClick={handleToggleLog}
+            >
+              {enableLog ? (
+                <PauseCircleOutlineRounded />
+              ) : (
+                <PlayCircleOutlineRounded />
+              )}
+            </IconButton>
+          </Tooltip>
+          <Tooltip
             title={t(
               isDescending
                 ? 'logs.actions.showAscending'
                 : 'logs.actions.showDescending',
             )}
-            aria-label={t(
-              isDescending
-                ? 'logs.actions.showAscending'
-                : 'logs.actions.showDescending',
-            )}
-            size="small"
-            color="inherit"
-            onClick={handleToggleOrder}
           >
-            <SwapVertRounded
-              sx={{
-                transform: isDescending ? 'scaleY(-1)' : 'none',
-                transition: 'transform 0.2s ease',
-              }}
-            />
-          </IconButton>
+            <IconButton
+              aria-label={t(
+                isDescending
+                  ? 'logs.actions.showAscending'
+                  : 'logs.actions.showDescending',
+              )}
+              size="small"
+              color="inherit"
+              onClick={handleToggleOrder}
+            >
+              <SwapVertRounded
+                sx={{
+                  transform: isDescending ? 'scaleY(-1)' : 'none',
+                  transition: 'transform 0.2s ease',
+                }}
+              />
+            </IconButton>
+          </Tooltip>
 
           <Tooltip title={t('shared.actions.clear')}>
             <IconButton
@@ -159,9 +165,7 @@ const LogPage = () => {
           py: 1.5,
           gap: 1.5,
           flexShrink: 0,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
+          bgcolor: 'background.default',
           display: 'flex',
           alignItems: 'center',
         }}

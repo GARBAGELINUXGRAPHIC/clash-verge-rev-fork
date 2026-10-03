@@ -228,25 +228,40 @@ const ConnectionsPage = () => {
             </Tooltip>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <IconButton
-              color="inherit"
-              size="small"
-              onClick={() =>
-                setSetting((o) =>
-                  o?.layout !== 'table'
-                    ? { ...o, layout: 'table' }
-                    : { ...o, layout: 'list' },
-                )
-              }
-            >
-              {isTableLayout ? (
-                <TableRowsRounded titleAccess={t('shared.actions.listView')} />
-              ) : (
-                <TableChartRounded
-                  titleAccess={t('shared.actions.tableView')}
-                />
+            <Tooltip
+              title={t(
+                isTableLayout
+                  ? 'shared.actions.listView'
+                  : 'shared.actions.tableView',
               )}
-            </IconButton>
+            >
+              <IconButton
+                aria-label={t(
+                  isTableLayout
+                    ? 'shared.actions.listView'
+                    : 'shared.actions.tableView',
+                )}
+                color="inherit"
+                size="small"
+                onClick={() =>
+                  setSetting((o) =>
+                    o?.layout !== 'table'
+                      ? { ...o, layout: 'table' }
+                      : { ...o, layout: 'list' },
+                  )
+                }
+              >
+                {isTableLayout ? (
+                  <TableRowsRounded
+                    titleAccess={t('shared.actions.listView')}
+                  />
+                ) : (
+                  <TableChartRounded
+                    titleAccess={t('shared.actions.tableView')}
+                  />
+                )}
+              </IconButton>
+            </Tooltip>
             <Tooltip title={t('shared.actions.closeAll')}>
               <IconButton
                 size="small"
@@ -276,9 +291,7 @@ const ConnectionsPage = () => {
           px: 2.5,
           py: 1.5,
           flexShrink: 0,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'background.paper',
+          bgcolor: 'background.default',
           display: 'flex',
           alignItems: 'center',
           gap: 1,
