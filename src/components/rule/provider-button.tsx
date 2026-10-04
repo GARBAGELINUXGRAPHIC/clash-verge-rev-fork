@@ -1,12 +1,10 @@
 import { RefreshRounded, StorageOutlined } from '@mui/icons-material'
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -19,6 +17,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { updateRuleProvider } from 'tauri-plugin-mihomo-api'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { useAppRefreshers, useRulesData } from '@/providers/app-data-context'
 import { syncRuntimeProviders } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'

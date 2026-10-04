@@ -1,13 +1,11 @@
 /* eslint-disable @eslint-react/set-state-in-effect */
 import { AddRounded, Delete, ExpandLess, ExpandMore } from '@mui/icons-material'
 import {
-  Button,
   Divider,
   List,
   ListItem,
   ListItemText,
   ListItemButton,
-  IconButton,
   Box,
   Typography,
 } from '@mui/material'
@@ -22,6 +20,8 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useClash } from '@/hooks/use-clash'

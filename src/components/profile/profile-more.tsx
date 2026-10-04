@@ -7,7 +7,6 @@ import {
   Box,
   Badge,
   Chip,
-  IconButton,
   ListItemIcon,
   Menu,
   MenuItem,
@@ -17,6 +16,7 @@ import { useLockFn } from 'ahooks'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { EditorViewer } from '@/components/profile/editor-viewer'
 import { useEditorDocument } from '@/hooks/use-editor-document'
 import { viewProfile, readProfileFile, saveProfileFile } from '@/services/cmds'

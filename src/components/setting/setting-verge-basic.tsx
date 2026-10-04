@@ -1,10 +1,10 @@
 import { ContentCopyRounded } from '@mui/icons-material'
-import { Button } from '@mui/material'
 import { open } from '@tauri-apps/plugin-dialog'
 import { useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { DialogRef, TooltipIcon } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useVerge } from '@/hooks/use-verge'
@@ -225,44 +225,40 @@ const SettingVergeBasic = ({ onError }: Props) => {
             disabled
             size="small"
             sx={{ width: 230 }}
-            slotProps={{
-              input: {
-                endAdornment: (
-                  <>
-                    <Button
-                      onClick={async () => {
-                        const selected = await open({
-                          directory: false,
-                          multiple: false,
-                          filters: [
-                            {
-                              name: 'Shell Script',
-                              extensions: ['sh', 'bat', 'ps1'],
-                            },
-                          ],
-                        })
-                        if (selected) {
-                          onChangeData({ startup_script: `${selected}` })
-                          patchVerge({ startup_script: `${selected}` })
-                        }
-                      }}
-                    >
-                      {t('settings.components.verge.basic.actions.browse')}
-                    </Button>
-                    {startup_script && (
-                      <Button
-                        onClick={async () => {
-                          onChangeData({ startup_script: '' })
-                          patchVerge({ startup_script: '' })
-                        }}
-                      >
-                        {t('shared.actions.clear')}
-                      </Button>
-                    )}
-                  </>
-                ),
-              },
-            }}
+            suffix={
+              <>
+                <Button
+                  onClick={async () => {
+                    const selected = await open({
+                      directory: false,
+                      multiple: false,
+                      filters: [
+                        {
+                          name: 'Shell Script',
+                          extensions: ['sh', 'bat', 'ps1'],
+                        },
+                      ],
+                    })
+                    if (selected) {
+                      onChangeData({ startup_script: `${selected}` })
+                      patchVerge({ startup_script: `${selected}` })
+                    }
+                  }}
+                >
+                  {t('settings.components.verge.basic.actions.browse')}
+                </Button>
+                {startup_script && (
+                  <Button
+                    onClick={async () => {
+                      onChangeData({ startup_script: '' })
+                      patchVerge({ startup_script: '' })
+                    }}
+                  >
+                    {t('shared.actions.clear')}
+                  </Button>
+                )}
+              </>
+            }
           />
         </GuardState>
       </SettingItem>

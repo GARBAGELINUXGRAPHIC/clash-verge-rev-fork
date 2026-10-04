@@ -7,7 +7,7 @@ import {
   ArrowDownwardRounded,
   ArrowUpwardRounded,
 } from '@mui/icons-material'
-import { Box, IconButton, MenuItem, Tooltip, Typography } from '@mui/material'
+import { Box, MenuItem, Tooltip, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -21,6 +21,7 @@ import {
   type SearchState,
   VirtualList,
 } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import {
   AppleSegment,
   AppleSegmentedControl,

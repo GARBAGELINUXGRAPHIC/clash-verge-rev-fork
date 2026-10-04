@@ -3,7 +3,6 @@ import {
   Alert,
   Box,
   CircularProgress,
-  IconButton,
   ListItem,
   ListItemText,
   Snackbar,
@@ -14,6 +13,7 @@ import { useImperativeHandle, useState, type Ref } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, DialogRef, Switch } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { useClashInfo } from '@/hooks/use-clash'
 import { useVerge } from '@/hooks/use-verge'

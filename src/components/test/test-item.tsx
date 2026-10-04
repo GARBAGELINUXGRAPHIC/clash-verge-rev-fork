@@ -6,7 +6,6 @@ import {
 } from '@mui/icons-material'
 import {
   Box,
-  IconButton,
   ListItemIcon,
   MenuItem,
   Menu,
@@ -18,6 +17,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseLoading } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { useIconCache } from '@/hooks/use-icon-cache'
 import { cmdTestDelay } from '@/services/cmds'
 import delayManager from '@/services/delay'

@@ -4,7 +4,7 @@ import {
   SwapVertRounded,
   DeleteOutlineRounded,
 } from '@mui/icons-material'
-import { Box, IconButton, MenuItem, Tooltip } from '@mui/material'
+import { Box, MenuItem, Tooltip } from '@mui/material'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -17,6 +17,7 @@ import {
   VirtualList,
   type VirtualListHandle,
 } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import LogItem from '@/components/log/log-item'
 import { useClashLog } from '@/hooks/use-clash-log'
 import { useLogData } from '@/hooks/use-log-data'

@@ -6,15 +6,7 @@ import {
   PendingOutlined,
   RefreshRounded,
 } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  IconButton,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, Chip, CircularProgress, Tooltip, Typography } from '@mui/material'
 import { Channel, invoke } from '@tauri-apps/api/core'
 import { useLockFn } from 'ahooks'
 import dayjs from 'dayjs'
@@ -22,6 +14,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseEmpty, BasePage } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { showNotice } from '@/services/notice-service'
 
 interface UnlockItem {

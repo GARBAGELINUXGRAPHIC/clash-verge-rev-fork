@@ -1,16 +1,11 @@
 import { Shuffle } from '@mui/icons-material'
-import {
-  CircularProgress,
-  IconButton,
-  ListItem,
-  ListItemText,
-  Stack,
-} from '@mui/material'
+import { CircularProgress, ListItem, ListItemText, Stack } from '@mui/material'
 import { useLockFn, useRequest } from 'ahooks'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, Switch } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { useDisplayedMixedPort } from '@/hooks/use-displayed-mixed-port'
 import { useVerge } from '@/hooks/use-verge'

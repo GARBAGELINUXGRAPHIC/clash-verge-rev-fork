@@ -5,10 +5,11 @@ import {
   EditRounded,
   OpenInNewRounded,
 } from '@mui/icons-material'
-import { Divider, IconButton, Stack, Typography } from '@mui/material'
+import { Divider, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 
 interface Props {

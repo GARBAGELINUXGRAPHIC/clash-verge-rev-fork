@@ -1,13 +1,7 @@
 import { DeleteForeverRounded, UndoRounded } from '@mui/icons-material'
-import {
-  Box,
-  IconButton,
-  ListItem,
-  ListItemText,
-  alpha,
-  styled,
-} from '@mui/material'
+import { Box, ListItem, ListItemText, alpha, styled } from '@mui/material'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { useIconCache } from '@/hooks/use-icon-cache'
 interface Props {
   type: 'prepend' | 'original' | 'delete' | 'append'

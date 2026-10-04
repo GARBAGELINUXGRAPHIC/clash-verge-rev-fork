@@ -2,7 +2,6 @@ import { RestartAltRounded } from '@mui/icons-material'
 import {
   Alert,
   Box,
-  Button,
   FormControl,
   ListItem,
   ListItemText,
@@ -31,6 +30,7 @@ import {
   MonacoEditor,
   Switch,
 } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import {
   AppleSegment,

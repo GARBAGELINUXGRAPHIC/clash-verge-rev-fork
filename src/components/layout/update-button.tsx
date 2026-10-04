@@ -1,8 +1,9 @@
-import { Button, Tooltip } from '@mui/material'
+import { Tooltip } from '@mui/material'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { DialogRef } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { useUpdate } from '@/hooks/use-update'
 
 import { UpdateViewer } from '../setting/mods/update-viewer'

@@ -1,4 +1,4 @@
-import { Box, Button, ListItem, ListItemText, Typography } from '@mui/material'
+import { Box, ListItem, ListItemText, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import type { Ref } from 'react'
 import { useImperativeHandle, useState } from 'react'
@@ -11,6 +11,7 @@ import {
   DialogRef,
   Switch,
 } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { useClash } from '@/hooks/use-clash'
 import { enhanceProfiles } from '@/services/cmds'

@@ -1,8 +1,10 @@
 import { UploadFileRounded } from '@mui/icons-material'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { AppleButton as Button } from '@/components/base/apple-button'
 
 interface Props {
   onChange: (file: File, value: string) => void

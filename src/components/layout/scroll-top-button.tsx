@@ -1,5 +1,7 @@
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import { IconButton, Fade, SxProps, Theme } from '@mui/material'
+import { Fade, SxProps, Theme } from '@mui/material'
+
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 
 interface Props {
   onClick: () => void

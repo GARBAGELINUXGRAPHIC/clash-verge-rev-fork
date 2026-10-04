@@ -1,5 +1,5 @@
 import { ClearRounded, SearchRounded } from '@mui/icons-material'
-import { Box, SvgIcon, styled, IconButton } from '@mui/material'
+import { Box, SvgIcon, styled } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 import {
   type ChangeEvent,
@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import matchCaseIcon from '@/assets/image/component/match_case.svg?react'
 import matchWholeWordIcon from '@/assets/image/component/match_whole_word.svg?react'
 import UseRegularExpressionIcon from '@/assets/image/component/use_regular_expression.svg?react'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { buildRegex, compileStringMatcher } from '@/utils/search-matcher'
 

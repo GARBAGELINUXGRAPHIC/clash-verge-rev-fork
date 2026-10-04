@@ -7,19 +7,20 @@ import {
 import { isSortable, useSortable } from '@dnd-kit/react/sortable'
 import { DragIndicatorRounded } from '@mui/icons-material'
 import {
-  Button,
   Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   List,
   ListItem,
   ListItemText,
 } from '@mui/material'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 
 const columnPointerSensor = PointerSensor.configure({
   activationConstraints: () => undefined,

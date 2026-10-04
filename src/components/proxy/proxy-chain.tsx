@@ -17,9 +17,7 @@ import {
 import {
   Alert,
   Box,
-  Button,
   Chip,
-  IconButton,
   Typography,
   keyframes,
   useTheme,
@@ -40,6 +38,8 @@ import {
 } from 'tauri-plugin-mihomo-api'
 
 import { TooltipIcon } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { useRuntimeConfig } from '@/hooks/use-clash'
 import { useRecordSelection } from '@/hooks/use-record-selection'
 import { useAppRefreshers, useProxiesData } from '@/providers/app-data-context'

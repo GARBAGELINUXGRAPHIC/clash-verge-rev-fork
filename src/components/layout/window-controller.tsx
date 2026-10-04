@@ -1,5 +1,5 @@
 import { Close, CropSquare, FilterNone, Minimize } from '@mui/icons-material'
-import { Box, IconButton } from '@mui/material'
+import { Box } from '@mui/material'
 import {
   forwardRef,
   type PointerEvent,
@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { useWindowControls } from '@/hooks/use-window'
 import getSystem from '@/utils/get-system'
 

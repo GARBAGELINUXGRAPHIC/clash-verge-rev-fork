@@ -1,11 +1,4 @@
-import {
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-  Stack,
-  Typography,
-} from '@mui/material'
+import { List, ListItem, ListItemText, Stack, Typography } from '@mui/material'
 import { open as openDialog } from '@tauri-apps/plugin-dialog'
 import { useLockFn } from 'ahooks'
 import type { ReactNode, Ref } from 'react'
@@ -13,6 +6,7 @@ import { useCallback, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, DialogRef } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { useVerge } from '@/hooks/use-verge'
 import {
   createLocalBackup,

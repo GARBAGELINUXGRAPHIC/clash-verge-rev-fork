@@ -1,10 +1,7 @@
 import { InfoRounded } from '@mui/icons-material'
-import {
-  Tooltip,
-  IconButton,
-  IconButtonProps,
-  SvgIconProps,
-} from '@mui/material'
+import { Tooltip, IconButtonProps, SvgIconProps } from '@mui/material'
+
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 
 interface Props extends IconButtonProps {
   title?: string

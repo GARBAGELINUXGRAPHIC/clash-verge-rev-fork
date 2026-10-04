@@ -1,19 +1,17 @@
-import {
-  ExpandLessRounded,
-  ExpandMoreRounded,
-  InboxRounded,
-} from '@mui/icons-material'
+import { ExpandMoreRounded, InboxRounded } from '@mui/icons-material'
 import {
   alpha,
   Box,
   ListItemText,
   ListItemButton,
   Typography,
+  Tooltip,
   styled,
 } from '@mui/material'
 import { memo, useId, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton } from '@/components/base/apple-button'
 import { useIconCache } from '@/hooks/use-icon-cache'
 import { useVerge } from '@/hooks/use-verge'
 import type { ResolvedProxyMember } from '@/types/proxy-view'
@@ -81,6 +79,15 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
   }, [type, memberCol, item.key, group, showType, onChangeProxy])
 
   if (type === 0) {
+    const toggleGroup = () => {
+      if (headState?.open) onGroupToggle?.(group)
+      onHeadState?.(group.name, { open: !headState?.open })
+    }
+    const toggleLabel = t(
+      headState?.open
+        ? 'layout.components.navigation.menu.collapseNavBar'
+        : 'layout.components.navigation.menu.expandNavBar',
+    )
     const nameBlock = (
       <ProxyGroupHeaderBlock
         key="name"
@@ -204,12 +211,7 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
             containerType: 'inline-size',
             containerName: 'proxy-header',
           }}
-          onClick={() => {
-            if (headState?.open) {
-              onGroupToggle?.(group)
-            }
-            onHeadState?.(group.name, { open: !headState?.open })
-          }}
+          onClick={toggleGroup}
         >
           <Box sx={{ width: '100%' }}>
             <Box
@@ -218,18 +220,18 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
                 alignItems: 'center',
                 width: '100%',
                 gridTemplateColumns: toolsOnLeft
-                  ? 'minmax(250px, auto) minmax(0, 1fr) 24px'
-                  : 'minmax(0, 1fr) minmax(250px, auto) 24px',
+                  ? 'minmax(250px, auto) minmax(0, 1fr) 36px'
+                  : 'minmax(0, 1fr) minmax(250px, auto) 36px',
                 gridTemplateAreas: toolsOnLeft
                   ? '"tools name toggle"'
                   : '"name tools toggle"',
                 '@container proxy-header (max-width: 560px)': {
-                  gridTemplateColumns: 'minmax(0, 1fr) 24px',
+                  gridTemplateColumns: 'minmax(0, 1fr) 36px',
                   gridTemplateAreas: '"name toggle" "tools tools"',
                   rowGap: 0.75,
                 },
                 '@supports not (container-type: inline-size)': {
-                  gridTemplateColumns: 'minmax(0, 1fr) 24px',
+                  gridTemplateColumns: 'minmax(0, 1fr) 36px',
                   gridTemplateAreas: '"name toggle" "tools tools"',
                   rowGap: 0.75,
                 },
@@ -237,11 +239,32 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
             >
               {toolsOnLeft ? toolsBlock : nameBlock}
               {toolsOnLeft ? nameBlock : toolsBlock}
-              {headState?.open ? (
-                <ExpandLessRounded sx={{ gridArea: 'toggle' }} />
-              ) : (
-                <ExpandMoreRounded sx={{ gridArea: 'toggle' }} />
-              )}
+              <Tooltip title={toggleLabel}>
+                <AppleIconButton
+                  aria-label={`${toggleLabel} ${group.name}`}
+                  aria-expanded={!!headState?.open}
+                  sx={{ gridArea: 'toggle' }}
+                  onPointerDown={(event) => event.stopPropagation()}
+                  onMouseDown={(event) => event.stopPropagation()}
+                  onKeyDown={(event) => event.stopPropagation()}
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    toggleGroup()
+                  }}
+                >
+                  <ExpandMoreRounded
+                    sx={{
+                      transform: headState?.open
+                        ? 'rotate(180deg)'
+                        : 'rotate(0deg)',
+                      transition: 'transform 180ms ease',
+                      '@media (prefers-reduced-motion: reduce)': {
+                        transitionDuration: '80ms',
+                      },
+                    }}
+                  />
+                </AppleIconButton>
+              </Tooltip>
             </Box>
           </Box>
         </ListItemButton>

@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -8,6 +7,8 @@ import {
 } from '@mui/material'
 import { QRCodeSVG } from 'qrcode.react'
 import { useTranslation } from 'react-i18next'
+
+import { AppleButton as Button } from '@/components/base/apple-button'
 
 interface Props {
   open: boolean

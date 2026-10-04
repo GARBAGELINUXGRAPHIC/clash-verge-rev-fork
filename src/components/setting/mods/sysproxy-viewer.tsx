@@ -2,7 +2,6 @@ import { EditRounded } from '@mui/icons-material'
 import {
   Autocomplete,
   Box,
-  Button,
   Chip,
   InputAdornment,
   ListItem,
@@ -27,6 +26,7 @@ import {
   Switch,
   TooltipIcon,
 } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { EditorViewer } from '@/components/profile/editor-viewer'
 import { useDisplayedMixedPort } from '@/hooks/use-displayed-mixed-port'

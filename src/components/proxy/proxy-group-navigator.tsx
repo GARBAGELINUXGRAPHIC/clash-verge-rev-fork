@@ -1,5 +1,7 @@
-import { Box, Button, Tooltip } from '@mui/material'
+import { Box, Tooltip } from '@mui/material'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
+
+import { AppleButton as Button } from '@/components/base/apple-button'
 
 interface ProxyGroupNavigatorProps {
   proxyGroupNames: string[]

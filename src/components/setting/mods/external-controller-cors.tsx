@@ -1,10 +1,12 @@
 import { AddRounded, Delete as DeleteIcon } from '@mui/icons-material'
-import { Box, Button, IconButton, ListItem } from '@mui/material'
+import { Box, ListItem } from '@mui/material'
 import { useLockFn, useRequest } from 'ahooks'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, Switch } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { useClash } from '@/hooks/use-clash'
 import { restartCore } from '@/services/cmds'

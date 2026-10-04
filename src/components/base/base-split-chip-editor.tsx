@@ -1,16 +1,10 @@
 import { AddRounded, CodeRounded, ViewModuleRounded } from '@mui/icons-material'
-import {
-  Box,
-  Chip,
-  FormHelperText,
-  IconButton,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, Chip, FormHelperText, Tooltip, Typography } from '@mui/material'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import {
   AppleSegment,

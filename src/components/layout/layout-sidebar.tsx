@@ -8,7 +8,6 @@ import {
 import {
   Box,
   alpha,
-  Button,
   Portal,
   List,
   ListItem,
@@ -26,6 +25,7 @@ import { useTranslation } from 'react-i18next'
 
 import iconDark from '@/assets/image/icon_dark.svg?react'
 import iconLight from '@/assets/image/icon_light.svg?react'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { useVerge } from '@/hooks/use-verge'
 import { useNavMenuOrder } from '@/pages/_layout/hooks'
 import { navItems } from '@/pages/_navigation'
@@ -245,7 +245,9 @@ export const LayoutSidebar = (props: LayoutSidebarProps) => {
               {t('layout.components.navigation.menu.reorderMode')}
             </Typography>
             <Button variant="contained" onClick={handleLockMenu}>
-              {t('layout.components.navigation.menu.done', { defaultValue: 'Done' })}
+              {t('layout.components.navigation.menu.done', {
+                defaultValue: 'Done',
+              })}
             </Button>
           </Box>
         </Portal>

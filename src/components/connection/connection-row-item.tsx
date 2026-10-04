@@ -1,9 +1,11 @@
 import { CloseRounded } from '@mui/icons-material'
-import { Box, IconButton } from '@mui/material'
+import { Box } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { memo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { closeConnection } from 'tauri-plugin-mihomo-api'
+
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 
 import { RelativeTime } from './connection-relative-time'
 import type { ConnectionRowView } from './connection-row-view'

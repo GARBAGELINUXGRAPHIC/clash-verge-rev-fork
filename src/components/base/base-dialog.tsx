@@ -1,12 +1,10 @@
 import { CloseRounded } from '@mui/icons-material'
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Tooltip,
   Typography,
   type SxProps,
@@ -14,6 +12,9 @@ import {
 } from '@mui/material'
 import { ReactNode, useId } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 
 interface Props {
   title: ReactNode
@@ -115,7 +116,7 @@ export const BaseDialog: React.FC<Props> = ({
         <DialogActions
           sx={{
             flexWrap: 'wrap',
-            '& .MuiButton-root': { whiteSpace: 'normal', minWidth: 72 },
+            '& .apple-button': { whiteSpace: 'normal', minWidth: 72 },
           }}
         >
           {!disableCancel && (

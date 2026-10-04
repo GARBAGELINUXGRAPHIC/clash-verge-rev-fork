@@ -2,7 +2,6 @@ import { CloseRounded } from '@mui/icons-material'
 import {
   Alert,
   Grow,
-  IconButton,
   Box,
   Portal,
   Stack,
@@ -11,6 +10,7 @@ import {
 import React, { useCallback, useMemo, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { appleCardSurface } from '@/components/base/apple-card-style'
 import {
   boundNoticeText,
@@ -215,6 +215,7 @@ export const NoticeManager: React.FC<NoticeManagerProps> = ({ position }) => {
               variant="outlined"
               sx={(theme) => ({
                 ...appleCardSurface(theme),
+                borderRadius: '8px',
                 width: '100%',
                 flexShrink: 0,
                 pointerEvents: 'auto',

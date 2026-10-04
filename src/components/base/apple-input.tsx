@@ -4,6 +4,7 @@ import {
   forwardRef,
   useId,
   type Ref,
+  type ReactNode,
   type InputHTMLAttributes,
   type TextareaHTMLAttributes,
 } from 'react'
@@ -19,7 +20,13 @@ const setRef = <T,>(ref: Ref<T> | undefined, value: T | null) => {
 // The old prop shape is retained at call sites; no MUI field is rendered.
 export const AppleInput = forwardRef<
   HTMLDivElement,
-  TextFieldProps & { InputProps?: any; inputProps?: any; SelectProps?: any }
+  TextFieldProps & {
+    InputProps?: any
+    inputProps?: any
+    SelectProps?: any
+    prefix?: ReactNode
+    suffix?: ReactNode
+  }
 >(function AppleInput(
   {
     label,
@@ -34,6 +41,8 @@ export const AppleInput = forwardRef<
     inputRef,
     slotProps,
     InputProps,
+    prefix,
+    suffix,
     inputProps,
     id,
     sx,
@@ -132,8 +141,10 @@ export const AppleInput = forwardRef<
         onMouseDown={wrapperProps.onMouseDown}
         onMouseUp={wrapperProps.onMouseUp}
       >
-        {startAdornment && (
-          <span className="apple-affix">{startAdornment}</span>
+        {(prefix ?? startAdornment) && (
+          <span className="apple-affix apple-input__affix">
+            {prefix ?? startAdornment}
+          </span>
         )}
         <AppleControl
           as={multiline ? 'textarea' : 'input'}
@@ -154,7 +165,11 @@ export const AppleInput = forwardRef<
           }
           spellCheck={props.spellCheck ?? native.spellCheck}
         />
-        {endAdornment && <span className="apple-affix">{endAdornment}</span>}
+        {(suffix ?? endAdornment) && (
+          <span className="apple-affix apple-input__affix">
+            {suffix ?? endAdornment}
+          </span>
+        )}
       </AppleLayout>
       {helperText && (
         <p id={messageId} className="apple-field__message">

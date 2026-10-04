@@ -1,11 +1,12 @@
 import { LanRounded, SettingsRounded } from '@mui/icons-material'
-import { Button, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { updateGeo, type LogLevel } from 'tauri-plugin-mihomo-api'
 
 import { BaseDialog, DialogRef, Switch, TooltipIcon } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useClash } from '@/hooks/use-clash'
 import { useClashLog } from '@/hooks/use-clash-log'

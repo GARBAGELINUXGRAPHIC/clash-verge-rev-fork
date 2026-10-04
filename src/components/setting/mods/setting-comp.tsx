@@ -98,7 +98,7 @@ export const SettingItem: React.FC<ItemProps> = ({
       <ListItemButton
         onClick={handleClick}
         disabled={isLoading}
-        sx={{ minHeight: 52, px: 0.5, gap: 2 }}
+        sx={{ minHeight: 52, px: 1.5, gap: 2, borderRadius: '8px' }}
       >
         <ListItemText primary={primary} secondary={secondary} />
         {isLoading ? (

@@ -210,13 +210,13 @@ textarea.apple-control {
   position: relative;
   z-index: 1;
   display: flex;
-  flex: 1 0 auto;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  min-width: 56px;
+  min-width: 0;
   min-height: 30px;
-  padding: 5px 8px;
+  padding: 5px 10px;
   white-space: nowrap;
   border-radius: 6px;
   color: #6e6e73;
@@ -287,12 +287,12 @@ textarea.apple-control {
   min-height: 32px;
   max-height: 32px;
 }
-.base-page-toolbar .MuiIconButton-root {
+.base-page-toolbar .apple-icon-button {
   min-height: 36px;
   min-width: 36px;
 }
 
-.apple-affix .MuiIconButton-root {
+.apple-affix .apple-icon-button {
   width: 32px;
   height: 32px;
   aspect-ratio: 1 / 1;
@@ -308,4 +308,172 @@ textarea.apple-control {
 }
 .apple-field-menu[hidden] {
   display: none;
+}
+
+.apple-button {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: 36px;
+  height: 36px;
+  padding: 7px 18px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  background: var(--apple-accent);
+  color: var(--apple-accent-text);
+  text-decoration: none;
+  overflow: hidden;
+  vertical-align: middle;
+  max-width: 100%;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
+}
+.apple-button--secondary,
+.apple-button--outline {
+  border-color: var(--apple-accent);
+  background: transparent;
+  color: var(--apple-accent);
+}
+.apple-button--ghost {
+  background: transparent;
+  color: var(--apple-accent);
+}
+.apple-button--small {
+  padding-inline: 16px;
+  font-size: 13px;
+}
+.apple-button--large {
+  padding-inline: 24px;
+  font-size: 17px;
+}
+.apple-button--icon {
+  width: 36px;
+  padding: 0;
+  aspect-ratio: 1 / 1;
+}
+.apple-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.apple-button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--apple-accent) 30%, transparent);
+  outline-offset: 2px;
+}
+.apple-button__content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  pointer-events: none;
+}
+.apple-button__content > svg {
+  flex-shrink: 0;
+  font-size: 20px;
+}
+@media (hover: hover) {
+  .apple-button:not(:disabled):hover {
+    background: color-mix(in srgb, var(--apple-accent) 90%, black);
+  }
+  .apple-button--secondary:not(:disabled):hover,
+  .apple-button--outline:not(:disabled):hover {
+    background: var(--apple-accent);
+    color: var(--apple-accent-text);
+  }
+  .apple-button--ghost:not(:disabled):hover {
+    background: transparent;
+    color: color-mix(in srgb, var(--apple-accent) 80%, black);
+  }
+}
+.apple-button:not(:disabled):active {
+  background: color-mix(in srgb, var(--apple-accent) 80%, black);
+}
+.apple-button--secondary:not(:disabled):active,
+.apple-button--outline:not(:disabled):active {
+  color: var(--apple-accent-text);
+}
+.apple-button--ghost:not(:disabled):active {
+  background: transparent;
+  color: var(--apple-text);
+}
+.apple-button__spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: apple-button-spin 0.9s linear infinite;
+}
+.apple-button__ripple {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  background: rgb(128 128 128);
+}
+@keyframes apple-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apple-button {
+    transition-duration: 80ms;
+  }
+}
+
+.apple-input-wrap > .apple-input__affix:has(> .apple-button) {
+  align-self: stretch;
+  align-items: stretch;
+  gap: 0;
+  max-width: none;
+  padding: 0;
+}
+.apple-input-wrap > .apple-input__affix > .apple-button {
+  align-self: stretch;
+  min-height: 34px;
+  max-height: none;
+  height: auto;
+  padding: 5px 12px;
+  border-radius: 0;
+  line-height: 1.4;
+}
+.apple-input-wrap
+  > .apple-input__affix:first-child
+  > .apple-button:first-child {
+  border-radius: 7px 0 0 7px;
+}
+.apple-input-wrap > .apple-input__affix:last-child > .apple-button:last-child {
+  border-radius: 0 7px 7px 0;
+}
+.apple-input-wrap > .apple-input__affix > .apple-button--icon {
+  width: 34px;
+  padding: 0;
+}
+
+.apple-icon-button {
+  color: var(--apple-text);
+}
+.apple-icon-button.apple-button--small {
+  border-radius: 50%;
+}
+.apple-icon-button.apple-button--ghost:not(:disabled):hover {
+  color: inherit;
+  background: color-mix(in srgb, var(--apple-text) 4%, transparent);
+}
+.apple-icon-button.apple-button--ghost:not(:disabled):active {
+  color: inherit;
+  background: color-mix(in srgb, var(--apple-text) 12%, transparent);
 }

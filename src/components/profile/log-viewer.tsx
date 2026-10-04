@@ -1,5 +1,4 @@
 import {
-  Button,
   Box,
   Chip,
   Dialog,
@@ -11,6 +10,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseEmpty } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 
 interface Props {
   open: boolean

@@ -1,12 +1,5 @@
 import { InfoOutlined, ShowChartRounded } from '@mui/icons-material'
-import {
-  Box,
-  ButtonBase,
-  IconButton,
-  Tooltip,
-  alpha,
-  useTheme,
-} from '@mui/material'
+import { Box, ButtonBase, Tooltip, alpha, useTheme } from '@mui/material'
 import type { Ref } from 'react'
 import {
   memo,
@@ -20,6 +13,7 @@ import {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { useTrafficGraphDataEnhanced } from '@/hooks/use-traffic-monitor'
 import { useVerge } from '@/hooks/use-verge'
 import { debugLog } from '@/utils/debug'

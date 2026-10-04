@@ -4,7 +4,6 @@ import {
   Alert,
   Box,
   Chip,
-  IconButton,
   Menu,
   MenuItem,
   Snackbar,
@@ -22,6 +21,7 @@ import {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { useProxiesData } from '@/providers/app-data-context'
 import { updateProxyChainConfigInRuntime } from '@/services/cmds'
 import {

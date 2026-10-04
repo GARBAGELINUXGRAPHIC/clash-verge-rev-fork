@@ -1,12 +1,10 @@
 import { RefreshRounded, StorageOutlined } from '@mui/icons-material'
 import {
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   LinearProgress,
   List,
   ListItem,
@@ -20,6 +18,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { updateProxyProvider } from 'tauri-plugin-mihomo-api'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { useAppRefreshers, useProxiesData } from '@/providers/app-data-context'
 import { syncRuntimeProviders } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
@@ -135,7 +135,7 @@ export const ProviderButton = () => {
         sx={{
           mr: 1,
           ...(providerUnavailable && {
-            '&.Mui-disabled': {
+            '&:disabled': {
               color: 'warning.main',
               borderColor: 'warning.main',
             },

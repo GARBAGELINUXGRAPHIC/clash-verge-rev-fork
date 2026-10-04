@@ -1,11 +1,12 @@
 import { ContentCopyRounded } from '@mui/icons-material'
-import { Box, CircularProgress, IconButton, Typography } from '@mui/material'
+import { Box, CircularProgress, Typography } from '@mui/material'
 import { writeText } from '@tauri-apps/plugin-clipboard-manager'
 import type { Ref } from 'react'
 import { useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, BaseEmpty, DialogRef } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import {
   AppleSegment,
   AppleSegmentedControl,

@@ -16,7 +16,7 @@ import {
   RefreshRounded,
   TextSnippetOutlined,
 } from '@mui/icons-material'
-import { Box, Button, Grid, IconButton, Stack, Tooltip } from '@mui/material'
+import { Box, Grid, Stack, Tooltip } from '@mui/material'
 import { TauriEvent } from '@tauri-apps/api/event'
 import { readText } from '@tauri-apps/plugin-clipboard-manager'
 import { readTextFile } from '@tauri-apps/plugin-fs'
@@ -32,6 +32,8 @@ import {
   BaseStyledTextField,
   type DialogRef,
 } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { ProfileItem } from '@/components/profile/profile-item'
 import { ProfileMore } from '@/components/profile/profile-more'
 import {
@@ -851,7 +853,7 @@ const ProfilePage = () => {
           display: 'flex',
           alignItems: 'center',
           '& > .apple-field': { flex: 1, minWidth: 0 },
-          '& > .MuiButton-root': { flexShrink: 0 },
+          '& > .apple-button': { flexShrink: 0 },
         }}
       >
         <BaseStyledTextField

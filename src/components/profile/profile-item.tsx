@@ -15,7 +15,6 @@ import {
 import {
   Box,
   CircularProgress,
-  IconButton,
   keyframes,
   LinearProgress,
   ListItemIcon,
@@ -36,6 +35,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { EditorViewer } from '@/components/profile/editor-viewer'
 import { GroupsEditorViewer } from '@/components/profile/groups-editor-viewer'
 import { RulesEditorViewer } from '@/components/profile/rules-editor-viewer'

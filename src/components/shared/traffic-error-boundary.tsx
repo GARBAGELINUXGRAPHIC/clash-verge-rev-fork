@@ -3,9 +3,11 @@ import {
   RefreshRounded,
   BugReportRounded,
 } from '@mui/icons-material'
-import { Box, Typography, Button, Alert, Collapse } from '@mui/material'
+import { Box, Typography, Alert, Collapse } from '@mui/material'
 import React, { Component, ErrorInfo, ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { AppleButton as Button } from '@/components/base/apple-button'
 
 interface Props {
   children: ReactNode

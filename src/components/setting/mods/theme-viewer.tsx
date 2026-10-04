@@ -1,12 +1,5 @@
 import { EditRounded } from '@mui/icons-material'
-import {
-  Button,
-  Box,
-  ListItem,
-  ListItemText,
-  styled,
-  useTheme,
-} from '@mui/material'
+import { Box, ListItem, ListItemText, styled, useTheme } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import {
   useEffect,
@@ -18,6 +11,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, DialogRef } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { EditorViewer } from '@/components/profile/editor-viewer'
 import { useVerge } from '@/hooks/use-verge'

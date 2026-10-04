@@ -9,12 +9,13 @@ import VisibilityOffRounded from '@mui/icons-material/VisibilityOffRounded'
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded'
 import WifiTetheringOffRounded from '@mui/icons-material/WifiTetheringOffRounded'
 import WifiTetheringRounded from '@mui/icons-material/WifiTetheringRounded'
-import { Box, IconButton, type SxProps, Tooltip } from '@mui/material'
+import { Box, type SxProps, Tooltip } from '@mui/material'
 import { useDebounceFn } from 'ahooks'
 import { memo, useEffect, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { useVerge } from '@/hooks/use-verge'
 import delayManager from '@/services/delay'
@@ -161,7 +162,7 @@ export const ProxyGroupTools = memo(function ProxyGroupTools(props: Props) {
         flex: 1,
         ml: side === 'left' ? 0 : 2,
         minWidth: 0,
-        '& > .MuiIconButton-root': { flexShrink: 0 },
+        '& > .apple-icon-button': { flexShrink: 0 },
         '@container proxy-header (max-width: 560px)': {
           ml: 0,
           height: 'auto',

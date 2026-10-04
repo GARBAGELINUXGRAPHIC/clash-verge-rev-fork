@@ -2,14 +2,12 @@ import { CloseRounded } from '@mui/icons-material'
 import {
   Alert,
   Box,
-  Button,
   Chip,
   CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
   Menu,
   Stack,
   Typography,
@@ -18,6 +16,8 @@ import {
 import { useEffect, useState, type HTMLAttributes, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { AppleOption } from '@/components/base/apple-select'
 import { useHy2Override } from '@/hooks/use-hy2-override'

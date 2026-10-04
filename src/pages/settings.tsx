@@ -1,9 +1,10 @@
 import { GitHub, HelpOutlineRounded, Telegram } from '@mui/icons-material'
-import { Box, IconButton, Tooltip } from '@mui/material'
+import { Box, Tooltip } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useTranslation } from 'react-i18next'
 
 import { BasePage } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import SettingClash from '@/components/setting/setting-clash'
 import SettingSystem from '@/components/setting/setting-system'
 import SettingVergeAdvanced from '@/components/setting/setting-verge-advanced'

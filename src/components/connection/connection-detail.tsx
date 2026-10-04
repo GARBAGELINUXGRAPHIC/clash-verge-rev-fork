@@ -1,18 +1,13 @@
 import { CloseRounded } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  Chip,
-  Drawer,
-  IconButton,
-  Typography,
-} from '@mui/material'
+import { Box, Chip, Drawer, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import dayjs from 'dayjs'
 import { useCallback, useImperativeHandle, useState, type Ref } from 'react'
 import { useTranslation } from 'react-i18next'
 import { closeConnection } from 'tauri-plugin-mihomo-api'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import parseTraffic from '@/utils/parse-traffic'
 
 export interface ConnectionDetailRef {

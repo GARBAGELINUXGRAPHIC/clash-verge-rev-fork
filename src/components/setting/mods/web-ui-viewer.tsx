@@ -1,11 +1,12 @@
 import { AddRounded } from '@mui/icons-material'
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import type { Ref } from 'react'
 import { useImperativeHandle, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, BaseEmpty, DialogRef } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { useClashInfo } from '@/hooks/use-clash'
 import { useVerge } from '@/hooks/use-verge'
 import { showNotice } from '@/services/notice-service'

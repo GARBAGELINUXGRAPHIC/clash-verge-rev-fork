@@ -5,7 +5,6 @@ import RefreshRounded from '@mui/icons-material/RefreshRounded'
 import RestoreRounded from '@mui/icons-material/RestoreRounded'
 import {
   Box,
-  IconButton,
   List,
   ListItem,
   ListItemText,
@@ -24,6 +23,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, BaseLoadingOverlay } from '@/components/base'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { useVerge } from '@/hooks/use-verge'
 import {
   deleteLocalBackup,

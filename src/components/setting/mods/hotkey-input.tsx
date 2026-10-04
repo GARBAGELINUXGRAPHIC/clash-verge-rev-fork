@@ -1,8 +1,9 @@
 import { DeleteRounded } from '@mui/icons-material'
-import { alpha, Box, IconButton, styled } from '@mui/material'
+import { alpha, Box, styled } from '@mui/material'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { appleFieldSurface } from '@/components/base/apple-style'
 import { parseHotkey } from '@/utils/parse-hotkey'
 

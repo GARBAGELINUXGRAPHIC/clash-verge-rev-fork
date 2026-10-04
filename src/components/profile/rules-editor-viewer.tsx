@@ -6,7 +6,6 @@ import {
 import {
   Autocomplete,
   Box,
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -29,6 +28,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseSearchBox, MonacoEditor, Switch } from '@/components/base'
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import {
   AppleSegment,

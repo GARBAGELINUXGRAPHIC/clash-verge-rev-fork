@@ -1,9 +1,10 @@
-import { Alert, AlertTitle, Box, Button, Stack } from '@mui/material'
+import { Alert, AlertTitle, Box, Stack } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
+import { AppleButton as Button } from '@/components/base/apple-button'
 import { runStateQueryKey } from '@/hooks/use-system-state'
 import { useAppRefreshers } from '@/providers/app-data-context'
 import { openLogsDir, restartCore } from '@/services/cmds'
