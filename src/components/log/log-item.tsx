@@ -116,7 +116,9 @@ const LogItem = ({ value, searchState }: Props) => {
       <div>
         <span className="time">{renderHighlightText(value.time || '')}</span>
         <span className="type" data-type={value.type.toLowerCase()}>
-          {renderHighlightText(value.type)}
+          {renderHighlightText(
+            value.type.toLowerCase() === 'warning' ? 'warn' : value.type,
+          )}
         </span>
       </div>
       <div>

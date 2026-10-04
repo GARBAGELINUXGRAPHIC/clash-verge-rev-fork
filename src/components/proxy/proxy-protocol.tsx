@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogTitle,
   Menu,
+  MenuItem,
   Stack,
   Typography,
   useTheme,
@@ -97,9 +98,7 @@ export function ProxyProtocol({
           ? null
           : {
               congestion: { mode },
-              expiresAt:
-                data.settings?.expiresAt ??
-                Math.floor(nextMidnight().getTime() / 1000),
+              expiresAt: Math.floor(nextMidnight().getTime() / 1000),
             },
       )
       setPosition(null)
@@ -146,7 +145,7 @@ export function ProxyProtocol({
       >
         {(['original', 'standard', 'conservative', 'aggressive'] as const).map(
           (mode) => (
-            <AppleOption
+            <MenuItem
               key={mode}
               disabled={!data || busy}
               selected={
@@ -156,10 +155,11 @@ export function ProxyProtocol({
               onClick={() => void selectMode(mode)}
             >
               {t(`proxies.protocol.${mode}`)}
-            </AppleOption>
+              {mode !== 'original' && ` · ${t('proxies.protocol.midnight')}`}
+            </MenuItem>
           ),
         )}
-        <AppleOption
+        <MenuItem
           disabled={busy}
           onClick={() => {
             if (member.kind !== 'node') return
@@ -167,8 +167,8 @@ export function ProxyProtocol({
             setNode(member.node)
           }}
         >
-          Brutal...
-        </AppleOption>
+          {t('proxies.protocol.brutalAndMore')}
+        </MenuItem>
         {error && (
           <Alert
             severity="error"

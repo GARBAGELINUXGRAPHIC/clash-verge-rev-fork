@@ -350,35 +350,46 @@ const ConnectionsPage = () => {
         )}
       </Box>
 
-      {!hasTableData ? (
-        <BaseEmpty />
-      ) : isTableLayout ? (
-        <ConnectionTable
-          connections={filterConn}
-          onShowDetail={showDetailById}
-          columnManagerOpen={isColumnManagerOpen}
-          onCloseColumnManager={() => setIsColumnManagerOpen(false)}
-        />
-      ) : (
-        <VirtualList
-          key={connectionsType}
-          count={displayRows.length}
-          estimateSize={56}
-          renderItem={(i) => (
-            <ConnectionRowItem
-              row={displayRows[i]}
-              closed={connectionsType === 'closed'}
-              onShowDetail={showDetailById}
-            />
-          )}
-          style={{
-            flex: 1,
-            minHeight: 0,
-            WebkitOverflowScrolling: 'touch',
-            overscrollBehavior: 'contain',
-          }}
-        />
-      )}
+      <Box
+        sx={{
+          px: 2.5,
+          flex: 1,
+          minHeight: 0,
+          minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {!hasTableData ? (
+          <BaseEmpty />
+        ) : isTableLayout ? (
+          <ConnectionTable
+            connections={filterConn}
+            onShowDetail={showDetailById}
+            columnManagerOpen={isColumnManagerOpen}
+            onCloseColumnManager={() => setIsColumnManagerOpen(false)}
+          />
+        ) : (
+          <VirtualList
+            key={connectionsType}
+            count={displayRows.length}
+            estimateSize={56}
+            renderItem={(i) => (
+              <ConnectionRowItem
+                row={displayRows[i]}
+                closed={connectionsType === 'closed'}
+                onShowDetail={showDetailById}
+              />
+            )}
+            style={{
+              flex: 1,
+              minHeight: 0,
+              WebkitOverflowScrolling: 'touch',
+              overscrollBehavior: 'contain',
+            }}
+          />
+        )}
+      </Box>
       <ConnectionDetail ref={detailRef} />
     </BasePage>
   )

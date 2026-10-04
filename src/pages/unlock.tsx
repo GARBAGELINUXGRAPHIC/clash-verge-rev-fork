@@ -6,7 +6,7 @@ import {
   PendingOutlined,
   RefreshRounded,
 } from '@mui/icons-material'
-import { Box, Chip, CircularProgress, Tooltip, Typography } from '@mui/material'
+import { Box, CircularProgress, Tooltip, Typography } from '@mui/material'
 import { Channel, invoke } from '@tauri-apps/api/core'
 import { useLockFn } from 'ahooks'
 import dayjs from 'dayjs'
@@ -16,6 +16,8 @@ import { useTranslation } from 'react-i18next'
 import { BaseEmpty, BasePage } from '@/components/base'
 import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { AppleButton as Button } from '@/components/base/apple-button'
+import { AppleCard } from '@/components/base/apple-card'
+import { AppleTag } from '@/components/base/apple-tag'
 import { showNotice } from '@/services/notice-service'
 
 interface UnlockItem {
@@ -38,6 +40,15 @@ const STATUS_LABEL_KEYS: Record<string, string> = {
   'No (IP Banned By Disney+)': 'tests.statuses.test.noDisney',
   'Unsupported Country/Region': 'tests.statuses.test.unsupportedRegion',
   'Failed (Network Connection)': 'tests.statuses.test.failedNetwork',
+}
+
+const formatRegion = (region: string) => {
+  const code = region.trim().toUpperCase()
+  if (!/^[A-Z]{2}$/.test(code)) return region
+  const flag = String.fromCodePoint(
+    ...Array.from(code, (letter) => 0x1f1e6 + letter.charCodeAt(0) - 65),
+  )
+  return `${flag} ${code}`
 }
 
 const normalizeUnlockName = (name: string) => name.trim().toLowerCase()
@@ -267,21 +278,16 @@ const UnlockPage = () => {
           }}
         >
           {unlockItems.map((item) => (
-            <Box
+            <AppleCard
               key={item.name}
               sx={{
                 minWidth: 0,
                 px: 1.5,
                 py: 1,
-                border: '1px solid',
-                borderColor: 'divider',
-                borderRadius: 2,
-                bgcolor: 'background.paper',
                 display: 'grid',
                 gridTemplateColumns: 'minmax(0, 1fr) 28px',
                 alignItems: 'center',
                 gap: 0.5,
-                '&:hover': { borderColor: 'text.disabled' },
               }}
             >
               <Typography
@@ -305,26 +311,13 @@ const UnlockPage = () => {
                   minWidth: 0,
                 }}
               >
-                <Chip
-                  label={t(STATUS_LABEL_KEYS[item.status] ?? item.status)}
-                  color={getStatusColor(item.status)}
-                  size="small"
-                  icon={getStatusIcon(item.status)}
-                  sx={{
-                    maxWidth: '100%',
-                    height: 'auto',
-                    minHeight: 24,
-                    '& .MuiChip-label': { whiteSpace: 'normal', py: 0.25 },
-                  }}
-                />
+                <AppleTag color={getStatusColor(item.status)}>
+                  {getStatusIcon(item.status)}
+                  {t(STATUS_LABEL_KEYS[item.status] ?? item.status)}
+                </AppleTag>
 
                 {item.region && (
-                  <Chip
-                    label={item.region}
-                    size="small"
-                    variant="outlined"
-                    color="info"
-                  />
+                  <AppleTag color="info">{formatRegion(item.region)}</AppleTag>
                 )}
                 <Tooltip title={item.check_time || '-- --'}>
                   <Typography
@@ -367,7 +360,7 @@ const UnlockPage = () => {
                   </IconButton>
                 </Box>
               </Tooltip>
-            </Box>
+            </AppleCard>
           ))}
         </Box>
       )}

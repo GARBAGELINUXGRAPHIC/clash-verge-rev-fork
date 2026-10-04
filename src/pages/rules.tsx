@@ -83,21 +83,32 @@ const RulesPage = () => {
         <BaseSearchBox onSearch={(match) => setMatch(() => match)} />
       </Box>
 
-      {filteredRules && filteredRules.length > 0 ? (
-        <>
-          <VirtualList
-            ref={virtuosoRef}
-            count={filteredRules.length}
-            estimateSize={44}
-            renderItem={(i) => <RuleItem value={filteredRules[i]} />}
-            style={{ flex: 1, minHeight: 0 }}
-            onScroll={handleScroll}
-          />
-          <ScrollTopButton onClick={scrollToTop} show={showScrollTop} />
-        </>
-      ) : (
-        <BaseEmpty />
-      )}
+      <Box
+        sx={{
+          px: 2.5,
+          flex: 1,
+          minHeight: 0,
+          minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        {filteredRules && filteredRules.length > 0 ? (
+          <>
+            <VirtualList
+              ref={virtuosoRef}
+              count={filteredRules.length}
+              estimateSize={44}
+              renderItem={(i) => <RuleItem value={filteredRules[i]} />}
+              style={{ flex: 1, minHeight: 0 }}
+              onScroll={handleScroll}
+            />
+            <ScrollTopButton onClick={scrollToTop} show={showScrollTop} />
+          </>
+        ) : (
+          <BaseEmpty />
+        )}
+      </Box>
     </BasePage>
   )
 }

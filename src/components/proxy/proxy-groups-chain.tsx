@@ -1,18 +1,8 @@
 import { DragDropProvider } from '@dnd-kit/react'
-import { ExpandMoreRounded } from '@mui/icons-material'
-import {
-  Alert,
-  Box,
-  Chip,
-  Menu,
-  MenuItem,
-  Snackbar,
-  Typography,
-} from '@mui/material'
-import { useTheme } from '@mui/material/styles'
+import { Alert, Box, Snackbar, Typography } from '@mui/material'
+import { alpha, useTheme } from '@mui/material/styles'
 import {
   type Key,
-  type MouseEvent,
   type Ref,
   useCallback,
   useEffect,
@@ -21,7 +11,7 @@ import {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useProxiesData } from '@/providers/app-data-context'
 import { updateProxyChainConfigInRuntime } from '@/services/cmds'
 import {
@@ -55,24 +45,6 @@ type ProxyGroupOption = ProxyGroupView
 
 // ---- Props ----
 
-interface ChainRuleHeaderProps {
-  title: string
-  selectLabel: string
-  currentGroup: ProxyGroupOption | null
-  canSelectGroup: boolean
-  onMenuOpen: (event: MouseEvent<HTMLElement>) => void
-}
-
-interface GroupSelectMenuProps {
-  anchorEl: HTMLElement | null
-  groups: ProxyGroupOption[]
-  selectedGroup: string | null
-  emptyText: string
-  nodeCountLabel: (count: number) => string
-  onClose: () => void
-  onSelect: (groupName: string) => void
-}
-
 interface ProxyGroupsChainProps {
   mode: string
   chainConfigData?: string | null
@@ -101,121 +73,46 @@ interface ProxyGroupsChainProps {
 function ChainRuleHeader({
   title,
   selectLabel,
-  currentGroup,
-  canSelectGroup,
-  onMenuOpen,
-}: ChainRuleHeaderProps) {
-  return (
-    <Box>
-      <Box
-        sx={{
-          px: 2,
-          py: 1.5,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, fontSize: '16px' }}>
-            {title}
-          </Typography>
-
-          {currentGroup && (
-            <Chip
-              size="small"
-              label={`${currentGroup.name} (${currentGroup.type})`}
-              variant="outlined"
-              sx={{
-                fontSize: '12px',
-                maxWidth: '200px',
-                '& .MuiChip-label': {
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                },
-              }}
-            />
-          )}
-        </Box>
-
-        {canSelectGroup && (
-          <IconButton
-            size="small"
-            onClick={onMenuOpen}
-            sx={{
-              border: '1px solid',
-              borderColor: 'divider',
-              borderRadius: '4px',
-              padding: '4px 8px',
-            }}
-          >
-            <Typography variant="body2" sx={{ mr: 0.5, fontSize: '12px' }}>
-              {selectLabel}
-            </Typography>
-            <ExpandMoreRounded fontSize="small" />
-          </IconButton>
-        )}
-      </Box>
-    </Box>
-  )
-}
-
-function GroupSelectMenu({
-  anchorEl,
   groups,
   selectedGroup,
-  emptyText,
-  nodeCountLabel,
-  onClose,
   onSelect,
-}: GroupSelectMenuProps) {
+}: {
+  title: string
+  selectLabel: string
+  groups: ProxyGroupOption[]
+  selectedGroup: string | null
+  onSelect: (groupName: string) => void
+}) {
   return (
-    <Menu
-      anchorEl={anchorEl}
-      open={Boolean(anchorEl)}
-      onClose={onClose}
-      slotProps={{
-        paper: {
-          sx: {
-            maxHeight: 300,
-            minWidth: 200,
-          },
-        },
+    <Box
+      sx={{
+        px: 2,
+        py: 1.5,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 2,
       }}
     >
-      {groups.map((group) => (
-        <MenuItem
-          key={group.name}
-          onClick={() => onSelect(group.name)}
-          selected={selectedGroup === group.name}
-          sx={{ fontSize: '14px', py: 1 }}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>
-              {group.name}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {group.type} · {nodeCountLabel(group.members.length)}
-            </Typography>
-          </Box>
-        </MenuItem>
-      ))}
-
-      {groups.length === 0 && (
-        <MenuItem disabled>
-          <Typography variant="body2" color="text.secondary">
-            {emptyText}
-          </Typography>
-        </MenuItem>
-      )}
-    </Menu>
+      <Typography
+        variant="h6"
+        sx={{ fontWeight: 600, fontSize: 16, flexShrink: 0 }}
+      >
+        {title}
+      </Typography>
+      <AppleSelect
+        aria-label={selectLabel}
+        value={selectedGroup ?? ''}
+        onChange={(event) => onSelect(event.target.value)}
+        sx={{ width: 200, maxWidth: '100%', minWidth: 0 }}
+      >
+        {groups.map((group) => (
+          <AppleOption key={group.name} value={group.name}>
+            {group.name}
+          </AppleOption>
+        ))}
+      </AppleSelect>
+    </Box>
   )
 }
 
@@ -371,34 +268,13 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
     }
   }, [currentProxyChain])
 
-  const [ruleMenuAnchor, setRuleMenuAnchor] = useState<null | HTMLElement>(null)
   const [duplicateWarning, setDuplicateWarning] = useState<{
     open: boolean
     message: string
   }>({ open: false, message: '' })
 
-  // Compute current group for rule header
-  const currentGroup = useMemo(() => {
-    if (!activeSelectedGroup) return null
-    return (
-      availableGroups.find(
-        (group: ProxyGroupView) => group.name === activeSelectedGroup,
-      ) ?? null
-    )
-  }, [activeSelectedGroup, availableGroups])
-
-  // Handlers
-  const handleGroupMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setRuleMenuAnchor(event.currentTarget)
-  }
-
-  const handleGroupMenuClose = () => {
-    setRuleMenuAnchor(null)
-  }
-
   const handleGroupSelect = (groupName: string) => {
     onGroupSelect(groupName)
-    handleGroupMenuClose()
 
     if (mode === 'rule') {
       updateProxyChainConfigInRuntime(null)
@@ -490,7 +366,7 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
           minHeight: 0,
           gridTemplateColumns: {
             xs: 'minmax(0, 1fr)',
-            md: 'minmax(0, 1fr) minmax(300px, 38%)',
+            md: 'repeat(2, minmax(0, 1fr))',
           },
           gridTemplateRows: {
             xs: 'minmax(0, 1fr) minmax(0, 1fr)',
@@ -503,9 +379,9 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
             <ChainRuleHeader
               title={t('proxies.page.rules.title')}
               selectLabel={t('proxies.page.rules.select')}
-              currentGroup={currentGroup}
-              canSelectGroup={availableGroups.length > 0}
-              onMenuOpen={handleGroupMenuOpen}
+              groups={availableGroups}
+              selectedGroup={activeSelectedGroup}
+              onSelect={handleGroupSelect}
             />
           )}
 
@@ -540,23 +416,27 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
         <Alert
           onClose={handleCloseDuplicateWarning}
           severity="warning"
-          variant="filled"
+          variant="standard"
+          sx={(theme) => ({
+            alignItems: 'center',
+            py: 0.5,
+            px: 1.5,
+            fontSize: 13,
+            color: 'text.primary',
+            bgcolor: 'background.paper',
+            backgroundImage: `linear-gradient(${alpha(theme.palette.warning.main, 0.08)}, ${alpha(theme.palette.warning.main, 0.08)})`,
+            border: '1px solid',
+            borderColor: alpha(theme.palette.warning.main, 0.2),
+            borderRadius: 2,
+            boxShadow: '0 4px 16px rgb(0 0 0 / 0.08)',
+            '& .MuiAlert-icon': { fontSize: 18, mr: 1, py: 0.5 },
+            '& .MuiAlert-message': { py: 0.5 },
+            '& .MuiAlert-action': { pt: 0, alignItems: 'center' },
+          })}
         >
           {duplicateWarning.message}
         </Alert>
       </Snackbar>
-
-      <GroupSelectMenu
-        anchorEl={ruleMenuAnchor}
-        groups={availableGroups}
-        selectedGroup={activeSelectedGroup}
-        emptyText={t('proxies.page.empty.noAvailableGroups')}
-        nodeCountLabel={(count) =>
-          t('proxies.page.labels.nodeCount', { count })
-        }
-        onClose={handleGroupMenuClose}
-        onSelect={handleGroupSelect}
-      />
     </>
   )
 }

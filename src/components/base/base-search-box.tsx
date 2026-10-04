@@ -201,7 +201,7 @@ export const BaseSearchBox = ({
   }
 
   return (
-    <Tooltip title={effectiveErrorMessage || ''} placement="bottom-start">
+    <Tooltip title={effectiveErrorMessage || ''} placement="top-start">
       <StyledTextField
         inputRef={inputRef}
         autoComplete="new-password"

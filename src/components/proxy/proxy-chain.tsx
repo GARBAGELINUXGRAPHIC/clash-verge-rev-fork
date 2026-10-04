@@ -7,7 +7,7 @@ import {
 } from '@dnd-kit/react'
 import { isSortable, useSortable } from '@dnd-kit/react/sortable'
 import {
-  ArrowDownward,
+  ExpandMoreRounded,
   Delete as DeleteIcon,
   DragIndicator,
   Link,
@@ -50,6 +50,7 @@ import {
 } from '@/types/proxy-view'
 import { debugLog } from '@/utils/debug'
 
+import { proxyCardSurface } from './proxy-card-style'
 import { rebindProxyChainItems, type ProxyChainItem } from './proxy-chain-model'
 
 const chainPointerSensor = PointerSensor.configure({
@@ -149,18 +150,19 @@ const ChainCard = ({
   return (
     <Box
       sx={{
+        ...proxyCardSurface(theme),
+        position: 'relative',
         mb: 0,
-        display: 'flex',
+        display: 'grid',
+        gridTemplateColumns: '24px minmax(0, 1fr) 28px',
         alignItems: 'center',
+        columnGap: 1,
+        minWidth: 0,
         p: 1,
-        backgroundColor: theme.palette.background.default,
-        borderRadius: '6px',
-        border: `1px solid ${roleColor ?? theme.palette.divider}`,
         opacity: proxy.recordId === undefined ? 0.55 : undefined,
-        transition: 'box-shadow 0.2s, background-color 0.2s',
-        boxShadow: isDropping
-          ? `0 0 0 2px ${theme.palette.primary.main}66`
-          : undefined,
+        ...(isDropping && {
+          outline: `2px solid ${theme.palette.primary.main}66`,
+        }),
       }}
     >
       <Box
@@ -168,7 +170,7 @@ const ChainCard = ({
         sx={{
           display: 'flex',
           alignItems: 'center',
-          mr: 1,
+          gridColumn: 1,
           color: theme.palette.text.secondary,
           cursor: isDragging ? 'grabbing' : 'grab',
         }}
@@ -176,70 +178,94 @@ const ChainCard = ({
         <DragIndicator />
       </Box>
 
-      {roleLabel ? (
-        <Chip
-          label={roleLabel}
-          size="small"
-          sx={{
-            mr: 1,
-            fontWeight: 600,
-            color: roleColor,
-            backgroundColor: theme.palette.action.hover,
-          }}
-        />
-      ) : (
-        <Chip
-          label={`${index + 1}`}
-          size="small"
-          color="primary"
-          sx={{ mr: 1, minWidth: 32 }}
-        />
-      )}
-
-      <Typography
-        variant="body2"
+      <Box
         sx={{
-          flex: 1,
-          fontWeight: 500,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
+          minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0.75,
         }}
       >
-        {proxy.name}
-      </Typography>
-
-      {proxy.type && (
-        <Chip
-          label={proxy.type}
-          size="small"
-          variant="outlined"
-          sx={{ mr: 1 }}
-        />
-      )}
-
-      {proxy.delay !== undefined && (
-        <Chip
-          label={
-            proxy.delay > 0 ? `${proxy.delay}ms` : t('shared.labels.timeout')
-          }
-          size="small"
-          color={
-            proxy.delay > 0 && proxy.delay < 200
-              ? 'success'
-              : proxy.delay > 0 && proxy.delay < 800
-                ? 'warning'
-                : 'error'
-          }
-          sx={{ mr: 1, fontSize: '0.7rem', minWidth: 50 }}
-        />
-      )}
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}
+        >
+          <Chip
+            label={roleLabel ?? `${index + 1}`}
+            size="small"
+            sx={{
+              width: 40,
+              height: 20,
+              fontSize: 11,
+              flexShrink: 0,
+              fontWeight: 600,
+              color: roleColor ?? theme.palette.primary.main,
+              backgroundColor: theme.palette.action.hover,
+            }}
+          />
+          <Typography
+            variant="body2"
+            title={proxy.name}
+            sx={{
+              minWidth: 0,
+              fontWeight: 500,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {proxy.name}
+          </Typography>
+        </Box>
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}
+        >
+          {proxy.type && (
+            <Chip
+              label={proxy.type}
+              size="small"
+              variant="outlined"
+              sx={{
+                minWidth: 0,
+                height: 18,
+                borderRadius: '4px',
+                fontSize: 10,
+                '& .MuiChip-label': { px: 0.5 },
+              }}
+            />
+          )}
+          {proxy.delay !== undefined && (
+            <Typography
+              component="span"
+              sx={{
+                ml: 'auto',
+                flexShrink: 0,
+                fontSize: 13,
+                fontVariantNumeric: 'tabular-nums',
+                color:
+                  proxy.delay > 0 && proxy.delay < 200
+                    ? 'success.main'
+                    : proxy.delay > 0 && proxy.delay < 800
+                      ? 'warning.main'
+                      : 'error.main',
+              }}
+            >
+              {proxy.delay > 0
+                ? `${proxy.delay}ms`
+                : t('shared.labels.timeout')}
+            </Typography>
+          )}
+        </Box>
+      </Box>
 
       {onRemove && (
         <IconButton
           size="small"
           onClick={() => onRemove(proxy.id)}
+          aria-label={t('shared.actions.delete')}
           sx={{
+            gridColumn: 3,
+            width: 28,
+            height: 28,
             color: theme.palette.error.main,
             '&:hover': {
               backgroundColor: theme.palette.error.light + '20',
@@ -307,7 +333,7 @@ const SortableProxyChainItem = ({
             py: 0.25,
           }}
         >
-          <ArrowDownward
+          <ExpandMoreRounded
             sx={{
               fontSize: 20,
               color: theme.palette.primary.main,
@@ -564,7 +590,7 @@ export const ProxyChain = ({
         height: '100%',
         minHeight: 0,
         boxSizing: 'border-box',
-        p: 2,
+        py: 2,
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -574,6 +600,7 @@ export const ProxyChain = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          px: 2.5,
           mb: 2,
         }}
       >
@@ -646,7 +673,7 @@ export const ProxyChain = ({
 
       <Alert
         severity={currentProxyChain.length === 1 ? 'warning' : 'info'}
-        sx={{ mb: 2 }}
+        sx={{ mb: 2, mx: 2.5 }}
       >
         {currentProxyChain.length === 1
           ? t('proxies.page.chain.minimumNodesHint')
@@ -671,7 +698,7 @@ export const ProxyChain = ({
             sensors={[chainPointerSensor, KeyboardSensor]}
             onDragEnd={handleDragEnd}
           >
-            <Box sx={{ borderRadius: 1, minHeight: 60, p: 1 }}>
+            <Box sx={{ borderRadius: 1, minHeight: 60, py: 2, px: 2.5 }}>
               {currentProxyChain.map((proxy, index) => (
                 <SortableProxyChainItem
                   key={proxy.id}

@@ -607,6 +607,7 @@ export interface TranslationResources {
       }
       protocol: {
         aggressive: string
+        brutalAndMore: string
         congestion: string
         conservative: string
         custom: string

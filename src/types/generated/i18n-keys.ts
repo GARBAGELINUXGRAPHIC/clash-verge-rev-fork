@@ -289,6 +289,7 @@ export const translationKeys = [
   'proxies.protocol.standard',
   'proxies.protocol.conservative',
   'proxies.protocol.aggressive',
+  'proxies.protocol.brutalAndMore',
   'proxies.protocol.upload',
   'proxies.protocol.download',
   'proxies.protocol.duration',

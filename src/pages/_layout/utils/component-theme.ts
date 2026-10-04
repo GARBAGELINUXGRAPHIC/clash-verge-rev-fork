@@ -172,7 +172,7 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
       },
     },
     MuiTooltip: {
-      defaultProps: { arrow: false },
+      defaultProps: { arrow: false, placement: 'top' },
       styleOverrides: {
         tooltip: {
           fontSize: 12,

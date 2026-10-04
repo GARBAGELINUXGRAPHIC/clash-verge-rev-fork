@@ -8,6 +8,7 @@
     "standard": "BBR - 标准",
     "conservative": "BBR - 保守",
     "aggressive": "BBR - 激进",
+    "brutalAndMore": "Brutal 与更多选项",
     "upload": "上传 (Mbps)",
     "download": "下载 (Mbps)",
     "duration": "持续时间",

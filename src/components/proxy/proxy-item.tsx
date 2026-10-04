@@ -21,6 +21,7 @@ import {
   type ResolvedProxyMember,
 } from '@/types/proxy-view'
 
+import { proxyCardSurface } from './proxy-card-style'
 import { ProxyProtocol } from './proxy-protocol'
 import { ProxyUptime } from './proxy-uptime'
 
@@ -78,7 +79,8 @@ export const ProxyItem = (props: Props) => {
             onClick={unresolved ? undefined : () => onClick?.(member)}
             sx={[
               { borderRadius: '6px', minWidth: 0 },
-              ({ palette: { primary, background, mode } }) => {
+              (theme) => {
+                const { primary, mode } = theme.palette
                 const showDelay = delayValue > 0
 
                 return {
@@ -107,25 +109,7 @@ export const ProxyItem = (props: Props) => {
                       ),
                     },
                   },
-                  border: '1px solid transparent',
-                  backgroundColor: background.paper,
-                  boxShadow:
-                    mode === 'dark'
-                      ? '2px 4px 12px #00000040'
-                      : '2px 4px 12px #00000014',
-                  transition:
-                    'transform .15s cubic-bezier(0,0,.5,1), box-shadow .3s cubic-bezier(0,0,.5,1), background-color .3s cubic-bezier(0,0,.5,1)',
-                  '&:hover': {
-                    transform: 'scale(1.01)',
-                    boxShadow:
-                      mode === 'dark'
-                        ? '2px 4px 16px #00000066'
-                        : '2px 4px 16px #00000029',
-                  },
-                  '@media (prefers-reduced-motion: reduce)': {
-                    transition: 'none',
-                    '&:hover': { transform: 'none' },
-                  },
+                  ...proxyCardSurface(theme),
                   height: showType ? 60 : 40,
                 }
               },

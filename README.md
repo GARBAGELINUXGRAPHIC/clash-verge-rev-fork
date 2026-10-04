@@ -1,7 +1,7 @@
 Personal fork.
 
-Find builds at: [Github Actions](https://github.com/GARBAGELINUXGRAPHIC/clash-verge-rev-fork/actions)
+Find builds at Releases.
 
+- Reworked UI based on [Apptify Design](https://github.com/GARBAGELINUXGRAPHIC/apptify)
 - Uptime detection for proxies
-- redesigned UI
-- Hysteria2 speed real-time overwrite  
+- Hysteria2 congestion temporary overwrite in real time  

@@ -8,6 +8,7 @@
     "standard": "BBR - Standard",
     "conservative": "BBR - Conservative",
     "aggressive": "BBR - Aggressive",
+    "brutalAndMore": "Brutal and more options",
     "upload": "Upload (Mbps)",
     "download": "Download (Mbps)",
     "duration": "Duration",
