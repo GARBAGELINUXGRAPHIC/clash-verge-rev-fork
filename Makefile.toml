@@ -29,7 +29,7 @@ command = "cmd.exe"
 args = ["/d", "/c", "pnpm", "typecheck"]
 
 [tasks.knip-report]
-description = "Report unused frontend code and dependencies"
+description = "Report frontend dependency and reference issues"
 command = "pnpm"
 args = ["knip:report"]
 
@@ -38,7 +38,7 @@ command = "cmd.exe"
 args = ["/d", "/c", "pnpm", "knip:report"]
 
 [tasks.knip-check]
-description = "Fail on unused frontend code and dependencies"
+description = "Check frontend dependencies and references"
 command = "pnpm"
 args = ["knip:check"]
 
@@ -132,7 +132,7 @@ end
 '''
 
 [tasks.pre-push]
-description = "Pre-push checks: lint, typecheck, and unused files"
+description = "Pre-push checks: lint, typecheck, and dependency references"
 script_runner = "@duckscript"
 script = '''
 has_upstream = exec git rev-parse --abbrev-ref --symbolic-full-name @{u}
