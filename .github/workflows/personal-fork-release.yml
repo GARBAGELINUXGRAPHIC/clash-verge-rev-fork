@@ -1,0 +1,152 @@
+name: Personal Fork Latest Release
+
+on:
+  push:
+    branches: [personal-fork]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A push containing multiple commits has one run, pinned to its final SHA.
+# Superseding pushes cancel the whole previous build and publication.
+concurrency:
+  group: personal-fork-latest-release
+  cancel-in-progress: true
+
+env:
+  HUSKY: '0'
+  CARGO_INCREMENTAL: '0'
+  RUST_BACKTRACE: short
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/personal-fork'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            bundles: nsis
+          - os: windows-latest
+            target: aarch64-pc-windows-msvc
+            bundles: nsis
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            bundles: dmg
+          - os: macos-15-intel
+            target: x86_64-apple-darwin
+            bundles: dmg
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            bundles: deb,rpm,appimage
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Install Rust toolchain from repository
+        shell: bash
+        run: rustup show active-toolchain && rustup target add "$BUILD_TARGET"
+        env:
+          BUILD_TARGET: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: '. -> target'
+          key: personal-fork-${{ matrix.target }}
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libxslt1.1 libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+
+      - uses: pnpm/action-setup@v6
+        with:
+          run_install: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.21.0'
+          cache: pnpm
+
+      - name: Install dependencies and prepare target resources
+        shell: bash
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run prebuild "$BUILD_TARGET"
+        env:
+          BUILD_TARGET: ${{ matrix.target }}
+
+      - name: Build application
+        shell: bash
+        run: pnpm exec tauri build --target "$BUILD_TARGET" --bundles "$BUILD_BUNDLES"
+        env:
+          BUILD_TARGET: ${{ matrix.target }}
+          BUILD_BUNDLES: ${{ matrix.bundles }}
+          NODE_OPTIONS: --max-old-space-size=4096
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: installers-${{ matrix.target }}
+          if-no-files-found: error
+          path: |
+            target/${{ matrix.target }}/release/bundle/nsis/*-setup.exe
+            target/${{ matrix.target }}/release/bundle/nsis/*.sig
+            target/${{ matrix.target }}/release/bundle/dmg/*.dmg
+            target/${{ matrix.target }}/release/bundle/deb/*.deb
+            target/${{ matrix.target }}/release/bundle/rpm/*.rpm
+            target/${{ matrix.target }}/release/bundle/appimage/*.AppImage
+            target/${{ matrix.target }}/release/bundle/appimage/*.sig
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: installers-*
+          path: installers
+          merge-multiple: true
+
+      - name: Publish only if this is still the latest branch commit
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          BUILD_SHA: ${{ github.sha }}
+          RELEASE_TAG: personal-fork-latest
+        run: |
+          set -euo pipefail
+          current_sha=$(gh api "repos/$REPOSITORY/git/ref/heads/personal-fork" --jq '.object.sha')
+          if [ "$current_sha" != "$BUILD_SHA" ]; then
+            echo 'A newer commit exists; skip publishing this build.'
+            exit 0
+          fi
+          version=$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")
+          printf 'Latest personal-fork build.\n\nVersion: %s\nCommit: %s\n\nBuilt from the final commit of the push.\n' "$version" "$BUILD_SHA" > release-notes.txt
+          mapfile -d '' assets < <(find installers -type f -print0)
+          if [ "${#assets[@]}" -eq 0 ]; then
+            echo 'No installers were produced.' >&2
+            exit 1
+          fi
+          git tag --force "$RELEASE_TAG" "$BUILD_SHA"
+          git push origin "refs/tags/$RELEASE_TAG" --force
+          if gh release view "$RELEASE_TAG" --repo "$REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$RELEASE_TAG" --repo "$REPOSITORY" --title "Personal Fork $version (latest commit)" --notes-file release-notes.txt --prerelease --latest=false
+            while IFS= read -r asset; do
+              gh release delete-asset "$RELEASE_TAG" "$asset" --repo "$REPOSITORY" --yes
+            done < <(gh release view "$RELEASE_TAG" --repo "$REPOSITORY" --json assets --jq '.assets[].name')
+          else
+            gh release create "$RELEASE_TAG" --repo "$REPOSITORY" --title "Personal Fork $version (latest commit)" --notes-file release-notes.txt --prerelease --latest=false
+          fi
+          gh release upload "$RELEASE_TAG" "${assets[@]}" --repo "$REPOSITORY" --clobber
