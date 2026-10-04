@@ -14,6 +14,7 @@ import {
   openLogsDir,
 } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
+import { setCacheData } from '@/services/query-client'
 import { checkUpdateSafe as checkUpdate } from '@/services/update'
 import { version } from '@root/package.json'
 
@@ -46,6 +47,7 @@ const SettingVergeAdvanced = ({ onError: _ }: Props) => {
   const onCheckUpdate = async () => {
     try {
       const info = await checkUpdate()
+      await setCacheData(['checkUpdate'], info)
       updateLastCheckTime()
       if (!info?.available) {
         showNotice.success(

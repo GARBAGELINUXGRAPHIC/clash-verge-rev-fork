@@ -1,25 +1,15 @@
 import { OpenInNewRounded } from '@mui/icons-material'
 import { Box, LinearProgress, Tooltip } from '@mui/material'
-import type { DownloadEvent } from '@tauri-apps/plugin-updater'
 import { useLockFn } from 'ahooks'
 import type { Ref } from 'react'
-import {
-  lazy,
-  Suspense,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { lazy, Suspense, useImperativeHandle, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Options as ReactMarkdownOptions } from 'react-markdown'
 
 import { BaseDialog, DialogRef } from '@/components/base'
 import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { useUpdate } from '@/hooks/use-update'
-import { restartApp } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
-import { useSetUpdateState, useUpdateState } from '@/services/states'
 import { openExternalUrl } from '@/utils/open-external-url'
 
 type MarkdownNode = {
@@ -177,24 +167,12 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
   const { t, i18n } = useTranslation()
 
   const [open, setOpen] = useState(false)
-  const updateState = useUpdateState()
-  const setUpdateState = useSetUpdateState()
 
   const { updateInfo } = useUpdate()
-
-  const [downloaded, setDownloaded] = useState(0)
-  const [total, setTotal] = useState(0)
-  const downloadedRef = useRef(0)
-  const totalRef = useRef(0)
 
   const openUrlWithNotice = (url: string) => {
     void openExternalUrl(url).catch(showNotice.error)
   }
-
-  const progress = useMemo(() => {
-    if (total <= 0) return 0
-    return Math.min((downloaded / total) * 100, 100)
-  }, [downloaded, total])
 
   useImperativeHandle(ref, () => ({
     open: () => setOpen(true),
@@ -227,61 +205,14 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
     return updateInfo?.body
   }, [activeLanguage, t, updateInfo])
 
-  const breakChangeFlag = useMemo(() => {
-    if (!updateInfo?.body) {
-      return false
-    }
-    return updateInfo?.body.toLowerCase().includes('break change')
-  }, [updateInfo])
-
   const onUpdate = useLockFn(async () => {
-    if (!updateInfo?.body) return
-    if (breakChangeFlag) {
-      showNotice.error('settings.modals.update.messages.breakChangeError')
-      return
-    }
-    if (updateState) return
-    setUpdateState(true)
-    setDownloaded(0)
-    setTotal(0)
-    downloadedRef.current = 0
-    totalRef.current = 0
-
-    const onDownloadEvent = (event: DownloadEvent) => {
-      if (event.event === 'Started') {
-        const contentLength = event.data.contentLength ?? 0
-        totalRef.current = contentLength
-        setTotal(contentLength)
-        setDownloaded(0)
-        downloadedRef.current = 0
-        return
-      }
-
-      if (event.event === 'Progress') {
-        setDownloaded((prev) => {
-          const next = prev + event.data.chunkLength
-          downloadedRef.current = next
-          return next
-        })
-      }
-
-      if (event.event === 'Finished' && totalRef.current === 0) {
-        totalRef.current = downloadedRef.current
-        setTotal(downloadedRef.current)
-      }
-    }
-
     try {
-      await updateInfo.downloadAndInstall(onDownloadEvent)
-      await restartApp()
-    } catch (err: any) {
+      await openExternalUrl(
+        'https://github.com/GARBAGELINUXGRAPHIC/clash-verge-rev-fork/releases',
+      )
+      setOpen(false)
+    } catch (err) {
       showNotice.error(err)
-    } finally {
-      setUpdateState(false)
-      setDownloaded(0)
-      setTotal(0)
-      downloadedRef.current = 0
-      totalRef.current = 0
     }
   })
 
@@ -317,7 +248,7 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
               aria-label={t('settings.modals.update.actions.goToRelease')}
               onClick={() => {
                 openUrlWithNotice(
-                  `https://github.com/clash-verge-rev/clash-verge-rev/releases/tag/v${updateInfo?.version}`,
+                  'https://github.com/GARBAGELINUXGRAPHIC/clash-verge-rev-fork/releases',
                 )
               }}
             >
@@ -539,13 +470,6 @@ export function UpdateViewer({ ref }: { ref?: Ref<DialogRef> }) {
           </Suspense>
         )}
       </Box>
-      {updateState && (
-        <LinearProgress
-          variant={total > 0 ? 'determinate' : 'indeterminate'}
-          value={progress}
-          sx={{ mt: 1 }}
-        />
-      )}
     </BaseDialog>
   )
 }

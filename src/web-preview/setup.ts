@@ -2,6 +2,7 @@ import { emit } from '@tauri-apps/api/event'
 import { mockIPC, mockWindows } from '@tauri-apps/api/mocks'
 
 import type { ProxyViewV1 } from '@/types/proxy-view'
+import { version } from '@root/package.json'
 
 const capabilities = {
   udp: true,
@@ -118,13 +119,22 @@ const values: Record<string, unknown> = {
   get_next_update_time: null,
   take_dns_override_notice: false,
   take_service_fallback_notice: false,
+  take_service_owner_notice: null,
+  get_core_startup_error: null,
   take_service_repair_notice: false,
   take_discarded_keys_notice: null,
   get_network_interfaces: [],
   get_network_interfaces_info: [],
   list_local_backup: [],
   list_webdav_backup: [],
-  'plugin:app|version': '2.5.5',
+  'plugin:app|version': version,
+  'plugin:updater|check': {
+    rid: 9001,
+    currentVersion: version,
+    version: '99.0.0',
+    body: 'Web preview: synthetic update for testing the release link.',
+    rawJson: { version: '99.0.0' },
+  },
   'plugin:app|name': 'Clash Verge Web Preview',
   'plugin:app|tauri_version': '2.0.0',
   'plugin:mihomo|get_base_config': config,
@@ -154,6 +164,16 @@ mockIPC(
   async (command, args = {}) => {
     const payload = args as Record<string, any>
     if (command in values) return structuredClone(values[command])
+    if (command === 'plugin:opener|open_url') {
+      const url = new URL(payload.url)
+      if (!['http:', 'https:'].includes(url.protocol)) {
+        throw new Error('Web preview: only HTTP and HTTPS URLs are supported')
+      }
+      window.open(url.toString(), '_blank', 'noopener,noreferrer')
+      console.info('Web preview: requested external URL', url.toString())
+      return
+    }
+    if (command === 'plugin:resources|close' && payload.rid === 9001) return
     if (command === 'plugin:path|join') return payload.paths.join('/')
     if (command === 'get_clash_mode') return config.mode
     if (command === 'patch_verge_config') {

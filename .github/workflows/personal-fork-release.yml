@@ -142,11 +142,11 @@ jobs:
           git tag --force "$RELEASE_TAG" "$BUILD_SHA"
           git push origin "refs/tags/$RELEASE_TAG" --force
           if gh release view "$RELEASE_TAG" --repo "$REPOSITORY" >/dev/null 2>&1; then
-            gh release edit "$RELEASE_TAG" --repo "$REPOSITORY" --title "Personal Fork $version (latest commit)" --notes-file release-notes.txt --prerelease --latest=false
+            gh release edit "$RELEASE_TAG" --repo "$REPOSITORY" --title "Personal Fork $version (latest commit)" --notes-file release-notes.txt --prerelease=false --latest=true
             while IFS= read -r asset; do
               gh release delete-asset "$RELEASE_TAG" "$asset" --repo "$REPOSITORY" --yes
             done < <(gh release view "$RELEASE_TAG" --repo "$REPOSITORY" --json assets --jq '.assets[].name')
           else
-            gh release create "$RELEASE_TAG" --repo "$REPOSITORY" --title "Personal Fork $version (latest commit)" --notes-file release-notes.txt --prerelease --latest=false
+            gh release create "$RELEASE_TAG" --repo "$REPOSITORY" --title "Personal Fork $version (latest commit)" --notes-file release-notes.txt --prerelease=false --latest=true
           fi
           gh release upload "$RELEASE_TAG" "${assets[@]}" --repo "$REPOSITORY" --clobber

@@ -34,10 +34,12 @@ export const useUpdate = (enabled: boolean = true) => {
   const { data: updateInfo, isFetching: isValidating } = useQuery({
     queryKey: ['checkUpdate'],
     queryFn: fetchUpdate,
-    enabled: shouldCheck,
+    // Keep manual check results visible even when automatic checks are off.
+    revalidateOnMount: shouldCheck,
+    refetchOnReconnect: shouldCheck,
     retry: 2,
     staleTime: 60 * 60 * 1000,
-    refetchInterval: 24 * 60 * 60 * 1000,
+    refetchInterval: shouldCheck ? 24 * 60 * 60 * 1000 : false,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
   })
