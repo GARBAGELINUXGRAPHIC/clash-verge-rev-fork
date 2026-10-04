@@ -4,7 +4,6 @@ import {
   CircularProgress,
   IconButton,
   ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import { writeText } from '@tauri-apps/plugin-clipboard-manager'
@@ -13,6 +12,7 @@ import { useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, BaseEmpty, DialogRef } from '@/components/base'
+import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
 import { useNetworkInterfaces } from '@/hooks/use-network'
 import { showNotice } from '@/services/notice-service'
 
@@ -47,7 +47,7 @@ export function NetworkInterfaceViewer({ ref }: { ref?: Ref<DialogRef> }) {
           }}
         >
           {t('settings.modals.networkInterface.title')}
-          <ToggleButtonGroup
+          <AppleSegmentedControl
             exclusive
             value={isV4 ? 'v4' : 'v6'}
             onChange={(_, value: string | null) =>
@@ -56,7 +56,7 @@ export function NetworkInterfaceViewer({ ref }: { ref?: Ref<DialogRef> }) {
           >
             <ToggleButton value="v4">IPv4</ToggleButton>
             <ToggleButton value="v6">IPv6</ToggleButton>
-          </ToggleButtonGroup>
+          </AppleSegmentedControl>
         </Box>
       }
       contentSx={{ width: 560, maxWidth: '100%' }}

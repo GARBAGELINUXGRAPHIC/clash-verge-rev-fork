@@ -1,4 +1,6 @@
-import { ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { ToggleButton } from '@mui/material'
+
+import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
 
 interface Props {
   value?: string
@@ -9,7 +11,7 @@ export const StackModeSwitch = (props: Props) => {
   const { value, onChange } = props
 
   return (
-    <ToggleButtonGroup
+    <AppleSegmentedControl
       exclusive
       size="small"
       value={value?.toLowerCase()}
@@ -20,6 +22,6 @@ export const StackModeSwitch = (props: Props) => {
       <ToggleButton value="gvisor">gVisor</ToggleButton>
       <ToggleButton value="mixed">Mixed</ToggleButton>
       <ToggleButton value="mips">Mips</ToggleButton>
-    </ToggleButtonGroup>
+    </AppleSegmentedControl>
   )
 }

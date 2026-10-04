@@ -1,6 +1,8 @@
-import { alpha, ButtonBase, styled } from '@mui/material'
+import { alpha, styled } from '@mui/material'
 
-export const ProfileBox = styled(ButtonBase)<{ component?: 'div' }>(
+import { AppleCard } from '../base/apple-card'
+
+export const ProfileBox = styled(AppleCard)<{ component?: 'div' }>(
   ({ theme, 'aria-selected': selected }) => {
     const { primary, text, background } = theme.palette
 
@@ -25,9 +27,10 @@ export const ProfileBox = styled(ButtonBase)<{ component?: 'div' }>(
             pointerEvents: 'none',
           }
         : undefined,
-      borderRadius: '8px',
+      borderRadius: '18px',
       color: text.secondary,
-      transition: 'border-color 160ms ease, background-color 160ms ease',
+      transition:
+        'border-color 160ms ease, background-color 160ms ease, box-shadow 300ms cubic-bezier(0,0,.5,1)',
       '&:hover': {
         backgroundColor: alpha(primary.main, selected ? 0.11 : 0.025),
       },

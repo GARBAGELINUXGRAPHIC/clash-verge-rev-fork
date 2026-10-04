@@ -8,6 +8,7 @@ import { Outlet, useNavigate } from 'react-router'
 import { BaseErrorBoundary } from '@/components/base'
 import { LayoutSidebar } from '@/components/layout/layout-sidebar'
 import { NoticeManager } from '@/components/layout/notice-manager'
+import { OverlayScrollbar } from '@/components/layout/overlay-scrollbar'
 import { ServiceMigrationDialog } from '@/components/layout/service-migration-dialog'
 import { SysproxyPrivilegeDialog } from '@/components/layout/sysproxy-privilege-dialog'
 import {
@@ -108,6 +109,7 @@ const Layout = () => {
     <ThemeProvider theme={theme}>
       {/* 左侧底部窗口控制按钮 */}
       <NoticeManager position={verge?.notice_position} />
+      <OverlayScrollbar />
       <ServiceMigrationDialog />
       <SysproxyPrivilegeDialog />
       <div

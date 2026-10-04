@@ -17,7 +17,6 @@ import {
   ListItemText,
   TextField,
   ToggleButton,
-  ToggleButtonGroup,
   styled,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -38,6 +37,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { BaseSearchBox, MonacoEditor, Switch } from '@/components/base'
+import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
 import { GroupItem } from '@/components/profile/group-item'
 import {
   getNetworkInterfaces,
@@ -511,7 +511,7 @@ export const GroupsEditorViewer = (props: Props) => {
             }}
           >
             {t('profiles.modals.groupsEditor.title')}
-            <ToggleButtonGroup
+            <AppleSegmentedControl
               size="small"
               exclusive
               value={visualization ? 'visual' : 'code'}
@@ -526,7 +526,7 @@ export const GroupsEditorViewer = (props: Props) => {
               <ToggleButton value="code">
                 {t('shared.editorModes.advanced')}
               </ToggleButton>
-            </ToggleButtonGroup>
+            </AppleSegmentedControl>
           </Box>
         }
       </DialogTitle>

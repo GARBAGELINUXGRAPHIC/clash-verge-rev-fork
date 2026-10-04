@@ -7,12 +7,13 @@ import {
   TextField,
   Tooltip,
   ToggleButton,
-  ToggleButtonGroup,
   Typography,
 } from '@mui/material'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
 
 type BaseSplitChipEditorMode = 'visual' | 'advanced'
 
@@ -108,7 +109,7 @@ export const BaseSplitChipEditor = ({
   }
 
   const modeToggle = showModeToggle ? (
-    <ToggleButtonGroup
+    <AppleSegmentedControl
       exclusive
       size="small"
       value={mode}
@@ -145,7 +146,7 @@ export const BaseSplitChipEditor = ({
           <CodeRounded sx={{ fontSize: 18 }} />
         </ToggleButton>
       </Tooltip>
-    </ToggleButtonGroup>
+    </AppleSegmentedControl>
   ) : null
 
   return (

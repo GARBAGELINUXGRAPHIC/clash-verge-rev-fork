@@ -14,7 +14,6 @@ import {
   Tabs,
   Tab,
   ToggleButton,
-  ToggleButtonGroup,
 } from '@mui/material'
 import { invoke } from '@tauri-apps/api/core'
 import { useLockFn } from 'ahooks'
@@ -36,6 +35,7 @@ import {
   MonacoEditor,
   Switch,
 } from '@/components/base'
+import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
 import { useClash } from '@/hooks/use-clash'
 import { useProfiles } from '@/hooks/use-profiles'
 import { useVerge } from '@/hooks/use-verge'
@@ -626,7 +626,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
             >
               {t('shared.actions.resetToDefault')}
             </Button>
-            <ToggleButtonGroup
+            <AppleSegmentedControl
               exclusive
               value={visualization ? 'visual' : 'yaml'}
               onChange={(_, value: string | null) =>
@@ -639,7 +639,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
               <ToggleButton value="yaml">
                 {t('shared.editorModes.advanced')}
               </ToggleButton>
-            </ToggleButtonGroup>
+            </AppleSegmentedControl>
           </Box>
         </Box>
       }

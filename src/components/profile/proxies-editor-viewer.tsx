@@ -14,7 +14,6 @@ import {
   ListItem,
   TextField,
   ToggleButton,
-  ToggleButtonGroup,
   styled,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -30,6 +29,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseSearchBox, MonacoEditor } from '@/components/base'
+import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
 import { ProxyItem } from '@/components/profile/proxy-item'
 import { readProfileFile, saveProfileFile } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
@@ -367,7 +367,7 @@ export const ProxiesEditorViewer = (props: Props) => {
             }}
           >
             {t('profiles.modals.proxiesEditor.title')}
-            <ToggleButtonGroup
+            <AppleSegmentedControl
               size="small"
               exclusive
               value={visualization ? 'visual' : 'code'}
@@ -382,7 +382,7 @@ export const ProxiesEditorViewer = (props: Props) => {
               <ToggleButton value="code">
                 {t('shared.editorModes.advanced')}
               </ToggleButton>
-            </ToggleButtonGroup>
+            </AppleSegmentedControl>
           </Box>
         }
       </DialogTitle>

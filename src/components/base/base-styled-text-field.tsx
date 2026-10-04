@@ -1,11 +1,13 @@
-import { TextField, type TextFieldProps, styled } from '@mui/material'
+import { type TextFieldProps, styled } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+
+import { AppleInput } from './apple-input'
 
 export const BaseStyledTextField = styled((props: TextFieldProps) => {
   const { t } = useTranslation()
 
   return (
-    <TextField
+    <AppleInput
       autoComplete="new-password"
       hiddenLabel
       fullWidth

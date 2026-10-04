@@ -307,10 +307,12 @@ export const useCustomTheme = () => {
       }
       const effectiveInjectedCss = scopedCss ?? setting.css_injection ?? ''
       const globalStyles = `
-        /* 修复滚动条样式 */
+        * {
+          scrollbar-width: none;
+        }
         ::-webkit-scrollbar {
-          width: 8px;
-          height: 8px;
+          width: 0;
+          height: 0;
           background-color: var(--scrollbar-bg);
         }
         ::-webkit-scrollbar-thumb {
