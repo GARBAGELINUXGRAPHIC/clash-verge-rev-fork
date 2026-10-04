@@ -15,8 +15,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  TextField,
-  ToggleButton,
   styled,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -37,7 +35,11 @@ import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { BaseSearchBox, MonacoEditor, Switch } from '@/components/base'
-import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
+import { AppleInput } from '@/components/base/apple-input'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 import { GroupItem } from '@/components/profile/group-item'
 import {
   getNetworkInterfaces,
@@ -520,12 +522,12 @@ export const GroupsEditorViewer = (props: Props) => {
                   handleVisualizationToggle()
               }}
             >
-              <ToggleButton value="visual">
+              <AppleSegment value="visual">
                 {t('shared.editorModes.visualization')}
-              </ToggleButton>
-              <ToggleButton value="code">
+              </AppleSegment>
+              <AppleSegment value="code">
                 {t('shared.editorModes.advanced')}
-              </ToggleButton>
+              </AppleSegment>
             </AppleSegmentedControl>
           </Box>
         }
@@ -601,7 +603,7 @@ export const GroupsEditorViewer = (props: Props) => {
                           )
                         }}
                         onChange={(_, value) => value && field.onChange(value)}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params) => <AppleInput {...params} />}
                       />
                     </Item>
                   )}
@@ -614,7 +616,7 @@ export const GroupsEditorViewer = (props: Props) => {
                       <ListItemText
                         primary={t('profiles.modals.groupsEditor.fields.name')}
                       />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         size="small"
                         sx={{ width: 'calc(100% - 150px)' }}
@@ -633,7 +635,7 @@ export const GroupsEditorViewer = (props: Props) => {
                       <ListItemText
                         primary={t('profiles.modals.groupsEditor.fields.icon')}
                       />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         size="small"
                         sx={{ width: 'calc(100% - 150px)' }}
@@ -661,7 +663,7 @@ export const GroupsEditorViewer = (props: Props) => {
                         options={proxyPolicyList}
                         disableCloseOnSelect
                         onChange={(_, value) => value && field.onChange(value)}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params) => <AppleInput {...params} />}
                         renderOption={(props, option) => {
                           const { key, ...optionProps } = props
                           return (
@@ -696,7 +698,7 @@ export const GroupsEditorViewer = (props: Props) => {
                         options={proxyProviderList}
                         disableCloseOnSelect
                         onChange={(_, value) => value && field.onChange(value)}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params) => <AppleInput {...params} />}
                       />
                     </Item>
                   )}
@@ -711,7 +713,7 @@ export const GroupsEditorViewer = (props: Props) => {
                           'profiles.modals.groupsEditor.fields.healthCheckUrl',
                         )}
                       />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         placeholder="http://cp.cloudflare.com/generate_204"
                         size="small"
@@ -731,7 +733,7 @@ export const GroupsEditorViewer = (props: Props) => {
                           'profiles.modals.groupsEditor.fields.expectedStatus',
                         )}
                       />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         placeholder="*"
                         size="small"
@@ -753,7 +755,7 @@ export const GroupsEditorViewer = (props: Props) => {
                           'profiles.modals.groupsEditor.fields.interval',
                         )}
                       />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         placeholder="300"
                         type="number"
@@ -781,7 +783,7 @@ export const GroupsEditorViewer = (props: Props) => {
                   render={({ field }) => (
                     <Item>
                       <ListItemText primary={t('shared.labels.timeout')} />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         placeholder="5000"
                         type="number"
@@ -813,7 +815,7 @@ export const GroupsEditorViewer = (props: Props) => {
                           'profiles.modals.groupsEditor.fields.maxFailedTimes',
                         )}
                       />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         placeholder="5"
                         type="number"
@@ -842,7 +844,7 @@ export const GroupsEditorViewer = (props: Props) => {
                         options={interfaceNameList}
                         value={field.value}
                         onChange={(_, value) => value && field.onChange(value)}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params) => <AppleInput {...params} />}
                       />
                     </Item>
                   )}
@@ -857,7 +859,7 @@ export const GroupsEditorViewer = (props: Props) => {
                           'profiles.modals.groupsEditor.fields.routingMark',
                         )}
                       />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         type="number"
                         size="small"
@@ -879,7 +881,7 @@ export const GroupsEditorViewer = (props: Props) => {
                           'profiles.modals.groupsEditor.fields.filter',
                         )}
                       />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         size="small"
                         sx={{ width: 'calc(100% - 150px)' }}
@@ -898,7 +900,7 @@ export const GroupsEditorViewer = (props: Props) => {
                           'profiles.modals.groupsEditor.fields.excludeFilter',
                         )}
                       />
-                      <TextField
+                      <AppleInput
                         autoComplete="new-password"
                         size="small"
                         sx={{ width: 'calc(100% - 150px)' }}
@@ -956,7 +958,7 @@ export const GroupsEditorViewer = (props: Props) => {
                         onChange={(_, value) => {
                           field.onChange(value.join('|'))
                         }}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params) => <AppleInput {...params} />}
                       />
                     </Item>
                   )}
@@ -1172,8 +1174,10 @@ const Item = styled(ListItem)(({ theme }) => ({
   gap: 12,
   flexShrink: 0,
   '& .MuiListItemText-root': { minWidth: 0, flex: 1 },
-  '& > .MuiAutocomplete-root, & > .MuiTextField-root, & > .MuiFormControl-root':
-    { width: '60%', minWidth: 0 },
+  '& > .MuiAutocomplete-root, & > .apple-field, & > .MuiFormControl-root': {
+    width: '60%',
+    minWidth: 0,
+  },
   '&:has(.MuiListItemText-root)': {
     borderBottom: `1px solid ${theme.palette.divider}`,
   },

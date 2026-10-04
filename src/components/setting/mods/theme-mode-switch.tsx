@@ -1,7 +1,9 @@
-import { ToggleButton } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 
-import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 
 type ThemeValue = IVergeConfig['theme_mode']
 
@@ -25,9 +27,9 @@ export const ThemeModeSwitch = (props: Props) => {
       sx={{ my: 0.5 }}
     >
       {modes.map((mode) => (
-        <ToggleButton key={mode} value={mode}>
+        <AppleSegment key={mode} value={mode}>
           {t(`settings.sections.appearance.${mode}`)}
-        </ToggleButton>
+        </AppleSegment>
       ))}
     </AppleSegmentedControl>
   )

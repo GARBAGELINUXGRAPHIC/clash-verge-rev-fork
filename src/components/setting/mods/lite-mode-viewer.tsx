@@ -3,7 +3,6 @@ import {
   Button,
   ListItem,
   ListItemText,
-  TextField,
   Typography,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -12,6 +11,7 @@ import { useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, DialogRef, Switch, TooltipIcon } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { useVerge } from '@/hooks/use-verge'
 import { entry_lightweight_mode } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
@@ -100,7 +100,7 @@ export function LiteModeViewer({ ref }: { ref?: Ref<DialogRef> }) {
               <ListItemText
                 primary={t('settings.modals.liteMode.fields.delay')}
               />
-              <TextField
+              <AppleInput
                 autoComplete="off"
                 size="small"
                 type="number"

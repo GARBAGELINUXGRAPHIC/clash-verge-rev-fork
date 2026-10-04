@@ -1,18 +1,15 @@
 import { ContentCopyRounded } from '@mui/icons-material'
-import {
-  Box,
-  CircularProgress,
-  IconButton,
-  ToggleButton,
-  Typography,
-} from '@mui/material'
+import { Box, CircularProgress, IconButton, Typography } from '@mui/material'
 import { writeText } from '@tauri-apps/plugin-clipboard-manager'
 import type { Ref } from 'react'
 import { useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, BaseEmpty, DialogRef } from '@/components/base'
-import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 import { useNetworkInterfaces } from '@/hooks/use-network'
 import { showNotice } from '@/services/notice-service'
 
@@ -54,8 +51,8 @@ export function NetworkInterfaceViewer({ ref }: { ref?: Ref<DialogRef> }) {
               value && setIsV4(value === 'v4')
             }
           >
-            <ToggleButton value="v4">IPv4</ToggleButton>
-            <ToggleButton value="v6">IPv6</ToggleButton>
+            <AppleSegment value="v4">IPv4</AppleSegment>
+            <AppleSegment value="v6">IPv6</AppleSegment>
           </AppleSegmentedControl>
         </Box>
       }

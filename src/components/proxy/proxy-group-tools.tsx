@@ -9,18 +9,13 @@ import VisibilityOffRounded from '@mui/icons-material/VisibilityOffRounded'
 import VisibilityRounded from '@mui/icons-material/VisibilityRounded'
 import WifiTetheringOffRounded from '@mui/icons-material/WifiTetheringOffRounded'
 import WifiTetheringRounded from '@mui/icons-material/WifiTetheringRounded'
-import {
-  Box,
-  IconButton,
-  type SxProps,
-  TextField,
-  Tooltip,
-} from '@mui/material'
+import { Box, IconButton, type SxProps, Tooltip } from '@mui/material'
 import { useDebounceFn } from 'ahooks'
 import { memo, useEffect, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
+import { AppleInput } from '@/components/base/apple-input'
 import { useVerge } from '@/hooks/use-verge'
 import delayManager from '@/services/delay'
 import { showNotice } from '@/services/notice-service'
@@ -127,7 +122,7 @@ export const ProxyGroupTools = memo(function ProxyGroupTools(props: Props) {
       )}
 
       {textState === 'url' && (
-        <TextField
+        <AppleInput
           inputRef={inputRef}
           autoComplete="new-password"
           hiddenLabel

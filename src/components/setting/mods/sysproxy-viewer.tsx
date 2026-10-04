@@ -8,7 +8,6 @@ import {
   ListItem,
   ListItemText,
   styled,
-  TextField,
   Typography,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -28,6 +27,7 @@ import {
   Switch,
   TooltipIcon,
 } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { EditorViewer } from '@/components/profile/editor-viewer'
 import { useDisplayedMixedPort } from '@/hooks/use-displayed-mixed-port'
 import { useSystemProxyState } from '@/hooks/use-system-proxy-state'
@@ -455,7 +455,7 @@ export const SysproxyViewer = forwardRef<DialogRef>((props, ref) => {
             value={value.proxy_host}
             freeSolo
             renderInput={(params) => (
-              <TextField {...params} placeholder="127.0.0.1" size="small" />
+              <AppleInput {...params} placeholder="127.0.0.1" size="small" />
             )}
             onChange={(_, newValue) => {
               setValue((v) => ({
@@ -505,7 +505,7 @@ export const SysproxyViewer = forwardRef<DialogRef>((props, ref) => {
           <ListItemText
             primary={t('settings.modals.sysproxy.fields.guardDuration')}
           />
-          <TextField
+          <AppleInput
             disabled={!enabled}
             size="small"
             value={value.duration}

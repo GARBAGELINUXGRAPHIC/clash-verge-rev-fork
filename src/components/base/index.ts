@@ -1,3 +1,4 @@
+export { AppleSelect } from './apple-select'
 export { AppleCard } from './apple-card'
 export { AppleInput } from './apple-input'
 export { AppleSegmentedControl } from './apple-segmented-control'

@@ -5,15 +5,11 @@ import {
   EditRounded,
   OpenInNewRounded,
 } from '@mui/icons-material'
-import {
-  Divider,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Divider, IconButton, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+
+import { AppleInput } from '@/components/base/apple-input'
 
 interface Props {
   value?: string
@@ -54,7 +50,7 @@ export const WebUIItem = (props: Props) => {
           direction="row"
           sx={{ py: 1.5, alignItems: 'center', flexWrap: 'wrap', rowGap: 1 }}
         >
-          <TextField
+          <AppleInput
             autoComplete="new-password"
             fullWidth
             size="small"

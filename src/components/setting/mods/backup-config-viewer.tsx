@@ -1,18 +1,12 @@
 import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import {
-  TextField,
-  Button,
-  Grid,
-  Stack,
-  IconButton,
-  InputAdornment,
-} from '@mui/material'
+import { Button, Grid, Stack, IconButton, InputAdornment } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useState, useRef, memo, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
+import { AppleInput } from '@/components/base/apple-input'
 import { useVerge } from '@/hooks/use-verge'
 import { saveWebdavConfig, createWebdavBackup } from '@/services/cmds'
 import { errorDetail, showNotice } from '@/services/notice-service'
@@ -177,7 +171,7 @@ export const BackupConfigViewer = memo(
           <Grid size={12}>
             <Grid container spacing={2}>
               <Grid size={{ xs: 12 }}>
-                <TextField
+                <AppleInput
                   fullWidth
                   label={t('settings.modals.backup.fields.webdavUrl')}
                   variant="outlined"
@@ -191,7 +185,7 @@ export const BackupConfigViewer = memo(
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
+                <AppleInput
                   fullWidth
                   label={t('settings.modals.backup.fields.username')}
                   variant="outlined"
@@ -204,7 +198,7 @@ export const BackupConfigViewer = memo(
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
+                <AppleInput
                   fullWidth
                   label={t('shared.labels.password')}
                   type={showPassword ? 'text' : 'password'}

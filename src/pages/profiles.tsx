@@ -850,7 +850,7 @@ const ProfilePage = () => {
           bgcolor: 'background.default',
           display: 'flex',
           alignItems: 'center',
-          '& > .MuiTextField-root': { flex: 1, minWidth: 0 },
+          '& > .apple-field': { flex: 1, minWidth: 0 },
           '& > .MuiButton-root': { flexShrink: 0 },
         }}
       >

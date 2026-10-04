@@ -1,10 +1,12 @@
 import { ContentCopyRounded } from '@mui/icons-material'
-import { Button, Input, MenuItem, Select } from '@mui/material'
+import { Button } from '@mui/material'
 import { open } from '@tauri-apps/plugin-dialog'
 import { useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { DialogRef, TooltipIcon } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
+import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useVerge } from '@/hooks/use-verge'
 import { navigationItems } from '@/pages/_navigation-meta'
 import { copyClashEnv } from '@/services/cmds'
@@ -96,13 +98,13 @@ const SettingVergeBasic = ({ onError }: Props) => {
           onChange={(e) => onChangeData({ language: e })}
           onGuard={(e) => patchVerge({ language: e })}
         >
-          <Select size="small" sx={{ width: 110, '> div': { py: '7.5px' } }}>
+          <AppleSelect size="small" sx={{ width: 110 }}>
             {languageOptions.map(({ code, label }) => (
-              <MenuItem key={code} value={code}>
+              <AppleOption key={code} value={code}>
                 {label}
-              </MenuItem>
+              </AppleOption>
             ))}
-          </Select>
+          </AppleSelect>
         </GuardState>
       </SettingItem>
 
@@ -130,25 +132,25 @@ const SettingVergeBasic = ({ onError }: Props) => {
             onChange={(e) => onChangeData({ tray_event: e })}
             onGuard={(e) => patchVerge({ tray_event: e })}
           >
-            <Select size="small" sx={{ width: 140, '> div': { py: '7.5px' } }}>
-              <MenuItem value="main_window">
+            <AppleSelect size="small" sx={{ width: 140 }}>
+              <AppleOption value="main_window">
                 {t(
                   'settings.components.verge.basic.trayOptions.showMainWindow',
                 )}
-              </MenuItem>
-              <MenuItem value="tray_menu">
+              </AppleOption>
+              <AppleOption value="tray_menu">
                 {t('settings.components.verge.basic.trayOptions.showTrayMenu')}
-              </MenuItem>
-              <MenuItem value="system_proxy">
+              </AppleOption>
+              <AppleOption value="system_proxy">
                 {t('settings.sections.system.toggles.systemProxy')}
-              </MenuItem>
-              <MenuItem value="tun_mode">
+              </AppleOption>
+              <AppleOption value="tun_mode">
                 {t('settings.sections.system.toggles.tunMode')}
-              </MenuItem>
-              <MenuItem value="disable">
+              </AppleOption>
+              <AppleOption value="disable">
                 {t('settings.components.verge.basic.trayOptions.disable')}
-              </MenuItem>
-            </Select>
+              </AppleOption>
+            </AppleSelect>
           </GuardState>
         </SettingItem>
       )}
@@ -170,13 +172,13 @@ const SettingVergeBasic = ({ onError }: Props) => {
           onChange={(e) => onChangeData({ env_type: e })}
           onGuard={(e) => patchVerge({ env_type: e })}
         >
-          <Select size="small" sx={{ width: 140, '> div': { py: '7.5px' } }}>
-            <MenuItem value="bash">Bash</MenuItem>
-            <MenuItem value="fish">Fish</MenuItem>
-            <MenuItem value="nushell">Nushell</MenuItem>
-            <MenuItem value="cmd">CMD</MenuItem>
-            <MenuItem value="powershell">PowerShell</MenuItem>
-          </Select>
+          <AppleSelect size="small" sx={{ width: 140 }}>
+            <AppleOption value="bash">Bash</AppleOption>
+            <AppleOption value="fish">Fish</AppleOption>
+            <AppleOption value="nushell">Nushell</AppleOption>
+            <AppleOption value="cmd">CMD</AppleOption>
+            <AppleOption value="powershell">PowerShell</AppleOption>
+          </AppleSelect>
         </GuardState>
       </SettingItem>
 
@@ -196,15 +198,15 @@ const SettingVergeBasic = ({ onError }: Props) => {
           onChange={(e) => onChangeData({ start_page: e })}
           onGuard={(e) => patchVerge({ start_page: e })}
         >
-          <Select size="small" sx={{ width: 140, '> div': { py: '7.5px' } }}>
+          <AppleSelect size="small" sx={{ width: 140 }}>
             {Object.values(navigationItems).map((page) => {
               return (
-                <MenuItem key={page.path} value={page.path}>
+                <AppleOption key={page.path} value={page.path}>
                   {t(page.label)}
-                </MenuItem>
+                </AppleOption>
               )
             })}
-          </Select>
+          </AppleSelect>
         </GuardState>
       </SettingItem>
 
@@ -218,46 +220,50 @@ const SettingVergeBasic = ({ onError }: Props) => {
           onChange={(e) => onChangeData({ startup_script: e })}
           onGuard={(e) => patchVerge({ startup_script: e })}
         >
-          <Input
+          <AppleInput
             value={startup_script}
             disabled
-            disableUnderline
+            size="small"
             sx={{ width: 230 }}
-            endAdornment={
-              <>
-                <Button
-                  onClick={async () => {
-                    const selected = await open({
-                      directory: false,
-                      multiple: false,
-                      filters: [
-                        {
-                          name: 'Shell Script',
-                          extensions: ['sh', 'bat', 'ps1'],
-                        },
-                      ],
-                    })
-                    if (selected) {
-                      onChangeData({ startup_script: `${selected}` })
-                      patchVerge({ startup_script: `${selected}` })
-                    }
-                  }}
-                >
-                  {t('settings.components.verge.basic.actions.browse')}
-                </Button>
-                {startup_script && (
-                  <Button
-                    onClick={async () => {
-                      onChangeData({ startup_script: '' })
-                      patchVerge({ startup_script: '' })
-                    }}
-                  >
-                    {t('shared.actions.clear')}
-                  </Button>
-                )}
-              </>
-            }
-          ></Input>
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <>
+                    <Button
+                      onClick={async () => {
+                        const selected = await open({
+                          directory: false,
+                          multiple: false,
+                          filters: [
+                            {
+                              name: 'Shell Script',
+                              extensions: ['sh', 'bat', 'ps1'],
+                            },
+                          ],
+                        })
+                        if (selected) {
+                          onChangeData({ startup_script: `${selected}` })
+                          patchVerge({ startup_script: `${selected}` })
+                        }
+                      }}
+                    >
+                      {t('settings.components.verge.basic.actions.browse')}
+                    </Button>
+                    {startup_script && (
+                      <Button
+                        onClick={async () => {
+                          onChangeData({ startup_script: '' })
+                          patchVerge({ startup_script: '' })
+                        }}
+                      >
+                        {t('shared.actions.clear')}
+                      </Button>
+                    )}
+                  </>
+                ),
+              },
+            }}
+          />
         </GuardState>
       </SettingItem>
 

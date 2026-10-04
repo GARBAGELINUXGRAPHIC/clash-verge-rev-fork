@@ -7,7 +7,6 @@ import {
   ListItem,
   ListItemText,
   Snackbar,
-  TextField,
   Tooltip,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -15,6 +14,7 @@ import { useImperativeHandle, useState, type Ref } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, DialogRef, Switch } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { useClashInfo } from '@/hooks/use-clash'
 import { useVerge } from '@/hooks/use-verge'
 import { showNotice } from '@/services/notice-service'
@@ -127,12 +127,12 @@ export function ControllerViewer({ ref }: { ref?: Ref<DialogRef> }) {
     >
       <SettingForm
         sx={{
-          '& > .MuiListItem-root:has(.MuiTextField-root)': {
+          '& > .MuiListItem-root:has(.apple-field)': {
             flexDirection: 'column',
             alignItems: 'stretch',
             gap: 1,
           },
-          '& .MuiTextField-root': { flex: 1 },
+          '& .apple-field': { flex: 1 },
         }}
       >
         <ListItem
@@ -164,7 +164,7 @@ export function ControllerViewer({ ref }: { ref?: Ref<DialogRef> }) {
             primary={t('settings.sections.externalController.fields.address')}
           />
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TextField
+            <AppleInput
               size="small"
               sx={{
                 width: 175,
@@ -204,7 +204,7 @@ export function ControllerViewer({ ref }: { ref?: Ref<DialogRef> }) {
             primary={t('settings.sections.externalController.fields.secret')}
           />
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TextField
+            <AppleInput
               size="small"
               sx={{
                 width: 175,

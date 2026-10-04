@@ -4,9 +4,6 @@ import {
   InputAdornment,
   ListItem,
   ListItemText,
-  MenuItem,
-  Select,
-  TextField,
   styled,
   Tabs,
   Tab,
@@ -19,6 +16,8 @@ import { forwardRef, useEffect, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, DialogRef, Switch, TooltipIcon } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
+import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { DEFAULT_HOVER_DELAY } from '@/components/proxy/proxy-group-navigator'
 import { useVerge } from '@/hooks/use-verge'
 import { useWindowDecorations } from '@/hooks/use-window'
@@ -245,31 +244,28 @@ export const LayoutViewer = forwardRef<DialogRef>((_, ref) => {
               onChange={(value) => onChangeData({ notice_position: value })}
               onGuard={(value) => patchVerge({ notice_position: value })}
             >
-              <Select
-                size="small"
-                sx={{ width: 180, '> div': { py: '7.5px' } }}
-              >
-                <MenuItem value="top-right">
+              <AppleSelect size="small" sx={{ width: 180 }}>
+                <AppleOption value="top-right">
                   {t(
                     'settings.components.verge.layout.options.toastPosition.topRight',
                   )}
-                </MenuItem>
-                <MenuItem value="top-left">
+                </AppleOption>
+                <AppleOption value="top-left">
                   {t(
                     'settings.components.verge.layout.options.toastPosition.topLeft',
                   )}
-                </MenuItem>
-                <MenuItem value="bottom-right">
+                </AppleOption>
+                <AppleOption value="bottom-right">
                   {t(
                     'settings.components.verge.layout.options.toastPosition.bottomRight',
                   )}
-                </MenuItem>
-                <MenuItem value="bottom-left">
+                </AppleOption>
+                <AppleOption value="bottom-left">
                   {t(
                     'settings.components.verge.layout.options.toastPosition.bottomLeft',
                   )}
-                </MenuItem>
-              </Select>
+                </AppleOption>
+              </AppleSelect>
             </GuardState>
           </Item>
 
@@ -337,7 +333,7 @@ export const LayoutViewer = forwardRef<DialogRef>((_, ref) => {
                 })
               }
             >
-              <TextField
+              <AppleInput
                 type="number"
                 size="small"
                 autoComplete="off"
@@ -375,22 +371,19 @@ export const LayoutViewer = forwardRef<DialogRef>((_, ref) => {
               onChange={(value) => onChangeData({ menu_icon: value })}
               onGuard={(value) => patchVerge({ menu_icon: value })}
             >
-              <Select
-                size="small"
-                sx={{ width: 140, '> div': { py: '7.5px' } }}
-              >
-                <MenuItem value="monochrome">
+              <AppleSelect size="small" sx={{ width: 140 }}>
+                <AppleOption value="monochrome">
                   {t(
                     'settings.components.verge.layout.options.icon.monochrome',
                   )}
-                </MenuItem>
-                <MenuItem value="colorful">
+                </AppleOption>
+                <AppleOption value="colorful">
                   {t('settings.components.verge.layout.options.icon.colorful')}
-                </MenuItem>
-                <MenuItem value="disable">
+                </AppleOption>
+                <AppleOption value="disable">
                   {t('settings.components.verge.layout.options.icon.disable')}
-                </MenuItem>
-              </Select>
+                </AppleOption>
+              </AppleSelect>
             </GuardState>
           </Item>
 
@@ -427,21 +420,18 @@ export const LayoutViewer = forwardRef<DialogRef>((_, ref) => {
                 onChange={(e) => onChangeData({ tray_icon: e })}
                 onGuard={(e) => patchVerge({ tray_icon: e })}
               >
-                <Select
-                  size="small"
-                  sx={{ width: 140, '> div': { py: '7.5px' } }}
-                >
-                  <MenuItem value="monochrome">
+                <AppleSelect size="small" sx={{ width: 140 }}>
+                  <AppleOption value="monochrome">
                     {t(
                       'settings.components.verge.layout.options.icon.monochrome',
                     )}
-                  </MenuItem>
-                  <MenuItem value="colorful">
+                  </AppleOption>
+                  <AppleOption value="colorful">
                     {t(
                       'settings.components.verge.layout.options.icon.colorful',
                     )}
-                  </MenuItem>
-                </Select>
+                  </AppleOption>
+                </AppleSelect>
               </GuardState>
             </Item>
           )}
@@ -501,26 +491,23 @@ export const LayoutViewer = forwardRef<DialogRef>((_, ref) => {
                 patchVerge({ tray_proxy_groups_display_mode: value })
               }
             >
-              <Select
-                size="small"
-                sx={{ width: 140, '> div': { py: '7.5px' } }}
-              >
-                <MenuItem value="default">
+              <AppleSelect size="small" sx={{ width: 140 }}>
+                <AppleOption value="default">
                   {t(
                     'settings.components.verge.layout.options.proxyGroupsDisplayMode.default',
                   )}
-                </MenuItem>
-                <MenuItem value="inline">
+                </AppleOption>
+                <AppleOption value="inline">
                   {t(
                     'settings.components.verge.layout.options.proxyGroupsDisplayMode.inline',
                   )}
-                </MenuItem>
-                <MenuItem value="disable">
+                </AppleOption>
+                <AppleOption value="disable">
                   {t(
                     'settings.components.verge.layout.options.proxyGroupsDisplayMode.disable',
                   )}
-                </MenuItem>
-              </Select>
+                </AppleOption>
+              </AppleSelect>
             </GuardState>
           </Item>
           <Item>

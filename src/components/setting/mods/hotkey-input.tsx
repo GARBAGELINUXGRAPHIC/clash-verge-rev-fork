@@ -3,6 +3,7 @@ import { alpha, Box, IconButton, styled } from '@mui/material'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { appleFieldSurface } from '@/components/base/apple-style'
 import { parseHotkey } from '@/utils/parse-hotkey'
 
 const KeyWrapper = styled('div')(({ theme }) => ({
@@ -21,9 +22,11 @@ const KeyWrapper = styled('div')(({ theme }) => ({
     opacity: 0,
   },
   '> input:focus + .list': {
-    borderColor: alpha(theme.palette.primary.main, 0.75),
+    borderColor: theme.palette.primary.main,
+    boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.2)}`,
   },
   '.list': {
+    ...appleFieldSurface(theme),
     display: 'flex',
     alignItems: 'center',
     flexWrap: 'wrap',
@@ -33,8 +36,8 @@ const KeyWrapper = styled('div')(({ theme }) => ({
     boxSizing: 'border-box',
     padding: '3px 4px',
     border: '1px solid',
-    borderRadius: 6,
-    borderColor: alpha(theme.palette.text.secondary, 0.15),
+    borderRadius: 8,
+    borderColor: '#bbbbbbbb',
     '&:last-child': {
       marginRight: 0,
     },

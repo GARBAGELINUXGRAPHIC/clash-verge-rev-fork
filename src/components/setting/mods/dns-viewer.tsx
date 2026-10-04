@@ -6,14 +6,10 @@ import {
   FormControl,
   ListItem,
   ListItemText,
-  MenuItem,
-  Select,
   styled,
-  TextField,
   Typography,
   Tabs,
   Tab,
-  ToggleButton,
 } from '@mui/material'
 import { invoke } from '@tauri-apps/api/core'
 import { useLockFn } from 'ahooks'
@@ -35,7 +31,12 @@ import {
   MonacoEditor,
   Switch,
 } from '@/components/base'
-import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
+import { AppleInput } from '@/components/base/apple-input'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
+import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useClash } from '@/hooks/use-clash'
 import { useProfiles } from '@/hooks/use-profiles'
 import { useVerge } from '@/hooks/use-verge'
@@ -633,12 +634,12 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                 value && setVisualization(value === 'visual')
               }
             >
-              <ToggleButton value="visual">
+              <AppleSegment value="visual">
                 {t('shared.editorModes.visualization')}
-              </ToggleButton>
-              <ToggleButton value="yaml">
+              </AppleSegment>
+              <AppleSegment value="yaml">
                 {t('shared.editorModes.advanced')}
-              </ToggleButton>
+              </AppleSegment>
             </AppleSegmentedControl>
           </Box>
         </Box>
@@ -714,7 +715,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                 <ListItemText
                   primary={t('settings.modals.dns.fields.listen')}
                 />
-                <TextField
+                <AppleInput
                   size="small"
                   autoComplete="off"
                   spellCheck="false"
@@ -730,13 +731,13 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                   primary={t('settings.modals.dns.fields.enhancedMode')}
                 />
                 <FormControl size="small" sx={{ width: 150 }}>
-                  <Select
+                  <AppleSelect
                     value={values.enhancedMode}
                     onChange={handleChange('enhancedMode')}
                   >
-                    <MenuItem value="fake-ip">fake-ip</MenuItem>
-                    <MenuItem value="redir-host">redir-host</MenuItem>
-                  </Select>
+                    <AppleOption value="fake-ip">fake-ip</AppleOption>
+                    <AppleOption value="redir-host">redir-host</AppleOption>
+                  </AppleSelect>
                 </FormControl>
               </Item>
 
@@ -744,7 +745,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                 <ListItemText
                   primary={t('settings.modals.dns.fields.fakeIpRange')}
                 />
-                <TextField
+                <AppleInput
                   size="small"
                   autoComplete="off"
                   spellCheck="false"
@@ -759,7 +760,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                 <ListItemText
                   primary={t('settings.modals.dns.fields.fakeIpRange6')}
                 />
-                <TextField
+                <AppleInput
                   size="small"
                   autoComplete="off"
                   spellCheck="false"
@@ -775,13 +776,13 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                   primary={t('settings.modals.dns.fields.fakeIpFilterMode')}
                 />
                 <FormControl size="small" sx={{ width: 150 }}>
-                  <Select
+                  <AppleSelect
                     value={values.fakeIpFilterMode}
                     onChange={handleChange('fakeIpFilterMode')}
                   >
-                    <MenuItem value="blacklist">blacklist</MenuItem>
-                    <MenuItem value="whitelist">whitelist</MenuItem>
-                  </Select>
+                    <AppleOption value="blacklist">blacklist</AppleOption>
+                    <AppleOption value="whitelist">whitelist</AppleOption>
+                  </AppleSelect>
                 </FormControl>
               </Item>
 
@@ -879,7 +880,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                     'settings.modals.dns.fields.defaultNameserver.description',
                   )}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}
@@ -899,7 +900,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                     'settings.modals.dns.fields.nameserver.description',
                   )}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}
@@ -919,7 +920,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                     'settings.modals.dns.fields.fallback.description',
                   )}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}
@@ -937,7 +938,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                   primary={t('settings.modals.dns.fields.proxy.label')}
                   secondary={t('settings.modals.dns.fields.proxy.description')}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}
@@ -959,7 +960,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                     'settings.modals.dns.fields.directNameserver.description',
                   )}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}
@@ -979,7 +980,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                     'settings.modals.dns.fields.fakeIpFilter.description',
                   )}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}
@@ -1001,7 +1002,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                     'settings.modals.dns.fields.nameserverPolicy.description',
                   )}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}
@@ -1042,7 +1043,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                 <ListItemText
                   primary={t('settings.modals.dns.fields.geoipCode')}
                 />
-                <TextField
+                <AppleInput
                   size="small"
                   autoComplete="off"
                   spellCheck="false"
@@ -1060,7 +1061,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                     'settings.modals.dns.fields.fallbackIpCidr.description',
                   )}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}
@@ -1080,7 +1081,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                     'settings.modals.dns.fields.fallbackDomain.description',
                   )}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}
@@ -1108,7 +1109,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
                   primary={t('settings.modals.dns.fields.hosts.label')}
                   secondary={t('settings.modals.dns.fields.hosts.description')}
                 />
-                <TextField
+                <AppleInput
                   fullWidth
                   multiline
                   minRows={2}

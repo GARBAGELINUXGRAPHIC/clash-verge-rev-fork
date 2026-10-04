@@ -8,9 +8,6 @@ import {
   ListItemText,
   ListItemButton,
   IconButton,
-  TextField,
-  Select,
-  MenuItem,
   Box,
   Typography,
 } from '@mui/material'
@@ -25,6 +22,8 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
+import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useClash } from '@/hooks/use-clash'
 import { useProxiesData } from '@/providers/app-data-context'
 import { probeListener, type ListenerTransport } from '@/services/cmds'
@@ -389,9 +388,9 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                     'settings.sections.clash.form.fields.tunnels.protocols',
                   )}
                 />
-                <Select
+                <AppleSelect
                   size="small"
-                  sx={{ width: 200, '> div': { py: '7.5px' } }}
+                  sx={{ width: 200 }}
                   value={values.network}
                   onChange={(e) =>
                     setValues((v) => ({
@@ -400,10 +399,10 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                     }))
                   }
                 >
-                  <MenuItem value="tcp">TCP</MenuItem>
-                  <MenuItem value="udp">UDP</MenuItem>
-                  <MenuItem value="tcp+udp">TCP + UDP</MenuItem>
-                </Select>
+                  <AppleOption value="tcp">TCP</AppleOption>
+                  <AppleOption value="udp">UDP</AppleOption>
+                  <AppleOption value="tcp+udp">TCP + UDP</AppleOption>
+                </AppleSelect>
               </ListItem>
 
               {/* 本地监听地址 */}
@@ -413,7 +412,7 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                     'settings.sections.clash.form.fields.tunnels.localAddr',
                   )}
                 />
-                <TextField
+                <AppleInput
                   autoComplete="new-password"
                   size="small"
                   sx={{ width: 200 }}
@@ -432,7 +431,7 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                     'settings.sections.clash.form.fields.tunnels.localPort',
                   )}
                 />
-                <TextField
+                <AppleInput
                   autoComplete="new-password"
                   size="small"
                   type="number"
@@ -452,7 +451,7 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                     'settings.sections.clash.form.fields.tunnels.targetAddr',
                   )}
                 />
-                <TextField
+                <AppleInput
                   autoComplete="new-password"
                   size="small"
                   sx={{ width: 200 }}
@@ -471,7 +470,7 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                     'settings.sections.clash.form.fields.tunnels.targetPort',
                   )}
                 />
-                <TextField
+                <AppleInput
                   autoComplete="new-password"
                   size="small"
                   type="number"
@@ -507,9 +506,9 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                     </>
                   }
                 />
-                <Select
+                <AppleSelect
                   size="small"
-                  sx={{ width: 200, '> div': { py: '7.5px' } }}
+                  sx={{ width: 200 }}
                   value={values.group}
                   displayEmpty
                   onChange={(e) => {
@@ -539,15 +538,15 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                     }))
                   }}
                 >
-                  <MenuItem value="">
+                  <AppleOption value="">
                     {t('settings.sections.clash.form.fields.tunnels.default')}
-                  </MenuItem>
+                  </AppleOption>
                   {groupNames.map((name) => (
-                    <MenuItem key={name} value={name}>
+                    <AppleOption key={name} value={name}>
                       {name}
-                    </MenuItem>
+                    </AppleOption>
                   ))}
-                </Select>
+                </AppleSelect>
               </ListItem>
 
               {/* 代理节点 */}
@@ -573,9 +572,9 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                     </>
                   }
                 />
-                <Select
+                <AppleSelect
                   size="small"
-                  sx={{ width: 200, '> div': { py: '7.5px' } }}
+                  sx={{ width: 200 }}
                   value={selectedProxyToken}
                   displayEmpty
                   onChange={(e) => {
@@ -595,11 +594,11 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                   }}
                   disabled={!values.group} // 没选组就禁用
                 >
-                  <MenuItem value="">
+                  <AppleOption value="">
                     {t('settings.sections.clash.form.fields.tunnels.default')}
-                  </MenuItem>
+                  </AppleOption>
                   {proxyOptions.map(({ memberIndex, member }) => (
-                    <MenuItem
+                    <AppleOption
                       key={
                         member.kind === 'node'
                           ? `${memberIndex}:${member.node.recordId}`
@@ -609,9 +608,9 @@ export const TunnelsViewer = forwardRef<TunnelsViewerRef>((_, ref) => {
                       disabled={!isInteractableMember(member)}
                     >
                       {member.ref.name}
-                    </MenuItem>
+                    </AppleOption>
                   ))}
-                </Select>
+                </AppleSelect>
               </ListItem>
             </SettingForm>
             <Button

@@ -1,11 +1,14 @@
 import { LanOutlined, LanRounded, WarningRounded } from '@mui/icons-material'
-import { Box, IconButton, ToggleButton, Tooltip } from '@mui/material'
+import { Box, IconButton, Tooltip } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useCallback, useEffect, useReducer, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BasePage, TooltipIcon } from '@/components/base'
-import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 import { ProviderButton } from '@/components/proxy/provider-button'
 import { ProxyGroups } from '@/components/proxy/proxy-groups'
 import {
@@ -164,16 +167,20 @@ const ProxyPage = () => {
         >
           <ProviderButton />
 
-          <AppleSegmentedControl size="small" exclusive value={curMode}>
+          <AppleSegmentedControl
+            size="small"
+            exclusive
+            value={curMode}
+            onChange={(_, next) => onChangeMode(next)}
+          >
             {MODES.map((mode) => (
-              <ToggleButton
+              <AppleSegment
                 key={mode}
                 value={mode}
-                onClick={() => onChangeMode(mode)}
                 sx={{ textTransform: 'capitalize' }}
               >
                 {t(`proxies.page.modes.${mode}`)}
-              </ToggleButton>
+              </AppleSegment>
             ))}
           </AppleSegmentedControl>
 

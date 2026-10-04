@@ -1,10 +1,11 @@
 import { AddRounded, Delete as DeleteIcon } from '@mui/icons-material'
-import { Box, Button, IconButton, ListItem, TextField } from '@mui/material'
+import { Box, Button, IconButton, ListItem } from '@mui/material'
 import { useLockFn, useRequest } from 'ahooks'
 import { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, Switch } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { useClash } from '@/hooks/use-clash'
 import { restartCore } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
@@ -193,7 +194,7 @@ export const HeaderConfiguration = forwardRef<ClashHeaderConfigingRef>(
                     marginBottom: 8,
                   }}
                 >
-                  <TextField
+                  <AppleInput
                     fullWidth
                     size="small"
                     sx={{ marginRight: 1 }}

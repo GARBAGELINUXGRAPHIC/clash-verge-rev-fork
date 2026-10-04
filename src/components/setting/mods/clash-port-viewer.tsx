@@ -5,13 +5,13 @@ import {
   ListItem,
   ListItemText,
   Stack,
-  TextField,
 } from '@mui/material'
 import { useLockFn, useRequest } from 'ahooks'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, Switch } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { useDisplayedMixedPort } from '@/hooks/use-displayed-mixed-port'
 import { useVerge } from '@/hooks/use-verge'
 import { saveProxyPorts } from '@/services/cmds'
@@ -165,7 +165,7 @@ export const ClashPortViewer = forwardRef<ClashPortViewerRef>((_, ref) => {
             slotProps={{ primary: { sx: { fontSize: 12 } } }}
           />
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
+            <AppleInput
               size="small"
               sx={{ width: 80, mr: 0.5, fontSize: 12 }}
               value={mixedPort}
@@ -197,7 +197,7 @@ export const ClashPortViewer = forwardRef<ClashPortViewerRef>((_, ref) => {
             slotProps={{ primary: { sx: { fontSize: 12 } } }}
           />
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
+            <AppleInput
               size="small"
               sx={{ width: 80, mr: 0.5, fontSize: 12 }}
               value={socksPort}
@@ -231,7 +231,7 @@ export const ClashPortViewer = forwardRef<ClashPortViewerRef>((_, ref) => {
             slotProps={{ primary: { sx: { fontSize: 12 } } }}
           />
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <TextField
+            <AppleInput
               size="small"
               sx={{ width: 80, mr: 0.5, fontSize: 12 }}
               value={httpPort}
@@ -266,7 +266,7 @@ export const ClashPortViewer = forwardRef<ClashPortViewerRef>((_, ref) => {
               slotProps={{ primary: { sx: { fontSize: 12 } } }}
             />
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <TextField
+              <AppleInput
                 size="small"
                 sx={{ width: 80, mr: 0.5, fontSize: 12 }}
                 value={redirPort}
@@ -302,7 +302,7 @@ export const ClashPortViewer = forwardRef<ClashPortViewerRef>((_, ref) => {
               slotProps={{ primary: { sx: { fontSize: 12 } } }}
             />
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <TextField
+              <AppleInput
                 size="small"
                 sx={{ width: 80, mr: 0.5, fontSize: 12 }}
                 value={tproxyPort}

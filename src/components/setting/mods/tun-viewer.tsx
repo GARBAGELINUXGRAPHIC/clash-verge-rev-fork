@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  ListItem,
-  ListItemText,
-  TextField,
-  Typography,
-} from '@mui/material'
+import { Box, Button, ListItem, ListItemText, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import type { Ref } from 'react'
 import { useImperativeHandle, useState } from 'react'
@@ -18,6 +11,7 @@ import {
   DialogRef,
   Switch,
 } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { useClash } from '@/hooks/use-clash'
 import { enhanceProfiles } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
@@ -218,7 +212,7 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
 
         <ListItem sx={{ padding: '5px 2px' }}>
           <ListItemText primary={t('settings.modals.tun.fields.device')} />
-          <TextField
+          <AppleInput
             autoComplete="new-password"
             size="small"
             autoCorrect="off"
@@ -297,7 +291,7 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
 
         <ListItem sx={{ padding: '5px 2px' }}>
           <ListItemText primary={t('settings.modals.tun.fields.dnsHijack')} />
-          <TextField
+          <AppleInput
             autoComplete="new-password"
             size="small"
             autoCorrect="off"
@@ -314,7 +308,7 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
 
         <ListItem sx={{ padding: '5px 2px' }}>
           <ListItemText primary={t('settings.modals.tun.fields.mtu')} />
-          <TextField
+          <AppleInput
             autoComplete="new-password"
             size="small"
             type="number"

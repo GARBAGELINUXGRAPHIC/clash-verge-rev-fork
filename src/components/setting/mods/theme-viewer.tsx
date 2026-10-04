@@ -5,7 +5,6 @@ import {
   ListItem,
   ListItemText,
   styled,
-  TextField,
   useTheme,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -19,6 +18,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, DialogRef } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { EditorViewer } from '@/components/profile/editor-viewer'
 import { useVerge } from '@/hooks/use-verge'
 import { defaultDarkTheme, defaultTheme } from '@/pages/_theme'
@@ -161,7 +161,7 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
             }}
           />
         </Box>
-        <TextField
+        <AppleInput
           {...textProps}
           value={theme[key] ?? ''}
           placeholder={dt[key]}
@@ -189,7 +189,7 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
           '& > .MuiListItem-root:has(input[type="color"])': {
             flexWrap: 'nowrap',
             '& > .MuiListItemText-root': { flexBasis: 'auto' },
-            '& > .MuiTextField-root': { width: 132, flexShrink: 0 },
+            '& > .apple-field': { width: 132, flexShrink: 0 },
           },
         }}
       >
@@ -199,7 +199,7 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
           <ListItemText
             primary={t('settings.components.verge.theme.fields.fontFamily')}
           />
-          <TextField
+          <AppleInput
             {...textProps}
             value={theme.font_family ?? ''}
             onChange={handleChange('font_family')}

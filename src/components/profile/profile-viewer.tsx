@@ -3,10 +3,7 @@ import {
   FormControl,
   InputAdornment,
   InputLabel,
-  MenuItem,
-  Select,
   styled,
-  TextField,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import type { Ref } from 'react'
@@ -15,6 +12,8 @@ import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, Switch } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
+import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useProfiles } from '@/hooks/use-profiles'
 import { createProfile, patchProfile } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
@@ -249,21 +248,18 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
         control={control}
         render={({ field }) => (
           <FormControl size="small" fullWidth>
-            <InputLabel>
-              {t('profiles.modals.profileForm.fields.type')}
-            </InputLabel>
-            <Select
+            <AppleSelect
               {...field}
               autoFocus
               label={t('profiles.modals.profileForm.fields.type')}
             >
-              <MenuItem value="remote">
+              <AppleOption value="remote">
                 {t('profiles.modals.profileForm.types.remote')}
-              </MenuItem>
-              <MenuItem value="local">
+              </AppleOption>
+              <AppleOption value="local">
                 {t('profiles.modals.profileForm.types.local')}
-              </MenuItem>
-            </Select>
+              </AppleOption>
+            </AppleSelect>
           </FormControl>
         )}
       />
@@ -272,7 +268,7 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
         name="name"
         control={control}
         render={({ field }) => (
-          <TextField {...text} {...field} label={t('shared.labels.name')} />
+          <AppleInput {...text} {...field} label={t('shared.labels.name')} />
         )}
       />
 
@@ -280,7 +276,7 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
         name="desc"
         control={control}
         render={({ field }) => (
-          <TextField
+          <AppleInput
             {...text}
             {...field}
             label={t('profiles.modals.profileForm.fields.description')}
@@ -303,7 +299,7 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
             name="url"
             control={control}
             render={({ field }) => (
-              <TextField
+              <AppleInput
                 {...text}
                 {...field}
                 multiline
@@ -316,7 +312,7 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
             name="option.user_agent"
             control={control}
             render={({ field }) => (
-              <TextField
+              <AppleInput
                 {...text}
                 {...field}
                 placeholder={`clash-verge/v${version}`}
@@ -329,7 +325,7 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
             name="option.timeout_seconds"
             control={control}
             render={({ field }) => (
-              <TextField
+              <AppleInput
                 {...text}
                 {...field}
                 type="number"
@@ -358,7 +354,7 @@ export function ProfileViewer({ onChange, ref }: ProfileViewerProps) {
                 interval < MIN_UPDATE_INTERVAL
 
               return (
-                <TextField
+                <AppleInput
                   {...text}
                   {...field}
                   type="number"

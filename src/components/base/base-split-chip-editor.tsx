@@ -4,16 +4,18 @@ import {
   Chip,
   FormHelperText,
   IconButton,
-  TextField,
   Tooltip,
-  ToggleButton,
   Typography,
 } from '@mui/material'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
+import { AppleInput } from '@/components/base/apple-input'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 
 type BaseSplitChipEditorMode = 'visual' | 'advanced'
 
@@ -120,32 +122,38 @@ export const BaseSplitChipEditor = ({
           if (nextMode === 'visual') setDraft('')
         }
       }}
-      sx={{ '& .MuiToggleButton-root': { p: 0.5, width: 30, height: 28 } }}
     >
-      <Tooltip title={resolvedLabels.visual}>
-        <ToggleButton
-          value="visual"
-          aria-label={
-            typeof resolvedLabels.visual === 'string'
-              ? resolvedLabels.visual
-              : undefined
-          }
-        >
-          <ViewModuleRounded sx={{ fontSize: 18 }} />
-        </ToggleButton>
-      </Tooltip>
-      <Tooltip title={resolvedLabels.advanced}>
-        <ToggleButton
-          value="advanced"
-          aria-label={
-            typeof resolvedLabels.advanced === 'string'
-              ? resolvedLabels.advanced
-              : undefined
-          }
-        >
-          <CodeRounded sx={{ fontSize: 18 }} />
-        </ToggleButton>
-      </Tooltip>
+      <AppleSegment
+        value="visual"
+        title={
+          typeof resolvedLabels.visual === 'string'
+            ? resolvedLabels.visual
+            : undefined
+        }
+        aria-label={
+          typeof resolvedLabels.visual === 'string'
+            ? resolvedLabels.visual
+            : undefined
+        }
+      >
+        <ViewModuleRounded sx={{ fontSize: 18 }} />
+      </AppleSegment>
+
+      <AppleSegment
+        value="advanced"
+        title={
+          typeof resolvedLabels.advanced === 'string'
+            ? resolvedLabels.advanced
+            : undefined
+        }
+        aria-label={
+          typeof resolvedLabels.advanced === 'string'
+            ? resolvedLabels.advanced
+            : undefined
+        }
+      >
+        <CodeRounded sx={{ fontSize: 18 }} />
+      </AppleSegment>
     </AppleSegmentedControl>
   ) : null
 
@@ -184,7 +192,7 @@ export const BaseSplitChipEditor = ({
           <Box
             sx={{ display: 'flex', gap: 1, marginTop: 1, alignItems: 'center' }}
           >
-            <TextField
+            <AppleInput
               disabled={disabled}
               size="small"
               fullWidth
@@ -192,8 +200,8 @@ export const BaseSplitChipEditor = ({
               placeholder={placeholder}
               error={error}
               sx={{
-                '& .MuiInputBase-root': { minHeight: 32 },
-                '& .MuiInputBase-input': { padding: '4px 8px' },
+                '& .apple-input-wrap': { minHeight: 32 },
+                '& .apple-control': { padding: '4px 8px' },
               }}
               onChange={(event) => setDraft(event.target.value)}
               onKeyDown={(event) => {
@@ -226,7 +234,7 @@ export const BaseSplitChipEditor = ({
           )}
         </Box>
       ) : (
-        <TextField
+        <AppleInput
           error={error}
           disabled={disabled}
           size="small"

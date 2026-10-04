@@ -20,7 +20,9 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
       defaultProps: { disableElevation: true, size: 'small' },
       styleOverrides: {
         root: {
-          minHeight: 32,
+          minHeight: 36,
+          height: 36,
+          boxSizing: 'border-box',
           padding: '5px 12px',
           borderRadius: 6,
           fontSize: 14,
@@ -34,6 +36,10 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
     MuiIconButton: {
       styleOverrides: {
         root: {
+          aspectRatio: '1 / 1',
+          width: 36,
+          height: 36,
+          boxSizing: 'border-box',
           borderRadius: 6,
           padding: 7,
           '&.MuiIconButton-colorDefault': { color: palette.text.secondary },

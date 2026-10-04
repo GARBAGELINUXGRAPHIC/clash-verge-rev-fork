@@ -1,19 +1,11 @@
-import { Select, SelectProps, styled } from '@mui/material'
+import type { SelectProps } from '@mui/material'
 
-export const BaseStyledSelect = styled((props: SelectProps<string>) => {
-  return (
-    <Select
-      size="small"
-      autoComplete="new-password"
-      sx={{
-        width: 120,
-        height: 34,
-        mr: 1,
-        '[role="button"]': { py: 0.65 },
-      }}
-      {...props}
-    />
-  )
-})(({ theme }) => ({
-  background: theme.palette.background.paper,
-}))
+import { AppleSelect } from './apple-select'
+
+export const BaseStyledSelect = (props: SelectProps<string>) => (
+  <AppleSelect
+    autoComplete="new-password"
+    sx={{ width: 120, mr: 1 }}
+    {...props}
+  />
+)

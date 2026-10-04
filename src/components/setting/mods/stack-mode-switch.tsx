@@ -1,6 +1,7 @@
-import { ToggleButton } from '@mui/material'
-
-import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 
 interface Props {
   value?: string
@@ -18,10 +19,10 @@ export const StackModeSwitch = (props: Props) => {
       onChange={(_, next: string | null) => next && onChange?.(next)}
       sx={{ my: 0.5, flexWrap: 'wrap' }}
     >
-      <ToggleButton value="system">System</ToggleButton>
-      <ToggleButton value="gvisor">gVisor</ToggleButton>
-      <ToggleButton value="mixed">Mixed</ToggleButton>
-      <ToggleButton value="mips">Mips</ToggleButton>
+      <AppleSegment value="system">System</AppleSegment>
+      <AppleSegment value="gvisor">gVisor</AppleSegment>
+      <AppleSegment value="mixed">Mixed</AppleSegment>
+      <AppleSegment value="mips">Mips</AppleSegment>
     </AppleSegmentedControl>
   )
 }

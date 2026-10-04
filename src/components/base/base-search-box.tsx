@@ -1,5 +1,5 @@
 import { ClearRounded, SearchRounded } from '@mui/icons-material'
-import { Box, SvgIcon, TextField, styled, IconButton } from '@mui/material'
+import { Box, SvgIcon, styled, IconButton } from '@mui/material'
 import Tooltip from '@mui/material/Tooltip'
 import {
   type ChangeEvent,
@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 import matchCaseIcon from '@/assets/image/component/match_case.svg?react'
 import matchWholeWordIcon from '@/assets/image/component/match_whole_word.svg?react'
 import UseRegularExpressionIcon from '@/assets/image/component/use_regular_expression.svg?react'
+import { AppleInput } from '@/components/base/apple-input'
 import { buildRegex, compileStringMatcher } from '@/utils/search-matcher'
 
 export type SearchState = {
@@ -40,15 +41,15 @@ type SearchProps = {
   onClick?: (e: MouseEvent<HTMLDivElement>) => void
 }
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
-  '& .MuiInputBase-root': {
+const StyledTextField = styled(AppleInput)(({ theme }) => ({
+  '& .apple-input-wrap': {
     background: theme.palette.background.paper,
     paddingRight: '4px',
   },
-  "& .MuiInputBase-root svg[aria-label='active'] path": {
+  "& .apple-input-wrap svg[aria-label='active'] path": {
     fill: theme.palette.primary.main,
   },
-  "& .MuiInputBase-root svg[aria-label='inactive'] path": {
+  "& .apple-input-wrap svg[aria-label='inactive'] path": {
     fill: theme.palette.text.secondary,
   },
 }))
@@ -210,7 +211,6 @@ export const BaseSearchBox = ({
         autoFocus={autoFocus}
         spellCheck="false"
         placeholder={placeholder ?? t('shared.placeholders.filter')}
-        sx={{ input: { py: 0.65, px: 1.25 } }}
         value={text}
         onClick={onClick}
         onChange={handleChangeText}

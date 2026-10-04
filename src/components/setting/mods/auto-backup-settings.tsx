@@ -1,15 +1,10 @@
-import {
-  InputAdornment,
-  ListItem,
-  ListItemText,
-  Stack,
-  TextField,
-} from '@mui/material'
+import { InputAdornment, ListItem, ListItemText, Stack } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { Fragment, useMemo, useState, type ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Switch } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { useVerge } from '@/hooks/use-verge'
 import { showNotice } from '@/services/notice-service'
 
@@ -161,7 +156,7 @@ export function AutoBackupSettings() {
           <ListItemText
             primary={t('settings.modals.backup.auto.intervalLabel')}
           />
-          <TextField
+          <AppleInput
             size="small"
             type="number"
             value={intervalInputDraft ?? values.intervalHours.toString()}

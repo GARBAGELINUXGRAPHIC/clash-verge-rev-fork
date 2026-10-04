@@ -12,8 +12,6 @@ import {
   DialogTitle,
   List,
   ListItem,
-  TextField,
-  ToggleButton,
   styled,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -29,7 +27,11 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseSearchBox, MonacoEditor } from '@/components/base'
-import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
+import { AppleInput } from '@/components/base/apple-input'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 import { ProxyItem } from '@/components/profile/proxy-item'
 import { readProfileFile, saveProfileFile } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
@@ -376,12 +378,12 @@ export const ProxiesEditorViewer = (props: Props) => {
                   handleVisualizationToggle()
               }}
             >
-              <ToggleButton value="visual">
+              <AppleSegment value="visual">
                 {t('shared.editorModes.visualization')}
-              </ToggleButton>
-              <ToggleButton value="code">
+              </AppleSegment>
+              <AppleSegment value="code">
                 {t('shared.editorModes.advanced')}
-              </ToggleButton>
+              </AppleSegment>
             </AppleSegmentedControl>
           </Box>
         }
@@ -425,7 +427,7 @@ export const ProxiesEditorViewer = (props: Props) => {
                 }}
               >
                 <Item>
-                  <TextField
+                  <AppleInput
                     autoComplete="new-password"
                     placeholder={t(
                       'profiles.modals.proxiesEditor.placeholders.multiUri',

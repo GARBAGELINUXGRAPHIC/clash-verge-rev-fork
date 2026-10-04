@@ -11,11 +11,12 @@ import {
   SortByAlphaRounded,
   SortRounded,
 } from '@mui/icons-material'
-import { Box, IconButton, TextField, type SxProps } from '@mui/material'
+import { Box, IconButton, type SxProps } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseSearchBox } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { useVerge } from '@/hooks/use-verge'
 import delayManager from '@/services/delay'
 import { showNotice } from '@/services/notice-service'
@@ -188,7 +189,7 @@ export const ProxyHead = ({
       )}
 
       {textState === 'url' && (
-        <TextField
+        <AppleInput
           autoComplete="new-password"
           autoFocus={autoFocus}
           hiddenLabel

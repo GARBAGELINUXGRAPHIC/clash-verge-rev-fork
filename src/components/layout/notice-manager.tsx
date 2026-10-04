@@ -11,6 +11,7 @@ import {
 import React, { useCallback, useMemo, useSyncExternalStore } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { appleCardSurface } from '@/components/base/apple-card-style'
 import {
   boundNoticeText,
   subscribeNotices,
@@ -198,8 +199,11 @@ export const NoticeManager: React.FC<NoticeManagerProps> = ({ position }) => {
           display: 'flex',
           flexDirection: 'column',
           gap: '10px',
-          width: 'min(360px, calc(100vw - 40px))',
-          maxHeight: 'calc(100vh - 40px)',
+          width: 'min(392px, calc(100vw - 8px))',
+          maxHeight: 'calc(100vh - 8px)',
+          boxSizing: 'border-box',
+          padding: '16px',
+          margin: '-16px',
           overflowY: 'auto',
           pointerEvents: 'none',
         }}
@@ -209,22 +213,22 @@ export const NoticeManager: React.FC<NoticeManagerProps> = ({ position }) => {
             <Alert
               severity={notice.type}
               variant="outlined"
-              sx={{
+              sx={(theme) => ({
+                ...appleCardSurface(theme),
                 width: '100%',
                 flexShrink: 0,
                 pointerEvents: 'auto',
                 boxSizing: 'border-box',
                 bgcolor: 'background.paper',
-                borderColor: 'divider',
+                borderColor: 'transparent',
                 color: 'text.primary',
-                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
                 '& .MuiAlert-message': {
                   minWidth: 0,
                   overflowWrap: 'anywhere',
                   userSelect: 'text',
                 },
                 '& .MuiAlert-icon': { color: `${notice.type}.main` },
-              }}
+              })}
               onContextMenu={(event) => {
                 event.preventDefault()
                 event.stopPropagation()

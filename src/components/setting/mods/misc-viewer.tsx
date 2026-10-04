@@ -1,16 +1,11 @@
-import {
-  InputAdornment,
-  ListItem,
-  ListItemText,
-  MenuItem,
-  Select,
-  TextField,
-} from '@mui/material'
+import { InputAdornment, ListItem, ListItemText } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, DialogRef, Switch, TooltipIcon } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
+import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useVerge } from '@/hooks/use-verge'
 import { showNotice } from '@/services/notice-service'
 
@@ -103,9 +98,9 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
           <ListItemText
             primary={t('settings.modals.misc.fields.appLogLevel')}
           />
-          <Select
+          <AppleSelect
             size="small"
-            sx={{ width: 100, '> div': { py: '7.5px' } }}
+            sx={{ width: 100 }}
             value={values.appLogLevel}
             onChange={(e) =>
               setValues((v) => ({
@@ -115,11 +110,11 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
             }
           >
             {['trace', 'debug', 'info', 'warn', 'error', 'silent'].map((i) => (
-              <MenuItem value={i} key={i}>
+              <AppleOption value={i} key={i}>
                 {i[0].toUpperCase() + i.slice(1).toLowerCase()}
-              </MenuItem>
+              </AppleOption>
             ))}
-          </Select>
+          </AppleSelect>
         </ListItem>
 
         <ListItem sx={{ padding: '5px 2px' }}>
@@ -127,7 +122,7 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
             primary={t('settings.modals.misc.fields.appLogMaxSize')}
             sx={{ maxWidth: 'fit-content' }}
           />
-          <TextField
+          <AppleInput
             autoComplete="new-password"
             size="small"
             type="number"
@@ -159,7 +154,7 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
             primary={t('settings.modals.misc.fields.appLogMaxCount')}
             sx={{ maxWidth: 'fit-content' }}
           />
-          <TextField
+          <AppleInput
             autoComplete="new-password"
             size="small"
             type="number"
@@ -241,9 +236,9 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
           <ListItemText
             primary={t('settings.modals.misc.fields.proxyLayoutColumns')}
           />
-          <Select
+          <AppleSelect
             size="small"
-            sx={{ width: 160, '> div': { py: '7.5px' } }}
+            sx={{ width: 160 }}
             value={values.proxyLayoutColumn}
             onChange={(e) =>
               setValues((v) => ({
@@ -252,24 +247,24 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
               }))
             }
           >
-            <MenuItem value={6} key={6}>
+            <AppleOption value={6} key={6}>
               {t('settings.modals.misc.options.proxyLayoutColumns.auto')}
-            </MenuItem>
+            </AppleOption>
             {[1, 2, 3, 4, 5].map((i) => (
-              <MenuItem value={i} key={i}>
+              <AppleOption value={i} key={i}>
                 {i}
-              </MenuItem>
+              </AppleOption>
             ))}
-          </Select>
+          </AppleSelect>
         </ListItem>
 
         <ListItem sx={{ padding: '5px 2px' }}>
           <ListItemText
             primary={t('settings.modals.misc.fields.autoLogClean')}
           />
-          <Select
+          <AppleSelect
             size="small"
-            sx={{ width: 160, '> div': { py: '7.5px' } }}
+            sx={{ width: 160 }}
             value={values.autoLogClean}
             onChange={(e) =>
               setValues((v) => ({
@@ -309,11 +304,11 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
                 value: 4,
               },
             ].map((i) => (
-              <MenuItem key={i.value} value={i.value}>
+              <AppleOption key={i.value} value={i.value}>
                 {i.key}
-              </MenuItem>
+              </AppleOption>
             ))}
-          </Select>
+          </AppleSelect>
         </ListItem>
 
         <ListItem sx={{ padding: '5px 2px' }}>
@@ -367,7 +362,7 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
             )}
             sx={{ maxWidth: 'fit-content' }}
           />
-          <TextField
+          <AppleInput
             autoComplete="new-password"
             size="small"
             type="number"
@@ -410,7 +405,7 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
             title={t('settings.modals.misc.tooltips.defaultLatencyTest')}
             sx={{ opacity: '0.7' }}
           />
-          <TextField
+          <AppleInput
             autoComplete="new-password"
             size="small"
             autoCorrect="off"
@@ -429,7 +424,7 @@ export const MiscViewer = forwardRef<DialogRef>((props, ref) => {
           <ListItemText
             primary={t('settings.modals.misc.fields.defaultLatencyTimeout')}
           />
-          <TextField
+          <AppleInput
             autoComplete="new-password"
             size="small"
             type="number"

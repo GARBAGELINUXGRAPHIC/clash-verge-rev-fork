@@ -7,15 +7,7 @@ import {
   ArrowDownwardRounded,
   ArrowUpwardRounded,
 } from '@mui/icons-material'
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  IconButton,
-  MenuItem,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, IconButton, MenuItem, Tooltip, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -29,6 +21,10 @@ import {
   type SearchState,
   VirtualList,
 } from '@/components/base'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 import {
   ConnectionDetail,
   ConnectionDetailRef,
@@ -299,24 +295,21 @@ const ConnectionsPage = () => {
           userSelect: 'text',
         }}
       >
-        <ButtonGroup sx={{ mr: 0.5, flexShrink: 0 }}>
-          <Button
-            size="small"
-            variant={connectionsType === 'active' ? 'contained' : 'outlined'}
-            onClick={() => selectConnectionsType('active')}
-          >
+        <AppleSegmentedControl
+          exclusive
+          value={connectionsType}
+          onChange={(_, next) => selectConnectionsType(next)}
+          sx={{ mr: 0.5, flexShrink: 0 }}
+        >
+          <AppleSegment size="small" value="active">
             {t('connections.components.actions.active')}{' '}
             {connections?.activeConnections.length}
-          </Button>
-          <Button
-            size="small"
-            variant={connectionsType === 'closed' ? 'contained' : 'outlined'}
-            onClick={() => selectConnectionsType('closed')}
-          >
+          </AppleSegment>
+          <AppleSegment size="small" value="closed">
             {t('connections.components.actions.closed')}{' '}
             {connections?.closedConnections.length}
-          </Button>
-        </ButtonGroup>
+          </AppleSegment>
+        </AppleSegmentedControl>
         {!isTableLayout && (
           <BaseStyledSelect
             value={curOrderOpt}

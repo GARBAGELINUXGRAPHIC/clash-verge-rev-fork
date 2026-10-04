@@ -31,15 +31,17 @@ const FormList = styled(List)(({ theme }) => ({
     },
     '& .MuiInputBase-root': { maxWidth: '100%' },
     [theme.breakpoints.down('sm')]: {
-      '&:has(> .MuiFormControl-root), &:has(> .MuiAutocomplete-root)': {
-        flexWrap: 'wrap',
-        rowGap: 8,
-        '& > .MuiListItemText-root': { flexBasis: '100%' },
-        '& > .MuiFormControl-root, & > .MuiAutocomplete-root': {
-          width: '100%',
-          marginLeft: 0,
+      '&:has(> .MuiFormControl-root), &:has(> .apple-field), &:has(> .MuiAutocomplete-root)':
+        {
+          flexWrap: 'wrap',
+          rowGap: 8,
+          '& > .MuiListItemText-root': { flexBasis: '100%' },
+          '& > .MuiFormControl-root, & > .apple-field, & > .MuiAutocomplete-root':
+            {
+              width: '100%',
+              marginLeft: 0,
+            },
         },
-      },
     },
   },
 }))

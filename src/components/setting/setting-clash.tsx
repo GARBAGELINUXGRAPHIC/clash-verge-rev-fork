@@ -1,11 +1,12 @@
 import { LanRounded, SettingsRounded } from '@mui/icons-material'
-import { Button, MenuItem, Select, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { updateGeo, type LogLevel } from 'tauri-plugin-mihomo-api'
 
 import { BaseDialog, DialogRef, Switch, TooltipIcon } from '@/components/base'
+import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useClash } from '@/hooks/use-clash'
 import { useClashLog } from '@/hooks/use-clash-log'
 import { useDisplayedMixedPort } from '@/hooks/use-displayed-mixed-port'
@@ -248,23 +249,23 @@ const SettingClash = ({ onError }: Props) => {
             return patchClash({ 'log-level': e })
           }}
         >
-          <Select size="small" sx={{ width: 100, '> div': { py: '7.5px' } }}>
-            <MenuItem value="debug">
+          <AppleSelect size="small" sx={{ width: 100 }}>
+            <AppleOption value="debug">
               {t('settings.sections.clash.form.options.logLevel.debug')}
-            </MenuItem>
-            <MenuItem value="info">
+            </AppleOption>
+            <AppleOption value="info">
               {t('settings.sections.clash.form.options.logLevel.info')}
-            </MenuItem>
-            <MenuItem value="warning">
+            </AppleOption>
+            <AppleOption value="warning">
               {t('settings.sections.clash.form.options.logLevel.warning')}
-            </MenuItem>
-            <MenuItem value="error">
+            </AppleOption>
+            <AppleOption value="error">
               {t('settings.sections.clash.form.options.logLevel.error')}
-            </MenuItem>
-            <MenuItem value="silent">
+            </AppleOption>
+            <AppleOption value="silent">
               {t('settings.sections.clash.form.options.logLevel.silent')}
-            </MenuItem>
-          </Select>
+            </AppleOption>
+          </AppleSelect>
         </GuardState>
       </SettingItem>
 

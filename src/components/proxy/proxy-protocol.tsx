@@ -11,15 +11,15 @@ import {
   DialogTitle,
   IconButton,
   Menu,
-  MenuItem,
   Stack,
-  TextField,
   Typography,
   useTheme,
 } from '@mui/material'
 import { useEffect, useState, type HTMLAttributes, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { AppleInput } from '@/components/base/apple-input'
+import { AppleOption } from '@/components/base/apple-select'
 import { useHy2Override } from '@/hooks/use-hy2-override'
 import {
   getHy2Settings,
@@ -146,7 +146,7 @@ export function ProxyProtocol({
       >
         {(['original', 'standard', 'conservative', 'aggressive'] as const).map(
           (mode) => (
-            <MenuItem
+            <AppleOption
               key={mode}
               disabled={!data || busy}
               selected={
@@ -156,10 +156,10 @@ export function ProxyProtocol({
               onClick={() => void selectMode(mode)}
             >
               {t(`proxies.protocol.${mode}`)}
-            </MenuItem>
+            </AppleOption>
           ),
         )}
-        <MenuItem
+        <AppleOption
           disabled={busy}
           onClick={() => {
             if (member.kind !== 'node') return
@@ -168,7 +168,7 @@ export function ProxyProtocol({
           }}
         >
           Brutal...
-        </MenuItem>
+        </AppleOption>
         {error && (
           <Alert
             severity="error"
@@ -336,7 +336,7 @@ function Hy2Dialog({
                 {error}
               </Alert>
             )}
-            <TextField
+            <AppleInput
               select
               label={t('proxies.protocol.congestion')}
               value={mode}
@@ -345,20 +345,20 @@ function Hy2Dialog({
               fullWidth
               size="small"
             >
-              <MenuItem value="original">
+              <AppleOption value="original">
                 {t('proxies.protocol.original')}
-              </MenuItem>
-              <MenuItem value="standard">
+              </AppleOption>
+              <AppleOption value="standard">
                 {t('proxies.protocol.standard')}
-              </MenuItem>
-              <MenuItem value="conservative">
+              </AppleOption>
+              <AppleOption value="conservative">
                 {t('proxies.protocol.conservative')}
-              </MenuItem>
-              <MenuItem value="aggressive">
+              </AppleOption>
+              <AppleOption value="aggressive">
                 {t('proxies.protocol.aggressive')}
-              </MenuItem>
-              <MenuItem value="brutal">Brutal</MenuItem>
-            </TextField>
+              </AppleOption>
+              <AppleOption value="brutal">Brutal</AppleOption>
+            </AppleInput>
             {mode === 'brutal' && (
               <Box
                 sx={{
@@ -370,7 +370,7 @@ function Hy2Dialog({
                   gap: 2,
                 }}
               >
-                <TextField
+                <AppleInput
                   label={t('proxies.protocol.upload')}
                   type="number"
                   size="small"
@@ -382,7 +382,7 @@ function Hy2Dialog({
                     htmlInput: { min: 0.01, max: 1000000, step: 'any' },
                   }}
                 />
-                <TextField
+                <AppleInput
                   label={t('proxies.protocol.download')}
                   type="number"
                   size="small"
@@ -407,7 +407,7 @@ function Hy2Dialog({
                   borderColor: 'divider',
                 }}
               >
-                <TextField
+                <AppleInput
                   select
                   label={t('proxies.protocol.duration')}
                   value={duration}
@@ -417,31 +417,35 @@ function Hy2Dialog({
                   fullWidth
                 >
                   {data?.settings && (
-                    <MenuItem value="keep">
+                    <AppleOption value="keep">
                       {t('proxies.protocol.keepExpiry', {
                         time: new Date(
                           data.settings.expiresAt * 1000,
                         ).toLocaleString(),
                       })}
-                    </MenuItem>
+                    </AppleOption>
                   )}
-                  <MenuItem value="midnight">
+                  <AppleOption value="midnight">
                     {t('proxies.protocol.midnight')}
-                  </MenuItem>
-                  <MenuItem value="0.5">
+                  </AppleOption>
+                  <AppleOption value="0.5">
                     {t('proxies.protocol.halfHour')}
-                  </MenuItem>
-                  <MenuItem value="1">{t('proxies.protocol.oneHour')}</MenuItem>
-                  <MenuItem value="6">
+                  </AppleOption>
+                  <AppleOption value="1">
+                    {t('proxies.protocol.oneHour')}
+                  </AppleOption>
+                  <AppleOption value="6">
                     {t('proxies.protocol.sixHours')}
-                  </MenuItem>
-                  <MenuItem value="24">{t('proxies.protocol.oneDay')}</MenuItem>
-                  <MenuItem value="custom">
+                  </AppleOption>
+                  <AppleOption value="24">
+                    {t('proxies.protocol.oneDay')}
+                  </AppleOption>
+                  <AppleOption value="custom">
                     {t('proxies.protocol.custom')}
-                  </MenuItem>
-                </TextField>
+                  </AppleOption>
+                </AppleInput>
                 {duration === 'custom' && (
-                  <TextField
+                  <AppleInput
                     label={t('proxies.protocol.expiresAt')}
                     type="datetime-local"
                     value={custom}

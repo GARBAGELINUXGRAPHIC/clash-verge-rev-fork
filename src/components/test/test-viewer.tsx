@@ -1,4 +1,3 @@
-import { TextField } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { nanoid } from 'nanoid'
 import { forwardRef, useImperativeHandle, useState } from 'react'
@@ -6,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import { BaseDialog } from '@/components/base'
+import { AppleInput } from '@/components/base/apple-input'
 import { useVerge } from '@/hooks/use-verge'
 import { showNotice } from '@/services/notice-service'
 
@@ -142,14 +142,14 @@ export const TestViewer = forwardRef<TestViewerRef, Props>(
           name="name"
           control={control}
           render={({ field }) => (
-            <TextField {...text} {...field} label={t('shared.labels.name')} />
+            <AppleInput {...text} {...field} label={t('shared.labels.name')} />
           )}
         />
         <Controller
           name="icon"
           control={control}
           render={({ field }) => (
-            <TextField
+            <AppleInput
               {...text}
               {...field}
               multiline
@@ -162,7 +162,7 @@ export const TestViewer = forwardRef<TestViewerRef, Props>(
           name="url"
           control={control}
           render={({ field }) => (
-            <TextField
+            <AppleInput
               {...text}
               {...field}
               multiline

@@ -14,8 +14,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  TextField,
-  ToggleButton,
   styled,
 } from '@mui/material'
 import { useLockFn } from 'ahooks'
@@ -31,7 +29,11 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseSearchBox, MonacoEditor, Switch } from '@/components/base'
-import { AppleSegmentedControl } from '@/components/base/apple-segmented-control'
+import { AppleInput } from '@/components/base/apple-input'
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 import { RuleItem } from '@/components/profile/rule-item'
 import { readProfileFile, saveProfileFile } from '@/services/cmds'
 import { showNotice } from '@/services/notice-service'
@@ -617,12 +619,12 @@ export const RulesEditorViewer = (props: Props) => {
                   handleVisualizationToggle()
               }}
             >
-              <ToggleButton value="visual">
+              <AppleSegment value="visual">
                 {t('shared.editorModes.visualization')}
-              </ToggleButton>
-              <ToggleButton value="code">
+              </AppleSegment>
+              <AppleSegment value="code">
                 {t('shared.editorModes.advanced')}
-              </ToggleButton>
+              </AppleSegment>
             </AppleSegmentedControl>
           </Box>
         }
@@ -663,7 +665,7 @@ export const RulesEditorViewer = (props: Props) => {
                 <Autocomplete
                   size="small"
                   sx={{ minWidth: '240px' }}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <AppleInput {...params} />}
                   options={rules}
                   value={ruleType}
                   getOptionLabel={(option) =>
@@ -694,7 +696,7 @@ export const RulesEditorViewer = (props: Props) => {
                   <Autocomplete
                     size="small"
                     sx={{ minWidth: '240px' }}
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => <AppleInput {...params} />}
                     options={ruleSetList}
                     value={ruleContent}
                     onChange={(_, value) => value && setRuleContent(value)}
@@ -704,7 +706,7 @@ export const RulesEditorViewer = (props: Props) => {
                   <Autocomplete
                     size="small"
                     sx={{ minWidth: '240px' }}
-                    renderInput={(params) => <TextField {...params} />}
+                    renderInput={(params) => <AppleInput {...params} />}
                     options={subRuleList}
                     value={ruleContent}
                     onChange={(_, value) => value && setRuleContent(value)}
@@ -712,7 +714,7 @@ export const RulesEditorViewer = (props: Props) => {
                 )}
                 {ruleType.name !== 'RULE-SET' &&
                   ruleType.name !== 'SUB-RULE' && (
-                    <TextField
+                    <AppleInput
                       autoComplete="new-password"
                       size="small"
                       sx={{ minWidth: '240px' }}
@@ -731,7 +733,7 @@ export const RulesEditorViewer = (props: Props) => {
                 <Autocomplete
                   size="small"
                   sx={{ minWidth: '240px' }}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => <AppleInput {...params} />}
                   options={proxyPolicyList}
                   value={proxyPolicy}
                   getOptionLabel={(option) =>
@@ -875,7 +877,7 @@ const Item = styled(ListItem)(({ theme }) => ({
   padding: '10px 0',
   gap: 12,
   '& .MuiListItemText-root': { minWidth: 0, flex: 1 },
-  '& > .MuiAutocomplete-root, & > .MuiTextField-root': {
+  '& > .MuiAutocomplete-root, & > .apple-field': {
     width: '60%',
     minWidth: 0,
   },
