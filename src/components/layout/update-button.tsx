@@ -13,8 +13,8 @@ interface Props {
 }
 
 export const UpdateButton = (props: Props) => {
-  const { className } = props
   const { t } = useTranslation()
+  const { className } = props
   const viewerRef = useRef<DialogRef>(null)
 
   const { updateInfo } = useUpdate()

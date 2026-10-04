@@ -13,6 +13,7 @@
       },
       "menu": {
         "reorderMode": "Menü sıralama modu",
+        "done": "Done",
         "restoreDefaultOrder": "Varsayılan sırayı geri yükle",
         "unlock": "Menü sırasının kilidini aç",
         "lock": "Menü sırasını kilitle",
