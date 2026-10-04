@@ -15,6 +15,44 @@ Before contributing, you need to set up your development environment. Follow the
 1. **Install Rust and Node.js**  
    Our project requires both Rust and Node.js. Follow the official installation instructions [here](https://tauri.app/start/prerequisites/).
 
+### macOS Users
+
+Install Xcode (or its Command Line Tools) and open Xcode once to complete its
+setup. Verify the selected developer directory and Rust toolchain:
+
+```bash
+xcode-select -p
+rustc --version
+cargo --version
+```
+
+Use the native Rust host target: `aarch64-apple-darwin` on Apple Silicon or
+`x86_64-apple-darwin` on Intel. The Rust version must meet the `rust-version`
+requirement in `src-tauri/Cargo.toml`. Do not apply the Windows toolchain steps
+or Ubuntu package commands on macOS.
+
+After installing dependencies, run `pnpm prebuild` to prepare the native core
+binaries and resources, then `pnpm dev`. The first launch also builds isolated
+development service tools under `target/development-service`; it can take time.
+The service source is resolved through Cargo from the application's lockfile.
+An adjacent `../clash-verge-service-ipc` checkout is optional and takes precedence
+for service development. `CLASH_VERGE_DEV_SERVICE_SOURCE` can select another
+checkout explicitly.
+
+In WebStorm, create a Shell Script run configuration with script text
+`pnpm dev`, working directory set to the project root, interpreter `/bin/zsh`,
+and **Execute in terminal** enabled. Ensure that the IDE terminal can find
+`node`, `pnpm`, `cargo`, and `rustc`. Stop the session with Ctrl+C in that
+terminal so the development app can clean up its child processes.
+
+`pnpm dev:sidecar` starts the development app with the core as a child process.
+`pnpm dev:service` prepares and installs the isolated development service and
+may ask for administrator authorization. Normal UI development does not require
+installing the development service.
+
+For frontend-only work, use `pnpm web:preview` and open
+`http://127.0.0.1:3001/`; this mode uses synthetic data and no native backend.
+
 ### Windows Users
 
 > [!NOTE]  
@@ -60,14 +98,19 @@ sudo apt-get install -y libxslt1.1 libwebkit2gtk-4.1-dev libayatana-appindicator
 
 ```bash
 pnpm run prebuild
-pnpm run prebuild --force  # Re-download and overwrite Mihomo core and service binaries
+```
+
+To re-download and overwrite the core and service binaries:
+
+```bash
+pnpm run prebuild --force
 ```
 
 ### Run the Development Server
 
 ```bash
 pnpm dev           # Standard
-pnpm dev:diff      # If an app instance already exists
+pnpm dev:diff      # Alias for the isolated development session
 pnpm dev:tauri     # Run Tauri development mode
 ```
 
@@ -83,18 +126,6 @@ Fast build for testing:
 
 ```bash
 pnpm build:fast
-```
-
-### Clean Build
-
-```bash
-pnpm clean
-```
-
-### Portable Version (Windows Only)
-
-```bash
-pnpm portable
 ```
 
 ## Contributing Your Changes

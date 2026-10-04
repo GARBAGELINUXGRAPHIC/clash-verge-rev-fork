@@ -11,18 +11,17 @@ const serviceRepository = resolve(
   '..',
   'clash-verge-service-ipc',
 )
-const serviceManifest = join(serviceRepository, 'Cargo.toml')
-export const developmentServiceWatchPaths = [
-  'src',
-  'resources',
-  'Cargo.toml',
-  'Cargo.lock',
-].map((name) => join(serviceRepository, name))
+const serviceSourceEnvironment = 'CLASH_VERGE_DEV_SERVICE_SOURCE'
+export const developmentServiceWatchPaths = (environment = process.env) =>
+  ['src', 'resources', 'Cargo.toml', 'Cargo.lock'].map((name) =>
+    join(environment[serviceSourceEnvironment] ?? serviceRepository, name),
+  )
 
 function run(command, args, options = {}) {
   return new Promise((resolvePromise, reject) => {
     const child = spawn(command, args, {
       env: options.env ?? process.env,
+      cwd: options.cwd ?? repositoryRoot,
       stdio: options.stdio ?? 'inherit',
       windowsHide: true,
     })
@@ -46,8 +45,37 @@ function run(command, args, options = {}) {
   })
 }
 
+async function resolveDevelopmentServiceSource() {
+  const override = process.env[serviceSourceEnvironment]
+  if (override) {
+    const source = resolve(override)
+    await access(join(source, 'Cargo.toml'))
+    return source
+  }
+  try {
+    await access(join(serviceRepository, 'Cargo.toml'))
+    return serviceRepository
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error
+  }
+  // Cargo resolves the exact revision from the application's lockfile.
+  const metadata = JSON.parse(
+    await run('cargo', ['metadata', '--locked', '--format-version=1'], {
+      stdio: ['inherit', 'pipe', 'inherit'],
+    }),
+  )
+  const service = metadata.packages.find(
+    (item) => item.name === 'clash_verge_service_ipc',
+  )
+  if (!service)
+    throw new Error('Cargo metadata did not include clash_verge_service_ipc')
+  return dirname(service.manifest_path)
+}
+
 export async function prepareDevelopmentService() {
-  await access(serviceManifest)
+  const source = await resolveDevelopmentServiceSource()
+  const serviceManifest = join(source, 'Cargo.toml')
+  console.info(`Development service source: ${source}`)
   const output = await run(
     'cargo',
     [
@@ -56,7 +84,7 @@ export async function prepareDevelopmentService() {
       serviceManifest,
       '--target-dir',
       process.env.CARGO_TARGET_DIR ||
-        join(serviceRepository, 'target', 'development'),
+        join(repositoryRoot, 'target', 'development-service'),
       '--features',
       'standalone,client,development-channel',
       '--bins',
@@ -97,6 +125,7 @@ export async function prepareDevelopmentService() {
     }
     await access(executable)
   }
+  process.env[serviceSourceEnvironment] = source
   return serviceDirectory
 }
 

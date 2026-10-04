@@ -10,6 +10,7 @@ import { glob } from 'glob'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 import { extract } from 'tar'
 
+import { parsePrebuildArgs } from './prebuild-args.mjs'
 import { resolveServiceRelease } from './service-release.mjs'
 import { log_debug, log_error, log_info, log_success } from './utils.mjs'
 
@@ -17,7 +18,7 @@ import { log_debug, log_error, log_info, log_success } from './utils.mjs'
 
 const cwd = process.cwd()
 const TEMP_DIR = path.join(cwd, 'node_modules/.verge')
-const FORCE = process.argv.includes('--force') || process.argv.includes('-f')
+const { force: FORCE, target } = parsePrebuildArgs(process.argv.slice(2))
 const VERSION_CACHE_FILE = path.join(TEMP_DIR, '.version_cache.json')
 const HASH_CACHE_FILE = path.join(TEMP_DIR, '.hash_cache.json')
 
@@ -48,9 +49,11 @@ const ARCH_MAP = {
   'loongarch64-unknown-linux-gnu': 'loong64',
 }
 
-const arg1 = process.argv.slice(2)[0]
-const arg2 = process.argv.slice(2)[1]
-const target = arg1 === '--force' || arg1 === '-f' ? arg2 : arg1
+if (target && !Object.hasOwn(PLATFORM_MAP, target)) {
+  throw new Error(
+    `Unsupported prebuild target "${target}". Supported targets: ${Object.keys(PLATFORM_MAP).join(', ')}`,
+  )
+}
 if (process.env.CI && !target) {
   throw new Error('prebuild requires an explicit target triple in CI')
 }

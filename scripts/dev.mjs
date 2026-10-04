@@ -32,7 +32,7 @@ export function buildTauriInvocation(
     env.RUSTFLAGS = '--cfg tokio_unstable'
     args.push('tokio-trace')
   }
-  for (const path of developmentServiceWatchPaths) {
+  for (const path of developmentServiceWatchPaths(environment)) {
     args.push('--additional-watch-folders', path)
   }
   return {
