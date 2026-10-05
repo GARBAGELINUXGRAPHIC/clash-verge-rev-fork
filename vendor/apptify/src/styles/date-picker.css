@@ -1,0 +1,397 @@
+.apple-date-anchor {
+  position: relative;
+  min-width: 0;
+}
+.apple-date-input {
+  min-height: 48px;
+  padding-inline-start: 12px;
+}
+.apple-date-segments {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 0;
+  min-width: 0;
+  padding-block: 7px;
+  font-variant-numeric: tabular-nums;
+}
+.apple-date-segment {
+  box-sizing: content-box;
+  min-width: 2ch;
+  width: 2ch;
+  max-width: 4ch;
+  height: 30px;
+  border: 0;
+  border-radius: 3px;
+  padding: 0 1px;
+  background: transparent;
+  color: var(--apple-text);
+  text-align: center;
+  font: inherit;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.apple-date-segment[data-part="year"] {
+  width: 4ch;
+}
+.apple-date-segment::placeholder {
+  color: var(--apple-secondary);
+  opacity: 1;
+}
+.apple-date-segment:focus {
+  background: rgb(128 128 128 / 12%);
+}
+.apple-date-separator {
+  flex: 0 0 auto;
+  min-width: 0.35ch;
+  white-space: pre;
+  color: var(--apple-secondary);
+  font-size: 16px;
+}
+.apple-date-menu {
+  position: fixed;
+  top: calc(100% + 8px);
+  inset-inline-start: 0;
+  z-index: 45;
+  box-sizing: border-box;
+  width: 332px;
+  max-width: var(--apple-popup-available-width, calc(100dvw - 16px));
+  max-height: var(--apple-popup-available-height, calc(100dvh - 16px));
+  border: 1px solid var(--apple-border);
+  border-radius: 12px;
+  background: rgb(
+    var(--apple-glass-rgb, 255 255 255) /
+    var(--apple-glass-opacity, 0.31372549)
+  );
+  -webkit-backdrop-filter: blur(var(--apple-glass-blur, 12px)) saturate(2);
+  backdrop-filter: blur(var(--apple-glass-blur, 12px)) saturate(2);
+  box-shadow: var(--apple-shadow);
+  color: var(--apple-text);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  isolation: isolate;
+}
+.apple-calendar {
+  padding: 12px;
+}
+.apple-calendar__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+.apple-calendar__heading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--apple-text);
+  background: transparent;
+  text-align: center;
+  white-space: nowrap;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.apple-calendar__header .apple-field__icon {
+  width: 40px;
+  height: 40px;
+}
+.apple-calendar__header
+  .apple-field__icon:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  background: rgb(128 128 128 / 8%);
+}
+.apple-calendar__header .apple-field__icon:active:not(:disabled) {
+  background: rgb(128 128 128 / 12%);
+}
+.apple-calendar__week,
+.apple-calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+.apple-calendar__weekdays {
+  margin-bottom: 6px;
+  color: var(--apple-secondary);
+  font-size: 12px;
+  text-align: center;
+  line-height: 28px;
+}
+.apple-calendar__week {
+  margin-block: 2px;
+}
+.apple-calendar__week > span {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+.apple-calendar__day,
+.apple-calendar__choice {
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--apple-text);
+  font: inherit;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color var(--apple-duration-fast, 120ms) ease,
+    color var(--apple-duration-fast, 120ms) ease;
+}
+.apple-calendar__day {
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  max-height: 40px;
+  position: relative;
+}
+.apple-calendar__day.is-other-month {
+  color: var(--apple-secondary);
+}
+.apple-calendar__day:not(.is-selected):hover:where(
+  :not([data-apple-touch] *)
+):not(:disabled),
+.apple-calendar__choice:not(.is-selected):hover:where(
+  :not([data-apple-touch] *)
+):not(:disabled),
+.apple-calendar__heading:hover:where(:not([data-apple-touch] *)) {
+  background: rgb(128 128 128 / 8%);
+}
+.apple-calendar__day:not(.is-selected):active:not(:disabled),
+.apple-calendar__choice:active:not(:disabled),
+.apple-calendar__heading:active {
+  background: rgb(128 128 128 / 12%);
+}
+.apple-calendar__day.is-selected {
+  color: var(--apple-accent-text);
+  background: var(--apple-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.apple-calendar__choice.is-selected {
+  color: var(--apple-text);
+  background: transparent;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.apple-calendar__day:disabled {
+  color: var(--apple-secondary);
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.apple-calendar__day:focus-visible,
+.apple-calendar__choice:focus-visible,
+.apple-calendar__heading:focus-visible,
+.apple-calendar__tabs button:focus-visible {
+  outline: 2px solid var(--apple-accent);
+  outline-offset: -2px;
+}
+.apple-calendar__choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 6px 0;
+}
+.apple-calendar__choice {
+  min-height: 48px;
+}
+/* Keep the shared TabBar indicator and panel motion inside the glass menu. */
+.apple-date-menu .apple-calendar__tabs {
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.apple-date-menu .apple-calendar__tabs .apple-tabs__list {
+  background: rgb(128 128 128 / 8%);
+}
+.apple-date-menu .apple-calendar__tabs .apple-tabs__tab {
+  min-height: 40px;
+  padding: 8px 10px;
+}
+.apple-date-menu .apple-calendar__tabs .apple-tabs__viewport {
+  background: var(--apple-surface);
+}
+.apple-date-menu .apple-calendar__tabs .apple-tabs__panel {
+  padding: 0;
+}
+.apple-calendar__time {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 16px 12px;
+}
+.apple-calendar__time-labels,
+.apple-calendar__time-wheels {
+  display: flex;
+  gap: 12px;
+}
+.apple-calendar__time-labels {
+  color: var(--apple-secondary);
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+}
+.apple-calendar__time-labels > span,
+.apple-calendar__time-column {
+  flex: 1;
+  min-width: 0;
+}
+.apple-calendar__time-wheels {
+  position: relative;
+}
+.apple-calendar__time-wheels::before {
+  position: absolute;
+  inset: calc(50% - 20px) 0 auto;
+  height: 40px;
+  border-radius: 6px;
+  background: var(--apple-surface-alt);
+  content: "";
+  pointer-events: none;
+}
+.apple-calendar__time-wheel {
+  position: relative;
+  min-width: 0;
+}
+.apple-calendar__time-values {
+  position: relative;
+  height: 200px;
+  padding-block: 80px;
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  scrollbar-width: none;
+  border: 0;
+  outline: none;
+}
+.apple-calendar__time-values::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.apple-calendar__time-values:focus-visible {
+  outline: 2px solid var(--apple-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.apple-calendar__time-track {
+  position: relative;
+}
+.apple-calendar__time-option {
+  position: absolute;
+  inset-inline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: 6px;
+  color: var(--apple-text);
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+  backface-visibility: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+.apple-calendar__time-option.is-selected {
+  font-weight: 500;
+}
+.apple-calendar__time-option:not(.is-selected):not(.is-disabled):hover:where(
+  :not([data-apple-touch] *)
+) {
+  background: rgb(128 128 128 / 8%);
+}
+.apple-calendar__time-option.is-disabled {
+  color: var(--apple-secondary);
+  cursor: not-allowed;
+}
+.apple-calendar__footer {
+  background: var(--apple-surface);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--apple-border);
+}
+.apple-calendar__text,
+.apple-calendar__done {
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--apple-accent);
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    color var(--apple-duration-fast, 120ms) ease,
+    background-color var(--apple-duration-fast, 120ms) ease;
+}
+.apple-calendar__text:hover:where(:not([data-apple-touch] *)) {
+  color: color-mix(in srgb, var(--apple-accent) 76%, black);
+}
+.apple-calendar__text:active {
+  color: var(--apple-text);
+}
+.apple-calendar__text:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.apple-calendar__done {
+  margin-inline-start: auto;
+  color: var(--apple-accent-text);
+  background: var(--apple-accent);
+  padding-inline: 16px;
+}
+.apple-calendar__done:hover:where(:not([data-apple-touch] *)) {
+  background: color-mix(in srgb, var(--apple-accent) 90%, black);
+}
+.apple-calendar__done:active {
+  background: color-mix(in srgb, var(--apple-accent) 78%, black);
+}
+.apple-date-pop-enter-active,
+.apple-date-pop-leave-active {
+  transition: none;
+}
+.apple-date-pop-enter-from,
+.apple-date-pop-leave-to {
+  transform: translateY(var(--apple-popup-y, -8px));
+}
+.apple-calendar__viewport {
+  overflow: clip;
+}
+.apple-calendar__pages {
+  position: relative;
+}
+.apple-calendar__page.is-leaving {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+@media (max-width: 380px) {
+  .apple-calendar {
+    padding: 8px;
+  }
+  .apple-calendar__header .apple-field__icon {
+    width: 30px;
+  }
+  .apple-calendar__day {
+    font-size: 13px;
+  }
+  .apple-date-input {
+    padding-inline-start: 8px;
+  }
+}

@@ -607,9 +607,11 @@ export interface TranslationResources {
       }
       protocol: {
         aggressive: string
+        aggressiveUntilMidnight: string
         brutalAndMore: string
         congestion: string
         conservative: string
+        conservativeUntilMidnight: string
         custom: string
         download: string
         duration: string
@@ -624,6 +626,7 @@ export interface TranslationResources {
         settings: string
         sixHours: string
         standard: string
+        standardUntilMidnight: string
         title: string
         unavailable: string
         upload: string

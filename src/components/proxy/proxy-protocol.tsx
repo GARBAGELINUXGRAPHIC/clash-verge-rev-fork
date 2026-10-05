@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next'
 
 import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { AppleButton as Button } from '@/components/base/apple-button'
+import { AppleDatePicker } from '@/components/base/apple-date-picker'
 import { AppleInput } from '@/components/base/apple-input'
 import { AppleOption } from '@/components/base/apple-select'
 import { useHy2Override } from '@/hooks/use-hy2-override'
@@ -148,14 +149,13 @@ export function ProxyProtocol({
             <MenuItem
               key={mode}
               disabled={!data || busy}
-              selected={
-                Boolean(data) &&
-                (data?.settings?.congestion.mode ?? 'original') === mode
-              }
               onClick={() => void selectMode(mode)}
             >
-              {t(`proxies.protocol.${mode}`)}
-              {mode !== 'original' && ` · ${t('proxies.protocol.midnight')}`}
+              {t(
+                mode === 'original'
+                  ? 'proxies.protocol.original'
+                  : `proxies.protocol.${mode}UntilMidnight`,
+              )}
             </MenuItem>
           ),
         )}
@@ -445,16 +445,12 @@ function Hy2Dialog({
                   </AppleOption>
                 </AppleInput>
                 {duration === 'custom' && (
-                  <AppleInput
+                  <AppleDatePicker
                     label={t('proxies.protocol.expiresAt')}
                     type="datetime-local"
                     value={custom}
-                    onChange={(event) => setCustom(event.target.value)}
-                    size="small"
+                    onChange={setCustom}
                     disabled={busy}
-                    slotProps={{ inputLabel: { shrink: true } }}
-                    sx={{ '& input': { fontSize: 14, minWidth: 0 } }}
-                    fullWidth
                   />
                 )}
               </Box>

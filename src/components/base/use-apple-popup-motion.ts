@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from 'react'
 
-// Apptify popup-motion: move the complete surface (including shadow), and
-// reverse from the rendered frame rather than restarting an interrupted motion.
+// Fade and move the complete surface, including its glass and shadow.
+// Release compositing hints and the transform when the animation settles.
 export function useApplePopupMotion(
   open: boolean,
   placed: boolean,
@@ -12,26 +12,29 @@ export function useApplePopupMotion(
     const element = popupRef.current
     if (!element || !placed) return
     const media = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const from = element.hidden
-      ? 0
-      : Math.max(
-          0,
-          Math.min(1, Number.parseFloat(getComputedStyle(element).opacity)),
-        )
+    const progress = () =>
+      Math.max(
+        0,
+        Math.min(1, Number.parseFloat(getComputedStyle(element).opacity)),
+      )
+    const from = element.hidden ? 0 : progress()
     const to = open ? 1 : 0
-    const frame = (progress: number) => ({
-      opacity: String(progress),
-      transform: `translateY(${media.matches ? 0 : offsetY * (1 - progress)}px)`,
+    const frame = (value: number) => ({
+      opacity: String(value),
+      transform: `translateY(${media.matches ? 0 : offsetY * (1 - value)}px)`,
     })
     element.hidden = false
-    element.style.willChange = 'opacity, transform'
-    const animation = element.animate([frame(from), frame(to)], {
+    element.style.willChange = 'transform'
+    const timing: KeyframeAnimationOptions = {
       duration: (media.matches ? 80 : 300) * Math.abs(to - from),
       easing: 'cubic-bezier(.2,.65,.3,1)',
       fill: 'both',
-    })
+    }
+    const animation = element.animate([frame(from), frame(to)], timing)
     const finish = () => {
-      Object.assign(element.style, frame(to))
+      // Remove the settled transform rather than retaining an identity layer.
+      element.style.transform = ''
+      element.style.opacity = String(to)
       animation.cancel()
       element.hidden = !open
       element.style.willChange = ''
@@ -42,11 +45,8 @@ export function useApplePopupMotion(
     }
     media.addEventListener('change', policy)
     return () => {
-      const progress = Math.max(
-        0,
-        Math.min(1, Number.parseFloat(getComputedStyle(element).opacity)),
-      )
-      Object.assign(element.style, frame(progress))
+      const current = progress()
+      Object.assign(element.style, frame(current))
       animation.cancel()
       element.style.willChange = ''
       media.removeEventListener('change', policy)

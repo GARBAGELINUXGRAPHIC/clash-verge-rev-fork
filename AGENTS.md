@@ -26,3 +26,9 @@ separate demo that duplicates pages or components.
   console after changes. Keep the preview tab open as the deliverable.
 - Preserve existing icons and interactions when the requested work is styling
   only. Keep unrelated performance/repaint changes separate.
+
+## Merging Guidelines
+
+- pull the latest dev, find the latest tagged release of dev (Check https://github.com/clash-verge-rev/clash-verge-rev/releases), merge it to personal-fork.
+- When all other decidable changes are completed and there are still changes that you don't know which to preserve, notify the user.
+- Do not set pnpm to anything newer than `11.28.3`. Keep it at `11.28.3` since there is no pnpm 12+ for MacOS yet.

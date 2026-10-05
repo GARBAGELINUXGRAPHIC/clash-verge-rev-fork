@@ -1,0 +1,38 @@
+/* Clip the effect, not its host: focus rings, badges and popovers may overflow. */
+:where([data-apple-ripple-positioned]) {
+  position: relative;
+}
+[data-apple-ripple] {
+  isolation: isolate;
+}
+[data-apple-ripple] > .v-ripple__container {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  contain: strict;
+  pointer-events: none;
+  background: transparent;
+  /* A local negative layer paints above the host background, below all copy,
+     including unwrapped text and SVGs. It cannot escape the isolated host. */
+  z-index: -1;
+  color: rgb(128 128 128);
+}
+[data-apple-ripple] > .v-ripple__container > .v-ripple__animation {
+  border-radius: 50%;
+  background: currentColor;
+  color: inherit;
+  pointer-events: none;
+}
+[data-apple-ripple] > .v-ripple__container > .v-ripple__animation--in {
+  opacity: 0.1;
+}
+[data-apple-ripple] > .v-ripple__container > .v-ripple__animation--out {
+  opacity: 0;
+}

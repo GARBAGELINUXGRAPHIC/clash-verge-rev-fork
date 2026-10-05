@@ -1,0 +1,19 @@
+{
+  "source": "apptify 0.6.2 local source snapshot",
+  "files": {
+    "src/core/device.ts": "da97e64aa1a041d88c77818a836cee0e2401fb73a532bc173c2e19fa471ca97f",
+    "src/core/context.ts": "7ab1669799d0dc4abf30ce7d3ee069f7ad962bb30680bd99c82c787f10089fd9",
+    "src/styles/ripple.css": "df0a5f661a862b5232bac256958f4bae6f555dd1f4a9c1432f61e85de71bdfea",
+    "src/core/motion.ts": "00e87ecb6778797d3ff66e5426fba6a82e7725213c3b1ee8b395dd14e61b9b98",
+    "src/core/overlay-surface.ts": "4d2ac300dca02d158f4522369d97dc767068059439c18610c30a20876cd94e52",
+    "src/core/popup-placement.ts": "1a8ec6466aa641d1281800011ad22bad5f78c3053641ee18647a58e106034016",
+    "src/core/popup-motion.ts": "7d2d6a49660f2a0032cbac76af433251a042831a2653bff3de93715f369443d7",
+    "src/components/motion.ts": "c8bd5928efe5cfeeae7486171e595a233603835620d009c5d1ffe611070fd0eb",
+    "src/components/tabs.ts": "a80fdf41efff49c2870859d6c0a97e5bbba69055706309acd5b53eafe8c02f9d",
+    "src/components/date-picker.ts": "96f292972ca0deea95f91003d061b30df8213420d22e0a22203027ee373513ae",
+    "src/styles/base.css": "f124496025d4da23202b1025bf29b3231fe96268a3840ded4b00e1bf442abcaf",
+    "src/styles/forms.css": "4474eb5482b7ad4e8601a7b6b8963068e87e1508b18522f314dd2a2bd3e4a42d",
+    "src/styles/content.css": "c38a3e24a4f297012145f226939c4c908608df8b72020b62c19827ad292c73d4",
+    "src/styles/date-picker.css": "562cf38c66c8a0ce932c68f665f5955334a11380676988efec2d5fd9e9b600f6"
+  }
+}

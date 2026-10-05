@@ -1,0 +1,13 @@
+/* Host controls define these on .apple-field. Let the original provider own
+   the date picker's tokens, including its original light/dark palettes. */
+.apptify-date-picker .apple-field {
+  --apple-accent: inherit;
+  --apple-border: inherit;
+  --apple-secondary: inherit;
+  --apple-surface: inherit;
+  --apple-surface-alt: inherit;
+}
+
+.apptify-date-picker .apple-provider {
+  background: var(--apple-surface);
+}

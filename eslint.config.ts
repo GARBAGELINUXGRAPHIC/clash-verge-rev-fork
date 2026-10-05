@@ -13,6 +13,12 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig([
+  {
+    ignores: [
+      'src/components/base/apptify/date-picker.js',
+      'vendor/apptify/**',
+    ],
+  },
   pluginESx.configs['flat/restrict-to-es2022'],
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],

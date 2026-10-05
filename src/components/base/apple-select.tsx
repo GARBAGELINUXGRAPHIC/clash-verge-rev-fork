@@ -255,6 +255,7 @@ export function AppleSelect<Value = unknown>({
         createPortal(
           <div
             ref={popupRef}
+            hidden
             className="apple-field apple-field-menu"
             aria-hidden={!open}
             inert={!open || disabled}

@@ -1,0 +1,4064 @@
+@property --apple-bg {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f5f5f7;
+}
+@property --apple-surface {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #fff;
+}
+@property --apple-surface-alt {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #f0f0f2;
+}
+@property --apple-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1d1d1f;
+}
+@property --apple-secondary {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #6e6e73;
+}
+@property --apple-border {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #d2d2d7;
+}
+@property --apple-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #0071e3;
+}
+@property --apple-accent-text {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #fff;
+}
+@property --apple-danger {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #c93830;
+}
+@property --apple-success {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #34c759;
+}
+@property --apple-warning {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #ffaa00;
+}
+.apptify-date-picker .apple-provider {
+  --apple-duration: 300ms;
+  --apple-fast: 120ms;
+  --apple-theme-duration: 260ms;
+  --v-theme-overlay-multiplier: 0.4;
+  --apple-hover: color-mix(in srgb, var(--apple-text) 5%, transparent);
+  --apple-pressed: color-mix(in srgb, var(--apple-text) 10%, transparent);
+  --apple-selected: color-mix(in srgb, var(--apple-text) 8%, transparent);
+  --apple-ease: cubic-bezier(0.2, 0.65, 0.3, 1);
+  color: var(--apple-text);
+  background: var(--apple-bg);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+  accent-color: var(--apple-accent);
+  min-width: 0;
+  transition:
+    --apple-bg var(--apple-theme-duration) ease,
+    --apple-surface var(--apple-theme-duration) ease,
+    --apple-surface-alt var(--apple-theme-duration) ease,
+    --apple-text var(--apple-theme-duration) ease,
+    --apple-secondary var(--apple-theme-duration) ease,
+    --apple-border var(--apple-theme-duration) ease,
+    --apple-accent var(--apple-theme-duration) ease,
+    --apple-accent-text var(--apple-theme-duration) ease,
+    --apple-danger var(--apple-theme-duration) ease,
+    --apple-success var(--apple-theme-duration) ease,
+    --apple-warning var(--apple-theme-duration) ease;
+}
+.apptify-date-picker .apple-glass {
+  /* 其实我不太确定是否需要important */
+  color: var(--apple-text, #1d1d1f) !important;
+  background: rgb(
+    var(--apple-glass-rgb, 255 255 255) /
+    var(--apple-glass-opacity, 0.31372549)
+  ) !important;
+  -webkit-backdrop-filter: blur(var(--apple-glass-blur, 12px)) saturate(2) !important;
+  backdrop-filter: blur(var(--apple-glass-blur, 12px)) saturate(2) !important;
+}
+.apptify-date-picker .apple-provider *,
+.apptify-date-picker .apple-provider *::before,
+.apptify-date-picker .apple-provider *::after {
+  box-sizing: border-box;
+  letter-spacing: 0;
+}
+.apptify-date-picker .apple-provider button,
+.apptify-date-picker .apple-provider input,
+.apptify-date-picker .apple-provider textarea,
+.apptify-date-picker .apple-provider select {
+  font: inherit;
+}
+.apptify-date-picker .apple-provider button {
+  cursor: pointer;
+}
+.apptify-date-picker .apple-provider button:disabled,
+.apptify-date-picker .apple-provider [aria-disabled="true"] {
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-provider :focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--apple-accent) 65%, transparent);
+  outline-offset: 3px;
+}
+.apptify-date-picker .apple-provider [data-apple-motion="none"],
+.apptify-date-picker .apple-provider[data-apple-motion="none"],
+.apptify-date-picker .apple-provider [data-motion="none"] {
+  --apple-duration: 0ms;
+  --apple-fast: 0ms;
+  --apple-theme-duration: 0ms;
+}
+.apptify-date-picker .apple-provider [data-apple-motion="reduced"],
+.apptify-date-picker .apple-provider[data-apple-motion="reduced"],
+.apptify-date-picker .apple-provider [data-motion="reduced"] {
+  --apple-duration: 80ms;
+}
+.apptify-date-picker .apple-provider[data-apple-motion="none"] *,
+.apptify-date-picker .apple-provider [data-apple-motion="none"] *,
+.apptify-date-picker .apple-provider [data-motion="none"] * {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+.apptify-date-picker .apple-provider[data-apple-motion="reduced"] .apple-card,
+.apptify-date-picker .apple-provider [data-apple-motion="reduced"] .apple-card {
+  transform: none !important;
+}
+.apptify-date-picker .apple-provider[data-apple-motion="reduced"] .apple-spin,
+.apptify-date-picker
+  .apple-provider[data-apple-motion="reduced"]
+  .apple-control__spinner {
+  animation: none;
+}
+.apptify-date-picker .apple-button {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 22px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-weight: 500;
+  line-height: 1.4;
+  background: var(--apple-accent);
+  color: var(--apple-accent-text);
+  text-decoration: none;
+  overflow: hidden;
+  vertical-align: middle;
+  transition:
+    background var(--apple-duration),
+    box-shadow var(--apple-duration),
+    opacity var(--apple-duration);
+  max-width: 100%;
+  white-space: normal;
+}
+.apptify-date-picker .apple-button--secondary {
+  border-color: var(--apple-accent);
+  background: transparent;
+  color: var(--apple-accent);
+}
+.apptify-date-picker .apple-button--outline {
+  border-color: var(--apple-accent);
+  background: transparent;
+  color: var(--apple-accent);
+}
+.apptify-date-picker .apple-button--danger {
+  background: var(--apple-danger);
+}
+.apptify-date-picker .apple-button--small {
+  padding: 7px 16px;
+  min-height: 36px;
+  font-size: 13px;
+}
+.apptify-date-picker .apple-button--large {
+  min-height: 50px;
+  padding: 12px 28px;
+  font-size: 17px;
+}
+.apptify-date-picker .apple-button--icon {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  flex-shrink: 0;
+}
+.apptify-date-picker .apple-button--icon.apple-button--small {
+  width: 36px;
+  height: 36px;
+}
+.apptify-date-picker .apple-button:disabled {
+  opacity: 0.45;
+}
+.apptify-date-picker .apple-button {
+  transition:
+    background-color var(--apple-fast),
+    color var(--apple-fast),
+    border-color var(--apple-fast),
+    box-shadow var(--apple-fast);
+}
+.apptify-date-picker .apple-button__content {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .apptify-date-picker
+    .apple-button:not(:disabled):hover:where(:not([data-apple-touch] *)) {
+    background: color-mix(in srgb, var(--apple-accent) 90%, black);
+  }
+  .apptify-date-picker
+    .apple-button--secondary:not(:disabled):hover:where(
+      :not([data-apple-touch] *)
+    ),
+  .apptify-date-picker
+    .apple-button--outline:not(:disabled):hover:where(
+      :not([data-apple-touch] *)
+    ) {
+    background: var(--apple-accent);
+    color: var(--apple-accent-text);
+  }
+  .apptify-date-picker
+    .apple-button--danger:not(:disabled):hover:where(
+      :not([data-apple-touch] *)
+    ) {
+    background: color-mix(in srgb, var(--apple-danger) 90%, black);
+  }
+}
+.apptify-date-picker .apple-button:not(:disabled):active {
+  background: color-mix(in srgb, var(--apple-accent) 80%, black);
+}
+.apptify-date-picker .apple-button--secondary:not(:disabled):active,
+.apptify-date-picker .apple-button--outline:not(:disabled):active {
+  background: color-mix(in srgb, var(--apple-accent) 80%, black);
+  color: var(--apple-accent-text);
+}
+.apptify-date-picker .apple-button--danger:not(:disabled):active {
+  background: color-mix(in srgb, var(--apple-danger) 80%, black);
+}
+.apptify-date-picker .apple-link {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--apple-accent);
+  text-decoration: none;
+  transition: color var(--apple-fast);
+}
+.apptify-date-picker .apple-link__content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+.apptify-date-picker .apple-link--icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+.apptify-date-picker
+  .apple-link:hover:where(:not([data-apple-touch] *)):not(
+    [aria-disabled="true"]
+  ) {
+  color: color-mix(in srgb, var(--apple-accent) 80%, black);
+}
+.apptify-date-picker .apple-link[aria-disabled="true"] {
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-card__heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.apptify-date-picker .apple-card h3 {
+  font-size: 23px;
+  line-height: 1.25;
+  font-weight: 650;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-card h3 a {
+  color: inherit;
+  text-decoration: none;
+}
+.apptify-date-picker .apple-card__eyebrow {
+  margin: 0 0 9px;
+  color: var(--apple-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}
+.apptify-date-picker .apple-card__subtitle {
+  color: var(--apple-secondary);
+  margin: 8px 0 0;
+}
+.apptify-date-picker .apple-card__text {
+  margin: 14px 0 0;
+}
+.apptify-date-picker .apple-card__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.apptify-date-picker .apple-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.apptify-date-picker .apple-container {
+  width: 100%;
+  padding-inline: 24px;
+  margin-inline: auto;
+}
+.apptify-date-picker .apple-stack {
+  display: flex;
+  min-width: 0;
+}
+.apptify-date-picker .apple-grid {
+  display: grid;
+  min-width: 0;
+}
+.apptify-date-picker .apple-stack > *,
+.apptify-date-picker .apple-grid > * {
+  min-width: 0;
+}
+.apptify-date-picker .apple-image {
+  margin: 0;
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  flex-shrink: 0;
+  border-radius: var(--apple-radius);
+}
+.apptify-date-picker .apple-image__surface {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--apple-surface-alt);
+  overflow: hidden;
+  border-radius: inherit;
+  transition:
+    transform var(--apple-duration) var(--apple-ease),
+    box-shadow var(--apple-duration) var(--apple-ease);
+}
+@media (hover: hover) and (pointer: fine) and (
+    prefers-reduced-motion: no-preference
+  ) {
+  .apptify-date-picker
+    .apple-image--loaded[data-apple-motion="full"]:hover:where(
+      :not([data-apple-touch] *)
+    ) {
+    z-index: 1;
+  }
+  .apptify-date-picker
+    .apple-image--loaded:not(.apple-image--mobile):not(
+      .apple-image--group
+    )[data-apple-motion="full"]:hover:where(:not([data-apple-touch] *))
+    > .apple-image__surface {
+    transform: scale(1.04);
+    box-shadow: var(--apple-shadow);
+  }
+  .apptify-date-picker
+    .apple-image--loaded:not(
+      .apple-image--mobile
+    )[data-gallery-layout^="tiled"][data-apple-motion="full"]
+    .apple-image__trigger:hover:where(:not([data-apple-touch] *))
+    > img {
+    transform: scale(1.04);
+  }
+}
+.apptify-date-picker .apple-image__trigger {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  background: transparent;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.apptify-date-picker .apple-image figcaption {
+  position: absolute;
+  bottom: 0;
+  background: var(--apple-surface);
+  padding: 8px 12px;
+}
+.apptify-date-picker .apple-image__gallery {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.apptify-date-picker .apple-image--group > .apple-image__surface {
+  height: auto;
+}
+.apptify-date-picker .apple-image__gallery--compact {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.apptify-date-picker .apple-image__gallery--compact::-webkit-scrollbar {
+  display: none;
+}
+.apptify-date-picker .apple-image__gallery--compact > .apple-image__trigger {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+}
+.apptify-date-picker .apple-image__gallery--tiled {
+  display: flex;
+  gap: 8px;
+  height: var(--apple-image-tile-height, clamp(112px, 28vw, 180px));
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+.apptify-date-picker .apple-image__gallery--tiled::-webkit-scrollbar {
+  display: none;
+}
+.apptify-date-picker .apple-image__scrollbar {
+  position: relative;
+  height: 24px;
+  width: 100%;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+.apptify-date-picker .apple-image__scrollbar[hidden] {
+  display: none;
+}
+.apptify-date-picker .apple-image__scrollbar::before {
+  content: "";
+  position: absolute;
+  inset: 9px 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--apple-secondary) 10%, transparent);
+}
+.apptify-date-picker .apple-image__scrollbar-thumb {
+  position: absolute;
+  top: 50%;
+  height: 6px;
+  min-width: min(32px, 100%);
+  max-width: 100%;
+  border-radius: 999px;
+  background: color-mix(
+    in srgb,
+    var(--apple-secondary) 46%,
+    var(--apple-surface)
+  );
+  cursor: grab;
+  transition:
+    background-color 120ms ease,
+    height 120ms ease;
+}
+.apptify-date-picker
+  .apple-image__scrollbar:hover:where(:not([data-apple-touch] *))
+  .apple-image__scrollbar-thumb,
+.apptify-date-picker
+  .apple-image__scrollbar:focus-visible
+  .apple-image__scrollbar-thumb {
+  height: 8px;
+  background: color-mix(
+    in srgb,
+    var(--apple-secondary) 72%,
+    var(--apple-surface)
+  );
+}
+.apptify-date-picker
+  .apple-image__scrollbar.is-dragging
+  .apple-image__scrollbar-thumb {
+  height: 8px;
+  background: var(--apple-secondary);
+  cursor: grabbing;
+}
+.apptify-date-picker .apple-image__scrollbar:focus-visible {
+  outline: 2px solid var(--apple-accent);
+  outline-offset: 1px;
+  border-radius: 8px;
+}
+.apptify-date-picker
+  .apple-image[data-apple-motion="none"]
+  .apple-image__scrollbar-thumb,
+.apptify-date-picker
+  .apple-image[data-apple-motion="reduced"]
+  .apple-image__scrollbar-thumb {
+  transition: none;
+}
+@media (pointer: coarse) {
+  .apptify-date-picker .apple-image__scrollbar {
+    height: 32px;
+  }
+  .apptify-date-picker .apple-image__scrollbar::before {
+    inset-block: 13px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apptify-date-picker .apple-image__scrollbar-thumb {
+    transition: none;
+  }
+}
+.apptify-date-picker .apple-image__gallery--tiled > .apple-image__trigger {
+  flex: 0 0 auto;
+  width: auto;
+  height: 100%;
+  scroll-snap-align: center;
+}
+.apptify-date-picker
+  .apple-image[data-gallery-layout="tiled-wrap"]
+  > .apple-image__surface {
+  background: transparent;
+}
+.apptify-date-picker .apple-image__gallery--tiled-wrap {
+  column-width: var(--apple-image-tile-width, 144px);
+  column-gap: 8px;
+  height: auto;
+}
+.apptify-date-picker .apple-image__gallery--tiled-wrap > .apple-image__trigger {
+  height: auto;
+  break-inside: avoid;
+  margin-bottom: 8px;
+}
+.apptify-date-picker .apple-image__gallery[class*="--tiled"] img {
+  transition: transform var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-image__gallery .apple-image__trigger {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.apptify-date-picker .apple-image__gallery.is-dragging,
+.apptify-date-picker .apple-image__gallery.is-dragging .apple-image__trigger {
+  cursor: grabbing;
+  user-select: none;
+}
+.apptify-date-picker .apple-image__gallery:focus-visible,
+.apptify-date-picker .apple-image__dot:focus-visible {
+  outline: 2px solid var(--apple-accent);
+  outline-offset: 2px;
+}
+.apptify-date-picker .apple-image__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 6px 0 0;
+  min-height: 28px;
+}
+.apptify-date-picker .apple-image__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+.apptify-date-picker .apple-image__dot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+.apptify-date-picker .apple-image__dot > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--apple-secondary) 35%, transparent);
+  transition:
+    width var(--apple-fast),
+    background-color var(--apple-fast);
+}
+.apptify-date-picker .apple-image__dot[aria-current="true"] > span {
+  width: 14px;
+  background: var(--apple-accent);
+}
+.apptify-date-picker .apple-image__count {
+  color: var(--apple-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.apptify-date-picker .apple-image__arrows {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  pointer-events: none;
+}
+.apptify-date-picker .apple-image__arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: white;
+  background: #00000055;
+  -webkit-backdrop-filter: blur(2px) saturate(2);
+  backdrop-filter: blur(2px) saturate(2);
+  pointer-events: auto;
+  transition: opacity var(--apple-fast);
+}
+.apptify-date-picker .apple-image__arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+@media (hover: hover) and (pointer: fine) {
+  .apptify-date-picker
+    .apple-image:not(.apple-image--mobile)
+    .apple-image__arrows {
+    display: flex;
+    opacity: 0;
+    transition: opacity var(--apple-fast);
+  }
+  .apptify-date-picker .apple-image__arrows .apple-image__arrow {
+    pointer-events: none;
+  }
+  .apptify-date-picker
+    .apple-image:not(
+      .apple-image--mobile
+    )[data-gallery-layout="compact"]:hover:where(:not([data-apple-touch] *))
+    .apple-image__arrows {
+    opacity: 1;
+  }
+  .apptify-date-picker
+    .apple-image:not(
+      .apple-image--mobile
+    )[data-gallery-layout="compact"]:hover:where(:not([data-apple-touch] *))
+    .apple-image__arrow {
+    pointer-events: auto;
+  }
+}
+/* Carousel uses the Image strip while keeping its controls available to touch. */
+.apptify-date-picker
+  .apple-image[data-carousel]
+  .apple-image__gallery--compact {
+  gap: 0;
+}
+.apptify-date-picker
+  .apple-image[data-carousel]
+  .apple-image__gallery
+  > .apple-image__slide {
+  gap: 0;
+  border-radius: 0;
+}
+.apptify-date-picker .apple-image[data-carousel] .apple-image__arrows {
+  display: flex;
+  opacity: 1;
+}
+.apptify-date-picker
+  .apple-image[data-carousel]
+  .apple-image__arrows
+  .apple-image__arrow {
+  pointer-events: auto;
+}
+.apptify-date-picker .apple-image__slide-picture {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+.apptify-date-picker .apple-image__slide-caption {
+  flex: none;
+  width: 100%;
+  padding: 12px 16px;
+  color: var(--apple-text);
+  background: var(--apple-surface);
+}
+.apptify-date-picker .apple-image__slide-caption p {
+  margin: 4px 0 0;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-image__trigger--placeholder {
+  background: #000;
+}
+.apptify-date-picker .apple-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  background: var(--apple-surface-alt);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-search {
+  transition:
+    background-color var(--apple-fast),
+    border-color var(--apple-fast),
+    box-shadow var(--apple-fast);
+}
+.apptify-date-picker .apple-search:focus-within {
+  border-color: var(--apple-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--apple-accent) 20%, transparent);
+}
+.apptify-date-picker .apple-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 0;
+  color: var(--apple-text);
+  border: 0;
+  outline: 0;
+  background: transparent;
+}
+.apptify-date-picker .apple-search input::-webkit-search-cancel-button {
+  display: none;
+}
+.apptify-date-picker .apple-provider .apple-search input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+.apptify-date-picker .apple-search button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 5px;
+}
+.apptify-date-picker .apple-spin {
+  animation: apple-spin 1s linear infinite;
+}
+.apptify-date-picker .apple-selection {
+  position: relative;
+  isolation: isolate;
+}
+.apptify-date-picker .apple-selection-indicator {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--apple-selected);
+  border-radius: inherit;
+  transition:
+    transform var(--apple-duration) var(--apple-ease),
+    width var(--apple-duration) var(--apple-ease),
+    height var(--apple-duration) var(--apple-ease),
+    background-color var(--apple-fast);
+}
+.apptify-date-picker .apple-selection-indicator[hidden] {
+  display: none;
+}
+.apptify-date-picker .apple-auto-size {
+  min-width: 0;
+}
+.apptify-date-picker .apple-auto-size__inner {
+  display: flow-root;
+  min-width: 0;
+}
+/* Reset the UA popover box without overriding each surface's own styles. */
+.apptify-date-picker :where([data-apple-overlay-surface][popover]) {
+  box-sizing: border-box;
+  width: auto;
+  height: auto;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  inset: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  overflow: visible;
+}
+.apptify-date-picker :where([data-apple-overlay-surface][popover])::backdrop {
+  background: transparent;
+  pointer-events: none;
+}
+.apptify-date-picker .apple-page-enter-active,
+.apptify-date-picker .apple-page-leave-active,
+.apptify-date-picker .apple-slide-x-enter-active,
+.apptify-date-picker .apple-slide-x-leave-active,
+.apptify-date-picker .apple-slide-y-enter-active,
+.apptify-date-picker .apple-slide-y-leave-active {
+  transition: transform var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-page-enter-active {
+  transition:
+    transform var(--apple-duration) var(--apple-ease),
+    opacity var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-page-enter-from {
+  opacity: 0;
+}
+.apptify-date-picker .apple-page-enter-from,
+.apptify-date-picker .apple-slide-y-enter-from {
+  transform: translateY(22px);
+}
+.apptify-date-picker .apple-page-leave-to,
+.apptify-date-picker .apple-slide-y-leave-to {
+  transform: translateY(-16px);
+}
+.apptify-date-picker .apple-slide-x-enter-from {
+  transform: translateX(24px);
+}
+.apptify-date-picker .apple-slide-x-leave-to {
+  transform: translateX(-24px);
+}
+.apptify-date-picker .apple-fade-enter-active,
+.apptify-date-picker .apple-fade-leave-active {
+  transition: opacity var(--apple-fast) ease;
+}
+.apptify-date-picker .apple-fade-enter-from,
+.apptify-date-picker .apple-fade-leave-to {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .apptify-date-picker .apple-page-enter-from,
+  .apptify-date-picker .apple-page-leave-to,
+  .apptify-date-picker .apple-slide-x-enter-from,
+  .apptify-date-picker .apple-slide-x-leave-to,
+  .apptify-date-picker .apple-slide-y-enter-from,
+  .apptify-date-picker .apple-slide-y-leave-to {
+    transform: none;
+  }
+}
+@keyframes apple-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apptify-date-picker .apple-provider {
+    --apple-duration: 80ms;
+  }
+  .apptify-date-picker .apple-provider *,
+  .apptify-date-picker .apple-provider *::before,
+  .apptify-date-picker .apple-provider *::after {
+    scroll-behavior: auto !important;
+  }
+  .apptify-date-picker .apple-card {
+    transform: none !important;
+  }
+  .apptify-date-picker .apple-spin {
+    animation: none;
+  }
+}
+@media (max-width: 600px) {
+  .apptify-date-picker .apple-container {
+    padding-inline: 16px;
+  }
+  .apptify-date-picker .apple-button--small {
+    min-height: 44px;
+  }
+}
+
+.apptify-date-picker .apple-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  color: var(--apple-text);
+  font: inherit;
+}
+.apptify-date-picker .apple-field__label {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-field__required,
+.apptify-date-picker .apple-field__message.is-error {
+  color: var(--apple-danger);
+}
+.apptify-date-picker .apple-field__message {
+  margin: 0;
+  color: var(--apple-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-field__counter {
+  align-self: flex-end;
+  color: var(--apple-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.apptify-date-picker .apple-control {
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--apple-border);
+  border-radius: 8px;
+  padding: 11px 14px;
+  background: var(--apple-surface);
+  color: var(--apple-text);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  transition:
+    border-color var(--apple-duration-fast, 120ms) ease,
+    box-shadow var(--apple-duration-fast, 120ms) ease,
+    background-color var(--apple-duration-fast, 120ms) ease,
+    color var(--apple-duration-fast, 120ms) ease;
+}
+.apptify-date-picker .apple-field .apple-control {
+  font-size: 16px;
+}
+.apptify-date-picker .apple-control::placeholder {
+  color: var(--apple-secondary);
+  opacity: 1;
+}
+.apptify-date-picker
+  .apple-control:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  border-color: color-mix(
+    in srgb,
+    var(--apple-secondary) 60%,
+    var(--apple-border)
+  );
+}
+.apptify-date-picker .apple-control:focus {
+  border-color: var(--apple-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--apple-accent) 20%, transparent);
+}
+.apptify-date-picker .apple-field.has-error .apple-control,
+.apptify-date-picker .apple-field.has-error .apple-input-wrap {
+  border-color: var(--apple-danger);
+}
+.apptify-date-picker .apple-control:disabled,
+.apptify-date-picker .apple-choice:has(input:disabled),
+.apptify-date-picker .apple-switch-row:has(input:disabled),
+.apptify-date-picker .apple-field .is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-field .apple-control:disabled {
+  background: var(--apple-surface-alt);
+  border-color: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-input-wrap {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border: 1px solid var(--apple-border);
+  border-radius: 8px;
+  background: var(--apple-surface);
+  transition:
+    border-color var(--apple-duration-fast, 120ms) ease,
+    box-shadow var(--apple-duration-fast, 120ms) ease,
+    background-color var(--apple-duration-fast, 120ms) ease;
+}
+.apptify-date-picker
+  .apple-input-wrap:hover:where(:not([data-apple-touch] *)):not(
+    :has(input:disabled)
+  ) {
+  border-color: color-mix(
+    in srgb,
+    var(--apple-secondary) 60%,
+    var(--apple-border)
+  );
+}
+.apptify-date-picker .apple-input-wrap:focus-within {
+  border-color: var(--apple-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--apple-accent) 20%, transparent);
+}
+.apptify-date-picker .apple-input-wrap > .apple-control,
+.apptify-date-picker .apple-input-wrap > .apple-control:focus,
+.apptify-date-picker .apple-input-wrap > .apple-control:focus-visible {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: none;
+}
+.apptify-date-picker .apple-input-wrap > .apple-control:disabled {
+  background: transparent;
+}
+.apptify-date-picker .apple-field .apple-input-wrap:has(input:disabled) {
+  background: var(--apple-surface-alt);
+  border-color: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-input__affix {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  max-width: 35%;
+  padding-inline: 12px;
+  color: var(--apple-secondary);
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-input-wrap > .apple-input__affix:has(button) {
+  align-self: stretch;
+  align-items: stretch;
+  gap: 0;
+  max-width: none;
+  padding: 0;
+}
+.apptify-date-picker .apple-input-wrap > .apple-input__affix button {
+  align-self: stretch;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 7px 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 0;
+  line-height: 1.4;
+}
+.apptify-date-picker
+  .apple-input-wrap
+  > .apple-input__affix
+  button:not(.apple-button) {
+  border-color: transparent;
+}
+.apptify-date-picker
+  .apple-input-wrap
+  > .apple-input__affix
+  .apple-button--icon,
+.apptify-date-picker
+  .apple-input-wrap
+  > .apple-input__affix
+  .apple-field__icon {
+  width: 44px;
+  height: auto;
+  padding: 0;
+}
+.apptify-date-picker .apple-input-wrap > .apple-field__icon {
+  align-self: stretch;
+  height: auto;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 0;
+}
+.apptify-date-picker .apple-input-wrap > .apple-field__icon:first-child,
+.apptify-date-picker
+  .apple-input-wrap
+  > .apple-input__affix:first-child
+  > button:first-child {
+  border-radius: 7px 0 0 7px;
+}
+.apptify-date-picker .apple-input-wrap > .apple-field__icon:last-child,
+.apptify-date-picker
+  .apple-input-wrap
+  > .apple-input__affix:last-child
+  > button:last-child {
+  border-radius: 0 7px 7px 0;
+}
+.apptify-date-picker .apple-input__affix + .apple-control {
+  padding-inline-start: 0;
+}
+.apptify-date-picker .apple-field__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--apple-secondary);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--apple-duration-fast, 120ms) ease,
+    color var(--apple-duration-fast, 120ms) ease;
+}
+.apptify-date-picker
+  .apple-field__icon:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  color: var(--apple-text);
+  background: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-field__icon:active:not(:disabled) {
+  background: color-mix(in srgb, var(--apple-text) 15%, var(--apple-surface));
+}
+.apptify-date-picker .apple-field__icon:focus-visible,
+.apptify-date-picker .apple-stepper__button:focus-visible,
+.apptify-date-picker .apple-rate__star:focus-visible {
+  outline: 3px solid var(--apple-accent);
+  outline-offset: 2px;
+}
+.apptify-date-picker .apple-field__icon:disabled,
+.apptify-date-picker .apple-stepper__button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-control__spinner {
+  flex-shrink: 0;
+  margin-inline: 12px;
+  color: var(--apple-accent);
+  animation: apple-control-spin 0.9s linear infinite;
+}
+.apptify-date-picker .apple-textarea {
+  min-height: 104px;
+  display: block;
+}
+.apptify-date-picker .apple-select-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.apptify-date-picker .apple-select {
+  position: relative;
+  appearance: none;
+  padding-inline-end: 42px;
+  cursor: pointer;
+  text-align: start;
+}
+.apptify-date-picker .apple-select:active:not(:disabled) {
+  background: color-mix(in srgb, var(--apple-text) 7%, var(--apple-surface));
+}
+.apptify-date-picker .apple-select .is-placeholder {
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-select__chevron,
+.apptify-date-picker .apple-select-wrap > .apple-control__spinner {
+  position: absolute;
+  inset-inline-end: 14px;
+  pointer-events: none;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-select-wrap > .apple-control__spinner {
+  margin: 0;
+}
+.apptify-date-picker .apple-input-wrap > .apple-select__chevron {
+  position: static;
+  flex-shrink: 0;
+  margin-inline-end: 14px;
+}
+.apptify-date-picker .apple-select__chevron {
+  transition: transform var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-select__chevron.is-open {
+  transform: rotate(180deg);
+}
+.apptify-date-picker .apple-autocomplete {
+  position: relative;
+  min-width: 0;
+}
+.apptify-date-picker .apple-field-menu {
+  position: fixed;
+  width: var(--apple-popup-anchor-width, 100%);
+  max-width: var(--apple-popup-available-width, calc(100dvw - 16px));
+  max-height: var(--apple-popup-available-height, calc(100dvh - 16px));
+  top: calc(100% + 6px);
+  inset-inline: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  overflow: clip;
+  border: 1px solid var(--apple-border);
+  border-radius: 10px;
+  color: var(--apple-text);
+  background: rgb(
+    var(--apple-glass-rgb, 255 255 255) /
+    var(--apple-glass-opacity, 0.31372549)
+  );
+  -webkit-backdrop-filter: blur(var(--apple-glass-blur, 12px)) saturate(2);
+  backdrop-filter: blur(var(--apple-glass-blur, 12px)) saturate(2);
+  box-shadow: var(--apple-shadow);
+}
+.apptify-date-picker .apple-field-menu-enter-active,
+.apptify-date-picker .apple-field-menu-leave-active {
+  transition: none;
+}
+.apptify-date-picker .apple-field-menu-enter-from,
+.apptify-date-picker .apple-field-menu-leave-to {
+  transform: translateY(var(--apple-popup-y, -8px));
+}
+.apptify-date-picker .apple-autocomplete__list {
+  --apple-popup-scroll-limit: 280;
+  max-height: min(
+    calc(var(--apple-popup-scroll-limit) * 1px),
+    50dvh,
+    calc(var(--apple-popup-available-height, 100dvh) - 2px)
+  );
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  scrollbar-width: thin;
+}
+.apptify-date-picker .apple-autocomplete__option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  transition:
+    background-color var(--apple-duration-fast, 120ms) ease,
+    color var(--apple-duration-fast, 120ms) ease;
+}
+.apptify-date-picker .apple-autocomplete__option > span {
+  min-width: 0;
+}
+.apptify-date-picker .apple-autocomplete__option > svg {
+  flex-shrink: 0;
+  color: var(--apple-text);
+}
+.apptify-date-picker .apple-autocomplete__option[aria-selected="true"] {
+  background: transparent;
+  font-weight: 600;
+}
+.apptify-date-picker .apple-autocomplete__option.is-keyboard-active {
+  outline: 1px solid color-mix(in srgb, var(--apple-secondary) 60%, transparent);
+  outline-offset: -2px;
+}
+.apptify-date-picker
+  .apple-autocomplete__option:hover:where(:not([data-apple-touch] *)):not(
+    .is-disabled
+  ) {
+  background: rgb(128 128 128 / 8%);
+}
+.apptify-date-picker .apple-autocomplete__option:active:not(.is-disabled) {
+  background: rgb(128 128 128 / 12%);
+}
+.apptify-date-picker .apple-autocomplete__option.is-disabled {
+  pointer-events: none;
+}
+.apptify-date-picker .apple-autocomplete__empty {
+  padding: 16px 12px;
+  color: var(--apple-secondary);
+  font-size: 14px;
+}
+.apptify-date-picker .apple-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+.apptify-date-picker .apple-choice__label {
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-checkbox,
+.apptify-date-picker .apple-radio {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--apple-accent);
+  cursor: pointer;
+}
+.apptify-date-picker .apple-checkbox:focus-visible,
+.apptify-date-picker .apple-radio:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--apple-accent) 40%, transparent);
+  outline-offset: 3px;
+}
+.apptify-date-picker .apple-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.apptify-date-picker .apple-radio-group.is-inline {
+  flex-direction: row;
+  gap: 8px 24px;
+  flex-wrap: wrap;
+}
+.apptify-date-picker .apple-switch-field {
+  width: 100%;
+}
+.apptify-date-picker .apple-switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+}
+.apptify-date-picker .apple-switch__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+.apptify-date-picker .apple-switch {
+  position: relative;
+  flex: 0 0 50px;
+  width: 50px;
+  height: 30px;
+}
+.apptify-date-picker .apple-switch > input {
+  position: absolute;
+  inset: -7px 0;
+  z-index: 1;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.apptify-date-picker .apple-checkbox:disabled,
+.apptify-date-picker .apple-radio:disabled,
+.apptify-date-picker .apple-switch > input:disabled {
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-switch__track {
+  display: block;
+  width: 50px;
+  height: 30px;
+  border-radius: 20px;
+  background: color-mix(
+    in srgb,
+    var(--apple-secondary) 28%,
+    var(--apple-surface)
+  );
+  transition: background var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-switch__track::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 4px #0002;
+  transition: transform var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-switch > input:checked + .apple-switch__track {
+  background: var(--apple-success);
+}
+.apptify-date-picker
+  .apple-switch
+  > input:checked
+  + .apple-switch__track::after {
+  transform: translateX(20px);
+}
+.apptify-date-picker
+  .apple-switch
+  > input:focus-visible
+  + .apple-switch__track {
+  outline: 3px solid var(--apple-accent);
+  outline-offset: 3px;
+}
+.apptify-date-picker .apple-switch__track > .apple-control__spinner {
+  position: absolute;
+  z-index: 2;
+  top: 6px;
+  left: 6px;
+  margin: 0;
+}
+.apptify-date-picker
+  .apple-switch
+  > input:checked
+  + .apple-switch__track
+  > .apple-control__spinner {
+  left: 26px;
+}
+.apptify-date-picker .apple-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  min-height: 44px;
+}
+.apptify-date-picker .apple-slider {
+  appearance: none;
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.apptify-date-picker .apple-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    var(--apple-accent) var(--apple-slider-progress),
+    var(--apple-surface-alt) var(--apple-slider-progress)
+  );
+}
+.apptify-date-picker .apple-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 4px;
+  background: linear-gradient(
+    to right,
+    var(--apple-accent) var(--apple-slider-progress),
+    var(--apple-surface-alt) var(--apple-slider-progress)
+  );
+}
+.apptify-date-picker .apple-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  margin-top: -9px;
+  border-radius: 50%;
+  border: 1px solid #c4c4c8;
+  background: #fff;
+  box-shadow: none;
+  transition:
+    background-color var(--apple-duration-fast, 120ms) ease,
+    border-color var(--apple-duration-fast, 120ms) ease,
+    box-shadow var(--apple-duration-fast, 120ms) ease;
+}
+.apptify-date-picker .apple-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #c4c4c8;
+  background: #fff;
+  box-shadow: none;
+  transition:
+    background-color var(--apple-duration-fast, 120ms) ease,
+    border-color var(--apple-duration-fast, 120ms) ease,
+    box-shadow var(--apple-duration-fast, 120ms) ease;
+}
+.apptify-date-picker
+  .apple-slider:hover:where(:not([data-apple-touch] *)):not(
+    :disabled
+  )::-webkit-slider-thumb {
+  background: #f0f0f2;
+}
+.apptify-date-picker
+  .apple-slider:hover:where(:not([data-apple-touch] *)):not(
+    :disabled
+  )::-moz-range-thumb {
+  background: #f0f0f2;
+}
+.apptify-date-picker .apple-slider:active:not(:disabled)::-webkit-slider-thumb {
+  background: #d2d2d7;
+}
+.apptify-date-picker .apple-slider:active:not(:disabled)::-moz-range-thumb {
+  background: #d2d2d7;
+}
+.apptify-date-picker .apple-slider:focus-visible {
+  outline: 3px solid var(--apple-accent);
+  outline-offset: 9px;
+}
+.apptify-date-picker .apple-slider:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-slider__value {
+  flex-shrink: 0;
+  min-width: 3ch;
+  max-width: 35%;
+  text-align: end;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-stepper {
+  display: inline-grid;
+  grid-template-columns: 44px minmax(50px, 86px) 44px;
+  align-self: flex-start;
+  max-width: 100%;
+  border: 1px solid var(--apple-border);
+  border-radius: 8px;
+  overflow: visible;
+  background: var(--apple-surface);
+}
+.apptify-date-picker .apple-stepper > .apple-control {
+  width: 100%;
+  padding-inline: 5px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: center;
+  appearance: textfield;
+}
+.apptify-date-picker .apple-stepper > .apple-control::-webkit-outer-spin-button,
+.apptify-date-picker
+  .apple-stepper
+  > .apple-control::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.apptify-date-picker .apple-stepper__button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 0;
+  color: var(--apple-accent);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color var(--apple-duration-fast, 120ms) ease,
+    color var(--apple-duration-fast, 120ms) ease;
+}
+.apptify-date-picker .apple-stepper__button:first-child {
+  border-radius: 7px 0 0 7px;
+}
+.apptify-date-picker .apple-stepper__button:last-child {
+  border-radius: 0 7px 7px 0;
+}
+.apptify-date-picker
+  .apple-stepper__button:hover:where(:not([data-apple-touch] *)):not(
+    :disabled
+  ) {
+  background: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-stepper__button:active:not(:disabled) {
+  background: color-mix(in srgb, var(--apple-text) 15%, var(--apple-surface));
+}
+.apptify-date-picker .apple-segmented {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-width: 0;
+  padding: 3px;
+  border-radius: 8px;
+  background: var(--apple-segmented-track, var(--apple-surface-alt));
+  isolation: isolate;
+}
+.apptify-date-picker .apple-segmented[data-apple-scheme="dark"] {
+  --apple-segmented-track: #2d2d2d;
+  --apple-segmented-selected: #434343;
+  --apple-segmented-text: #f5f4f5;
+  --apple-segmented-secondary: #a6a5a9;
+}
+.apptify-date-picker .apple-segmented__item {
+  position: relative;
+  display: flex;
+  flex: 1 1 70px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  transition:
+    background var(--apple-duration) var(--apple-ease),
+    box-shadow var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-segmented__item {
+  z-index: 1;
+  background: transparent;
+}
+.apptify-date-picker .apple-segmented__item {
+  color: var(--apple-segmented-secondary, var(--apple-secondary));
+  transition: color var(--apple-fast);
+}
+.apptify-date-picker .apple-segmented__item.is-selected {
+  color: var(--apple-segmented-text, var(--apple-text));
+}
+.apptify-date-picker
+  .apple-segmented__item:hover:where(:not([data-apple-touch] *)):not(
+    .is-disabled
+  ) {
+  color: color-mix(
+    in srgb,
+    var(--apple-segmented-text, var(--apple-text)) 75%,
+    var(--apple-segmented-secondary, var(--apple-secondary))
+  );
+}
+.apptify-date-picker
+  .apple-segmented__item:active:where(:not([data-apple-touch] *)):not(
+    .is-disabled
+  ) {
+  color: var(--apple-segmented-text, var(--apple-text));
+}
+.apptify-date-picker [data-apple-touch] .apple-segmented {
+  -webkit-tap-highlight-color: transparent;
+}
+.apptify-date-picker .apple-segmented > .apple-selection-indicator {
+  border-radius: 6px;
+  background: var(--apple-segmented-selected, var(--apple-surface));
+  box-shadow: 0 1px 5px #0002;
+}
+.apptify-date-picker .apple-segmented__item:has(input:focus-visible) {
+  outline: 3px solid var(--apple-accent);
+  outline-offset: 1px;
+}
+.apptify-date-picker .apple-date-input {
+  min-width: 0;
+  max-width: 100%;
+}
+.apptify-date-picker .apple-color-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.apptify-date-picker .apple-color-picker {
+  box-sizing: border-box;
+  width: 56px;
+  height: 44px;
+  padding: 4px;
+  border: 1px solid var(--apple-border);
+  border-radius: 8px;
+  background: var(--apple-surface);
+  cursor: pointer;
+}
+.apptify-date-picker .apple-color-picker > span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  background: var(--apple-picked-color);
+}
+.apptify-date-picker .apple-color-picker:focus-visible {
+  outline: 3px solid var(--apple-accent);
+  outline-offset: 2px;
+}
+.apptify-date-picker .apple-color-picker:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-color__value {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.apptify-date-picker .apple-color-menu {
+  width: 280px;
+  inset-inline-end: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.apptify-date-picker .apple-color-menu__content {
+  padding: 14px;
+}
+.apptify-date-picker .apple-color-plane {
+  position: relative;
+  height: 170px;
+  border-radius: 8px;
+  background-image:
+    linear-gradient(to top, #000, transparent),
+    linear-gradient(to right, #fff, transparent);
+  touch-action: none;
+  cursor: crosshair;
+}
+.apptify-date-picker .apple-color-plane__thumb {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #0005;
+  pointer-events: none;
+}
+.apptify-date-picker .apple-color-hue {
+  appearance: none;
+  box-sizing: border-box;
+  width: 100%;
+  height: 14px;
+  margin: 18px 0;
+  border-radius: 8px;
+  background: linear-gradient(
+    to right,
+    #f00,
+    #ff0,
+    #0f0,
+    #0ff,
+    #00f,
+    #f0f,
+    #f00
+  );
+  cursor: pointer;
+}
+.apptify-date-picker .apple-color-hue::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--apple-surface);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 0 1px #0004;
+}
+.apptify-date-picker .apple-color-hue::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 3px solid var(--apple-surface);
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: 0 0 0 1px #0004;
+}
+.apptify-date-picker .apple-color-hex {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--apple-secondary);
+  font-size: 12px;
+}
+.apptify-date-picker .apple-color-hex .apple-input-wrap {
+  flex: 1;
+  min-width: 0;
+}
+.apptify-date-picker .apple-color-hex .apple-input-wrap.has-error {
+  border-color: var(--apple-danger);
+}
+.apptify-date-picker .apple-color-hex .apple-control {
+  min-height: 38px;
+  padding: 5px 10px;
+  text-transform: uppercase;
+}
+.apptify-date-picker .apple-color-swatches {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 14px;
+}
+.apptify-date-picker .apple-color-swatch {
+  aspect-ratio: 1;
+  min-width: 0;
+  border: 1px solid #8885;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.apptify-date-picker .apple-color-swatch[aria-pressed="true"] {
+  outline: 2px solid var(--apple-accent);
+  outline-offset: 2px;
+}
+.apptify-date-picker .apple-upload {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 16px;
+  border: 1px dashed var(--apple-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--apple-surface);
+  cursor: pointer;
+  transition:
+    border-color var(--apple-duration),
+    background var(--apple-duration);
+}
+.apptify-date-picker .apple-upload.is-disabled {
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-upload.is-dragging {
+  border-color: var(--apple-accent);
+  background: rgb(128 128 128 / 8%);
+}
+.apptify-date-picker .apple-upload:focus-visible,
+.apptify-date-picker .apple-upload:has(input:focus-visible) {
+  outline: 3px solid var(--apple-accent);
+  outline-offset: 2px;
+}
+.apptify-date-picker .apple-upload__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 44px;
+  padding-inline: 16px;
+  color: var(--apple-accent);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.apptify-date-picker .apple-upload.is-disabled .apple-upload__trigger {
+  cursor: inherit;
+}
+.apptify-date-picker .apple-upload__files {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.apptify-date-picker .apple-upload__file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--apple-border);
+  font-size: 13px;
+}
+.apptify-date-picker .apple-upload__file-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.apptify-date-picker .apple-upload__file-size {
+  color: var(--apple-secondary);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.apptify-date-picker .apple-form {
+  min-width: 0;
+}
+.apptify-date-picker .apple-form__fields {
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.apptify-date-picker .apple-otp {
+  display: grid;
+  grid-template-columns: repeat(var(--apple-otp-length), minmax(0, 48px));
+  gap: 8px;
+  min-width: 0;
+}
+.apptify-date-picker .apple-field .apple-otp__digit {
+  min-width: 0;
+  width: 100%;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 21px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.apptify-date-picker .apple-cascader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+.apptify-date-picker .apple-cascader > .apple-field {
+  flex: 1 1 130px;
+}
+.apptify-date-picker .apple-rate {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+  min-height: 44px;
+}
+.apptify-date-picker .apple-rate__star {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  color: var(--apple-secondary);
+  background: transparent;
+  cursor: pointer;
+}
+.apptify-date-picker .apple-rate__star svg {
+  fill: transparent;
+  stroke-width: 1.5px;
+  transition:
+    fill var(--apple-duration),
+    color var(--apple-duration);
+}
+.apptify-date-picker .apple-rate__star.is-filled {
+  color: var(--apple-warning);
+}
+.apptify-date-picker .apple-rate__star.is-filled svg {
+  fill: currentColor;
+}
+.apptify-date-picker .apple-rate__star:hover:where(:not([data-apple-touch] *)) {
+  background: transparent;
+  transform: none;
+}
+.apptify-date-picker .apple-rate__star:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+.apptify-date-picker .apple-rate__star:disabled,
+.apptify-date-picker .apple-rate__star[aria-disabled="true"] {
+  cursor: default;
+}
+.apptify-date-picker .apple-rate__star:disabled {
+  opacity: 0.4;
+}
+.apptify-date-picker .apple-visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+.apptify-date-picker [data-apple-motion="none"] .apple-control__spinner,
+.apptify-date-picker [data-apple-motion="reduced"] .apple-control__spinner {
+  animation: none;
+}
+.apptify-date-picker .apple-field[data-apple-motion="none"] *,
+.apptify-date-picker .apple-field[data-apple-motion="none"] *::after {
+  transition: none !important;
+}
+@keyframes apple-control-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apptify-date-picker .apple-control__spinner {
+    animation: none;
+  }
+  .apptify-date-picker .apple-field *,
+  .apptify-date-picker .apple-field *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+@media (max-width: 480px) {
+  .apptify-date-picker .apple-otp {
+    gap: 4px;
+  }
+  .apptify-date-picker .apple-field__label {
+    font-size: 13px;
+  }
+  .apptify-date-picker .apple-upload {
+    padding: 16px 10px;
+  }
+}
+
+.apptify-date-picker .apple-content-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.apptify-date-picker .apple-tabs,
+.apptify-date-picker .apple-accordion,
+.apptify-date-picker .apple-table,
+.apptify-date-picker .apple-tree,
+.apptify-date-picker .apple-list,
+.apptify-date-picker .apple-pull-refresh,
+.apptify-date-picker .apple-infinite-scroll {
+  min-width: 0;
+  max-width: 100%;
+  color: var(--apple-text);
+}
+.apptify-date-picker .apple-tabs button,
+.apptify-date-picker .apple-pagination button,
+.apptify-date-picker .apple-accordion button,
+.apptify-date-picker .apple-table button,
+.apptify-date-picker .apple-tree button,
+.apptify-date-picker .apple-list button,
+.apptify-date-picker .apple-tag button,
+.apptify-date-picker .apple-alert button,
+.apptify-date-picker .apple-steps button,
+.apptify-date-picker .apple-pull-refresh button,
+.apptify-date-picker .apple-infinite-scroll button,
+.apptify-date-picker .apple-back-top {
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.apptify-date-picker .apple-tabs button:disabled,
+.apptify-date-picker .apple-pagination button:disabled,
+.apptify-date-picker .apple-accordion button:disabled,
+.apptify-date-picker .apple-table button:disabled,
+.apptify-date-picker .apple-tree button:disabled,
+.apptify-date-picker .apple-list button:disabled,
+.apptify-date-picker .apple-tag button:disabled,
+.apptify-date-picker .apple-steps button:disabled,
+.apptify-date-picker .apple-pull-refresh button:disabled,
+.apptify-date-picker .apple-infinite-scroll button:disabled,
+.apptify-date-picker .apple-back-top:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+.apptify-date-picker .apple-tabs :focus-visible,
+.apptify-date-picker .apple-pagination :focus-visible,
+.apptify-date-picker .apple-breadcrumbs :focus-visible,
+.apptify-date-picker .apple-accordion :focus-visible,
+.apptify-date-picker .apple-table :focus-visible,
+.apptify-date-picker .apple-tree :focus-visible,
+.apptify-date-picker .apple-list :focus-visible,
+.apptify-date-picker .apple-tag :focus-visible,
+.apptify-date-picker .apple-alert :focus-visible,
+.apptify-date-picker .apple-steps :focus-visible,
+.apptify-date-picker .apple-pull-refresh :focus-visible,
+.apptify-date-picker .apple-infinite-scroll :focus-visible,
+.apptify-date-picker .apple-back-top:focus-visible {
+  outline: 3px solid var(--apple-accent);
+  outline-offset: 3px;
+}
+.apptify-date-picker .apple-content-icon-button,
+.apptify-date-picker .apple-tag button,
+.apptify-date-picker .apple-pull-refresh__button,
+.apptify-date-picker .apple-infinite-scroll__status button {
+  transition:
+    color var(--apple-fast),
+    background-color var(--apple-fast),
+    border-color var(--apple-fast);
+}
+.apptify-date-picker .apple-content-icon-button:active:not(:disabled),
+.apptify-date-picker .apple-tag button:active:not(:disabled),
+.apptify-date-picker .apple-pull-refresh__button:active:not(:disabled),
+.apptify-date-picker
+  .apple-infinite-scroll__status
+  button:active:not(:disabled) {
+  background: var(--apple-pressed);
+}
+.apptify-date-picker .apple-content-icon-button {
+  display: inline-flex;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+}
+.apptify-date-picker
+  .apple-content-icon-button:hover:where(:not([data-apple-touch] *)):not(
+    :disabled
+  ) {
+  background: color-mix(in srgb, var(--apple-text) 6%, transparent);
+}
+.apptify-date-picker .apple-tone-neutral {
+  --apple-tone: var(--apple-secondary);
+}
+.apptify-date-picker .apple-tone-accent,
+.apptify-date-picker .apple-tone-info {
+  --apple-tone: var(--apple-accent);
+}
+.apptify-date-picker .apple-tone-danger {
+  --apple-tone: var(--apple-danger);
+}
+.apptify-date-picker .apple-tone-success {
+  --apple-tone: var(--apple-success);
+}
+.apptify-date-picker .apple-tone-warning {
+  --apple-tone: var(--apple-warning);
+}
+
+.apptify-date-picker .apple-tabs__list {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 28px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  border-bottom: 1px solid var(--apple-border);
+  scrollbar-width: none;
+}
+.apptify-date-picker .apple-tabs__list::-webkit-scrollbar {
+  display: none;
+}
+.apptify-date-picker .apple-tabs__tab {
+  position: relative;
+  flex: 0 0 auto;
+  min-height: 48px;
+  max-width: 100%;
+  padding: 10px 0 13px;
+  border: 0;
+  background: transparent;
+  color: var(--apple-secondary);
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-tabs__tab {
+  transition:
+    color var(--apple-fast),
+    background-color var(--apple-fast);
+}
+.apptify-date-picker .apple-tabs__tab.is-active {
+  color: var(--apple-text);
+}
+.apptify-date-picker
+  .apple-tabs__tab:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  color: color-mix(in srgb, var(--apple-text) 75%, var(--apple-secondary));
+}
+.apptify-date-picker .apple-tabs__tab:active:not(:disabled) {
+  color: var(--apple-text);
+}
+.apptify-date-picker .apple-tabs--underline .apple-selection-indicator {
+  background: transparent;
+  border-radius: 0;
+}
+.apptify-date-picker .apple-tabs--underline .apple-selection-indicator::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: var(--apple-text);
+  content: "";
+}
+.apptify-date-picker .apple-tabs--bar {
+  --apple-tab-radius: 12px;
+  overflow: hidden;
+  border-radius: var(--apple-tab-radius);
+  background: var(--apple-surface);
+  box-shadow: var(--apple-shadow);
+}
+.apptify-date-picker .apple-tabs--bar .apple-tabs__list {
+  gap: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-tabs--bar .apple-tabs__tab {
+  z-index: 1;
+  flex: 1 0 auto;
+  padding-inline: 18px;
+}
+.apptify-date-picker .apple-tabs--bar .apple-selection-indicator {
+  z-index: 0;
+  border-radius: var(--apple-tab-radius) var(--apple-tab-radius) 0 0;
+  background: var(--apple-surface);
+}
+.apptify-date-picker .apple-tabs--bar .apple-selection-indicator::before,
+.apptify-date-picker .apple-tabs--bar .apple-selection-indicator::after {
+  position: absolute;
+  bottom: 0;
+  width: var(--apple-tab-radius);
+  height: var(--apple-tab-radius);
+  content: "";
+  background: radial-gradient(
+    circle at var(--apple-tab-corner) 0,
+    transparent var(--apple-tab-radius),
+    var(--apple-surface) var(--apple-tab-radius)
+  );
+}
+.apptify-date-picker .apple-tabs--bar .apple-selection-indicator::before {
+  --apple-tab-corner: 0%;
+  left: calc(-1 * var(--apple-tab-radius));
+}
+.apptify-date-picker .apple-tabs--bar .apple-selection-indicator::after {
+  --apple-tab-corner: 100%;
+  right: calc(-1 * var(--apple-tab-radius));
+}
+.apptify-date-picker .apple-tabs--bar .apple-tabs__viewport {
+  background: var(--apple-surface);
+}
+.apptify-date-picker .apple-tabs--bar .apple-tabs__panel {
+  padding: 20px;
+}
+.apptify-date-picker .apple-tabs__tab:focus-visible {
+  outline-offset: -4px;
+  border-radius: 4px;
+}
+.apptify-date-picker .apple-tabs__panel {
+  min-width: 0;
+  padding-top: 20px;
+}
+.apptify-date-picker .apple-tabs__panel:empty {
+  padding-top: 0;
+}
+.apptify-date-picker .apple-tabs__viewport {
+  overflow: hidden;
+}
+.apptify-date-picker .apple-tabs__viewport > div {
+  position: relative;
+}
+.apptify-date-picker .apple-tab-panel-enter-active,
+.apptify-date-picker .apple-tab-panel-leave-active {
+  transition: transform var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-tab-panel-leave-active {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.apptify-date-picker .apple-tab-panel-enter-from {
+  transform: var(--apple-tab-enter-transform, translateX(100%));
+}
+.apptify-date-picker .apple-tab-panel-leave-from {
+  transform: var(--apple-tab-leave-from, translateX(0));
+}
+.apptify-date-picker .apple-tab-panel-leave-to {
+  transform: var(--apple-tab-leave-to, translateX(-100%));
+}
+
+.apptify-date-picker .apple-breadcrumbs {
+  font-size: 13px;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 8px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.apptify-date-picker .apple-breadcrumbs li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-breadcrumbs a,
+.apptify-date-picker .apple-breadcrumbs button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--apple-fast);
+}
+.apptify-date-picker
+  .apple-breadcrumbs
+  a:hover:where(:not([data-apple-touch] *)),
+.apptify-date-picker
+  .apple-breadcrumbs
+  button:hover:where(:not([data-apple-touch] *)) {
+  text-decoration: none;
+  color: var(--apple-text);
+}
+.apptify-date-picker .apple-breadcrumbs a:active,
+.apptify-date-picker .apple-breadcrumbs button:active {
+  color: var(--apple-accent);
+}
+.apptify-date-picker .apple-breadcrumbs [aria-current] {
+  color: var(--apple-text);
+}
+.apptify-date-picker .apple-breadcrumbs svg {
+  flex-shrink: 0;
+  opacity: 0.5;
+}
+.apptify-date-picker .apple-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  max-width: 100%;
+}
+.apptify-date-picker .apple-pagination__pages > button {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex: 0 0 44px;
+  min-width: 44px;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--apple-secondary);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  transition:
+    background-color var(--apple-fast),
+    color var(--apple-fast);
+}
+.apptify-date-picker
+  .apple-pagination__pages
+  > button:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  background: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-pagination__pages > button:active:not(:disabled) {
+  background: var(--apple-pressed);
+}
+.apptify-date-picker .apple-pagination__pages > button.is-active {
+  background: transparent;
+  color: var(--apple-accent-text);
+}
+.apptify-date-picker
+  .apple-pagination__pages
+  > button.is-active:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  background: transparent;
+}
+.apptify-date-picker
+  .apple-pagination__pages
+  > button.is-active:active:not(:disabled) {
+  background: transparent;
+}
+.apptify-date-picker .apple-pagination__gap {
+  flex: 0 0 12px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 12px;
+  color: var(--apple-secondary);
+}
+
+.apptify-date-picker .apple-pagination__jump {
+  flex: 0 1 160px;
+  min-width: 0;
+  max-width: 100%;
+  margin-inline-start: 8px;
+}
+.apptify-date-picker .apple-pagination__jump .apple-control {
+  padding: 8px 10px;
+  min-height: 44px;
+  text-align: center;
+}
+.apptify-date-picker .apple-pagination__jump .apple-field__message {
+  text-align: start;
+}
+
+.apptify-date-picker .apple-pagination__pages {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  padding: 3px;
+  overflow-x: auto;
+}
+.apptify-date-picker .apple-pagination__indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 8px;
+  background: var(--apple-accent);
+  will-change: transform;
+}
+
+.apptify-date-picker .apple-accordion__item {
+  border-bottom: 1px solid var(--apple-border);
+}
+.apptify-date-picker .apple-accordion__item:first-child {
+  border-top: 1px solid var(--apple-border);
+}
+.apptify-date-picker .apple-accordion__item:first-child {
+  border-start-start-radius: inherit;
+  border-start-end-radius: inherit;
+}
+.apptify-date-picker .apple-accordion__item:last-child {
+  border-end-start-radius: inherit;
+  border-end-end-radius: inherit;
+}
+.apptify-date-picker .apple-accordion__item > h3,
+.apptify-date-picker .apple-accordion__item > h3 > button {
+  border-radius: inherit;
+}
+.apptify-date-picker .apple-accordion__item.is-open > h3 {
+  border-end-start-radius: 0;
+  border-end-end-radius: 0;
+}
+.apptify-date-picker .apple-accordion h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+.apptify-date-picker .apple-accordion h3 button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  min-height: 68px;
+  padding: 18px 0;
+  border: 0;
+  background: transparent;
+  color: var(--apple-text);
+  text-align: left;
+}
+.apptify-date-picker .apple-accordion h3 button span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-accordion h3 svg {
+  flex-shrink: 0;
+  color: var(--apple-secondary);
+  transition: transform var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-accordion__item.is-open h3 svg {
+  transform: rotate(180deg);
+}
+.apptify-date-picker .apple-accordion__content {
+  padding: 0 32px 24px 0;
+  color: var(--apple-secondary);
+  font-size: 14px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-accordion__region {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-accordion__item.is-open .apple-accordion__region {
+  grid-template-rows: 1fr;
+}
+.apptify-date-picker .apple-accordion__clip {
+  min-height: 0;
+  overflow: hidden;
+}
+.apptify-date-picker .apple-accordion h3 button {
+  padding-inline: 12px;
+  transition:
+    color var(--apple-fast),
+    background-color var(--apple-fast);
+}
+.apptify-date-picker
+  .apple-accordion
+  h3
+  button:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  background: var(--apple-hover);
+}
+.apptify-date-picker .apple-accordion h3 button:active:not(:disabled) {
+  background: var(--apple-pressed);
+}
+.apptify-date-picker .apple-accordion__content {
+  padding-left: 12px;
+}
+
+.apptify-date-picker .apple-table {
+  font-size: 13px;
+}
+.apptify-date-picker .apple-table__scroll {
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+.apptify-date-picker .apple-table table {
+  width: 100%;
+  min-width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+.apptify-date-picker .apple-table th {
+  position: relative;
+  box-sizing: border-box;
+  height: 48px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--apple-border);
+  background: var(--apple-surface-alt);
+  font-weight: 500;
+  color: var(--apple-secondary);
+  white-space: nowrap;
+}
+.apptify-date-picker .apple-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--apple-border);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-table tbody tr {
+  transition: background-color var(--apple-fast);
+}
+.apptify-date-picker .apple-table tbody tr.is-selected {
+  background: var(--apple-selected);
+}
+.apptify-date-picker
+  .apple-table
+  tbody
+  tr:hover:where(:not([data-apple-touch] *)) {
+  background: var(--apple-hover);
+}
+.apptify-date-picker .apple-table tbody tr:active {
+  background: var(--apple-pressed);
+}
+.apptify-date-picker .apple-table .apple-table__select {
+  width: 44px;
+  padding: 0 12px;
+}
+.apptify-date-picker .apple-table__select input {
+  display: block;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--apple-accent);
+  cursor: pointer;
+}
+.apptify-date-picker .apple-table__select input:disabled {
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  max-width: 100%;
+  padding: 0 8px;
+  margin-inline: -8px;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  text-align: inherit;
+  transition:
+    color var(--apple-fast),
+    background-color var(--apple-fast);
+}
+.apptify-date-picker
+  .apple-table__sort:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  color: var(--apple-text);
+  background: var(--apple-hover);
+}
+.apptify-date-picker .apple-table__sort:active:not(:disabled) {
+  color: var(--apple-text);
+  background: var(--apple-pressed);
+}
+.apptify-date-picker .apple-table__sort svg {
+  transition: transform var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-table__sort svg.is-ascending {
+  transform: rotate(180deg);
+}
+.apptify-date-picker .apple-table__sort svg.is-unsorted {
+  opacity: 0.35;
+}
+.apptify-date-picker .apple-table td.apple-table__empty {
+  height: 140px;
+  text-align: center;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-table__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 12px;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-table__resize {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: -4px;
+  width: 10px;
+  height: 100%;
+  cursor: col-resize;
+  touch-action: none;
+}
+.apptify-date-picker .apple-table__resize::after {
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 4px;
+  width: 2px;
+  background: var(--apple-border);
+  content: "";
+  transition: background-color var(--apple-fast);
+}
+.apptify-date-picker
+  .apple-table__resize:hover:where(:not([data-apple-touch] *))::after,
+.apptify-date-picker .apple-table__resize:focus-visible::after {
+  background: var(--apple-secondary);
+}
+.apptify-date-picker .apple-table__resize:active::after {
+  background: var(--apple-text);
+}
+.apptify-date-picker .apple-table__resize[aria-disabled] {
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-table--virtual .apple-table__scroll {
+  overflow: auto;
+}
+.apptify-date-picker .apple-table--virtual thead th {
+  position: sticky;
+  z-index: 3;
+  top: 0;
+}
+.apptify-date-picker .apple-table--virtual td {
+  box-sizing: border-box;
+  height: var(--apple-row-height);
+  padding-block: 0;
+}
+.apptify-date-picker .apple-table--virtual .apple-table__cell {
+  max-height: calc(var(--apple-row-height) - 2px);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.apptify-date-picker .apple-table .apple-table__spacer,
+.apptify-date-picker
+  .apple-table
+  .apple-table__spacer:hover:where(:not([data-apple-touch] *)) {
+  background: transparent;
+}
+.apptify-date-picker .apple-table .apple-table__spacer td {
+  height: 0;
+  padding: 0;
+  border: 0;
+}
+
+.apptify-date-picker .apple-tree,
+.apptify-date-picker .apple-tree ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.apptify-date-picker .apple-tree li {
+  border-radius: 0;
+}
+.apptify-date-picker .apple-tree li:focus-visible {
+  outline: none;
+}
+.apptify-date-picker .apple-tree li:focus-visible > .apple-tree__row {
+  outline: 3px solid var(--apple-accent);
+  outline-offset: -2px;
+}
+.apptify-date-picker .apple-tree__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 44px;
+  padding-block: 2px;
+  padding-inline-end: 8px;
+  border-radius: 0;
+  color: var(--apple-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  transition:
+    background-color var(--apple-fast),
+    color var(--apple-fast);
+}
+.apptify-date-picker .apple-tree__row > span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker
+  .apple-tree__row:hover:where(:not([data-apple-touch] *)):not(.is-disabled) {
+  background: var(--apple-hover);
+}
+.apptify-date-picker .apple-tree__row:active:not(.is-disabled) {
+  background: var(--apple-pressed);
+}
+.apptify-date-picker .apple-tree__row.is-selected {
+  color: var(--apple-text);
+  background: var(--apple-selected);
+  font-weight: 550;
+}
+.apptify-date-picker .apple-tree__row.is-selected:active:not(.is-disabled) {
+  background: var(--apple-pressed);
+}
+.apptify-date-picker .apple-tree__row.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-tree__toggle,
+.apptify-date-picker .apple-tree__spacer {
+  display: inline-flex;
+  flex: 0 0 36px;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-tree__toggle svg {
+  transition: transform var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-tree__toggle.is-open svg {
+  transform: rotate(90deg);
+}
+.apptify-date-picker .apple-list {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.apptify-date-picker .apple-list-size > .apple-auto-size__inner,
+.apptify-date-picker .apple-list-size > .apple-auto-size__inner > .apple-list {
+  border-radius: inherit;
+}
+.apptify-date-picker .apple-list > li + li {
+  border-top: 1px solid var(--apple-border);
+}
+.apptify-date-picker .apple-list > li:first-child {
+  border-start-start-radius: inherit;
+  border-start-end-radius: inherit;
+}
+.apptify-date-picker .apple-list > li:last-child {
+  border-end-start-radius: inherit;
+  border-end-end-radius: inherit;
+}
+.apptify-date-picker .apple-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 60px;
+  padding: 12px 2px;
+  border: 0;
+  background: transparent;
+  text-decoration: none;
+  color: var(--apple-text);
+  text-align: left;
+}
+.apptify-date-picker
+  button.apple-list__item:hover:where(:not([data-apple-touch] *)),
+.apptify-date-picker
+  a.apple-list__item:hover:where(:not([data-apple-touch] *)) {
+  background: color-mix(in srgb, var(--apple-text) 3%, transparent);
+}
+.apptify-date-picker .apple-list__item.is-selected > svg {
+  color: var(--apple-accent);
+}
+.apptify-date-picker .apple-list__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.apptify-date-picker .apple-list__label {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-list__description {
+  color: var(--apple-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-list__item > svg {
+  flex-shrink: 0;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-list__item {
+  position: relative;
+  border-radius: inherit;
+  padding-inline: 8px;
+  transition:
+    background-color var(--apple-fast),
+    color var(--apple-fast);
+}
+.apptify-date-picker .apple-list__item:active:not(:disabled) {
+  background: var(--apple-pressed);
+}
+
+.apptify-date-picker .apple-avatar {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: var(--apple-surface-alt);
+  color: var(--apple-secondary);
+  font-weight: 600;
+  line-height: 1;
+}
+.apptify-date-picker .apple-avatar--square {
+  border-radius: 8px;
+}
+.apptify-date-picker .apple-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.apptify-date-picker .apple-avatar-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-left: 7px;
+}
+.apptify-date-picker .apple-avatar-group > .apple-avatar {
+  margin-left: -7px;
+  border: 2px solid var(--apple-surface);
+}
+.apptify-date-picker .apple-avatar-group__more {
+  font-size: 11px;
+  font-weight: 500;
+}
+.apptify-date-picker .apple-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+.apptify-date-picker .apple-badge__value {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  transform: translate(45%, -40%);
+  border: 2px solid var(--apple-surface);
+  border-radius: 20px;
+  background: var(--apple-tone, var(--apple-danger));
+  color: #fff;
+  white-space: nowrap;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 600;
+}
+.apptify-date-picker .apple-badge__value--dot {
+  min-width: 10px;
+  width: 10px;
+  height: 10px;
+  padding: 0;
+}
+.apptify-date-picker .apple-badge--standalone .apple-badge__value {
+  position: static;
+  transform: none;
+}
+.apptify-date-picker .apple-tag {
+  --apple-tag-ink: var(--apple-tone, var(--apple-secondary));
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-self: flex-start;
+  justify-self: start;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 100%;
+  height: auto;
+  min-height: 26px;
+  padding: 3px 10px;
+  border: 1px solid var(--apple-tag-ink);
+  border-radius: 999px;
+  background: transparent;
+  color: color-mix(in srgb, var(--apple-tag-ink) 50%, var(--apple-text) 50%);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  vertical-align: middle;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-tag button {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 26px;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: auto;
+  margin: -3px -10px -3px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0 999px 999px 0;
+  overflow: hidden;
+  background: transparent;
+  color: var(--apple-tag-ink);
+}
+.apptify-date-picker .apple-tag button:focus-visible {
+  outline: 2px solid var(--apple-text);
+  outline-offset: -3px;
+}
+.apptify-date-picker .apple-tag > svg {
+  color: var(--apple-tag-ink);
+}
+.apptify-date-picker
+  .apple-tag
+  button:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  background: rgb(128 128 128 / 8%);
+}
+.apptify-date-picker .apple-tag button:active:not(:disabled) {
+  background: rgb(128 128 128 / 12%);
+}
+.apptify-date-picker .apple-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid
+    color-mix(in srgb, var(--apple-tone) 18%, var(--apple-border));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--apple-tone) 5%, var(--apple-surface));
+  color: var(--apple-text);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.apptify-date-picker .apple-alert > svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: var(--apple-tone);
+}
+.apptify-date-picker .apple-alert__copy {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-alert strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+.apptify-date-picker .apple-alert p {
+  margin: 4px 0 0;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-alert > button {
+  margin: -11px -11px -11px -4px;
+}
+
+.apptify-date-picker .apple-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.apptify-date-picker .apple-progress__track {
+  flex: 1;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--apple-tone, var(--apple-accent));
+  transition: width var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker .apple-progress__value {
+  min-width: 38px;
+  text-align: right;
+  color: var(--apple-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.apptify-date-picker .apple-progress.is-indeterminate .apple-progress__fill {
+  width: 35%;
+  animation: apple-progress 1.4s ease-in-out infinite;
+}
+.apptify-date-picker .apple-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--apple-secondary);
+  vertical-align: middle;
+  font-size: 13px;
+}
+.apptify-date-picker .apple-spinner > svg {
+  flex-shrink: 0;
+  animation: apple-spin 1s linear infinite;
+}
+.apptify-date-picker .apple-skeleton {
+  min-width: 0;
+}
+.apptify-date-picker .apple-skeleton__layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+}
+.apptify-date-picker .apple-skeleton__avatar {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-skeleton__lines {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding-top: 3px;
+}
+.apptify-date-picker .apple-skeleton__lines span {
+  display: block;
+  height: 12px;
+  border-radius: 4px;
+  background: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-skeleton__block {
+  display: block;
+  flex-shrink: 0;
+  background: var(--apple-surface-alt);
+  border-radius: 4px;
+}
+.apptify-date-picker .apple-skeleton__avatar {
+  border-radius: 50%;
+}
+.apptify-date-picker .apple-skeleton--avatar {
+  width: 44px;
+  height: 44px;
+}
+.apptify-date-picker .apple-skeleton--avatar .apple-skeleton__avatar {
+  width: 100%;
+  height: 100%;
+}
+.apptify-date-picker .apple-skeleton--avatar .apple-skeleton__layout {
+  display: block;
+}
+.apptify-date-picker .apple-skeleton--card .apple-skeleton__layout,
+.apptify-date-picker .apple-skeleton--list .apple-skeleton__layout,
+.apptify-date-picker .apple-skeleton--table .apple-skeleton__layout {
+  flex-direction: column;
+}
+.apptify-date-picker .apple-skeleton--card .apple-skeleton__lines {
+  width: 100%;
+}
+.apptify-date-picker .apple-skeleton__image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+}
+.apptify-date-picker .apple-skeleton--image .apple-skeleton__image {
+  height: 100%;
+}
+.apptify-date-picker .apple-skeleton__row {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  padding-block: 8px;
+}
+.apptify-date-picker .apple-skeleton__table-row {
+  display: grid;
+  gap: 24px;
+  width: 100%;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--apple-border);
+}
+.apptify-date-picker .apple-skeleton__table-row .apple-skeleton__block {
+  height: 12px;
+}
+.apptify-date-picker .apple-skeleton__table-row:first-child {
+  background: var(--apple-surface-alt);
+}
+.apptify-date-picker
+  .apple-skeleton__table-row:first-child
+  .apple-skeleton__block {
+  background: var(--apple-border);
+}
+.apptify-date-picker .apple-skeleton.is-animated .apple-skeleton__block {
+  animation: apple-skeleton 1.8s ease-in-out infinite;
+}
+.apptify-date-picker .apple-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 44px 20px;
+  text-align: center;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-empty > svg {
+  margin-bottom: 2px;
+  opacity: 0.7;
+}
+.apptify-date-picker .apple-empty h3 {
+  margin: 0;
+  color: var(--apple-text);
+  font-size: 16px;
+  font-weight: 600;
+}
+.apptify-date-picker .apple-empty p {
+  max-width: 360px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-empty > :last-child:not(h3):not(p):not(svg) {
+  margin-top: 8px;
+}
+.apptify-date-picker .apple-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+  color: var(--apple-secondary);
+  font-size: 12px;
+}
+.apptify-date-picker .apple-divider::before,
+.apptify-date-picker .apple-divider::after {
+  flex: 1;
+  height: 1px;
+  background: var(--apple-border);
+  content: "";
+}
+.apptify-date-picker .apple-divider:empty::after {
+  display: none;
+}
+.apptify-date-picker .apple-divider--vertical {
+  display: inline-flex;
+  align-self: stretch;
+  width: 1px;
+  min-height: 20px;
+  margin: 0 12px;
+  vertical-align: middle;
+  background: var(--apple-border);
+}
+.apptify-date-picker .apple-divider--vertical::before,
+.apptify-date-picker .apple-divider--vertical::after {
+  display: none;
+}
+
+.apptify-date-picker .apple-steps {
+  display: flex;
+  align-items: flex-start;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  overflow-x: auto;
+}
+.apptify-date-picker .apple-steps > li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  flex: 1 0 0;
+  min-width: 0;
+  padding: 0 6px 8px;
+  color: var(--apple-secondary);
+}
+.apptify-date-picker .apple-steps > li:not(:last-child)::after {
+  position: absolute;
+  z-index: 0;
+  top: 22px;
+  left: calc(50% + 27px);
+  right: calc(-50% + 27px);
+  height: 1px;
+  content: "";
+  background: var(--apple-border);
+  pointer-events: none;
+}
+.apptify-date-picker .apple-steps .apple-steps__number {
+  z-index: 1;
+  display: inline-flex;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid var(--apple-accent);
+  border-radius: 50%;
+  background: var(--apple-surface);
+  color: var(--apple-accent);
+  font-size: 13px;
+  transition:
+    color var(--apple-fast),
+    background-color var(--apple-fast),
+    border-color var(--apple-fast);
+}
+.apptify-date-picker .apple-steps__number > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.apptify-date-picker .apple-steps__number .apple-button__content {
+  width: 100%;
+  height: 100%;
+  line-height: 1;
+}
+.apptify-date-picker .apple-steps__symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  min-height: 16px;
+  line-height: 1;
+}
+.apptify-date-picker .apple-steps__symbol > svg {
+  display: block;
+}
+.apptify-date-picker .apple-step-symbol-enter-active,
+.apptify-date-picker .apple-step-symbol-leave-active {
+  transition: opacity var(--apple-fast);
+}
+.apptify-date-picker .apple-step-symbol-enter-from,
+.apptify-date-picker .apple-step-symbol-leave-to {
+  opacity: 0;
+}
+.apptify-date-picker .apple-steps .is-current .apple-steps__number {
+  border-color: var(--apple-accent);
+  background: var(--apple-accent);
+  color: var(--apple-accent-text);
+}
+.apptify-date-picker
+  .apple-steps
+  button.apple-steps__number:hover:where(:not([data-apple-touch] *)):not(
+    :disabled
+  ) {
+  background: var(--apple-accent);
+  color: var(--apple-accent-text);
+}
+.apptify-date-picker
+  .apple-steps
+  button.apple-steps__number:active:not(:disabled) {
+  background: color-mix(in srgb, var(--apple-accent) 80%, black);
+  color: var(--apple-accent-text);
+}
+.apptify-date-picker .apple-steps__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  max-width: 100%;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-steps .apple-steps__label {
+  display: inline;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+  transition: color var(--apple-fast);
+}
+.apptify-date-picker .apple-steps .is-current .apple-steps__label {
+  color: var(--apple-text);
+}
+.apptify-date-picker
+  .apple-steps
+  button.apple-steps__label:hover:where(:not([data-apple-touch] *)):not(
+    :disabled
+  ),
+.apptify-date-picker
+  .apple-steps
+  button.apple-steps__label:active:not(:disabled) {
+  color: var(--apple-accent);
+  background: transparent;
+}
+.apptify-date-picker .apple-steps__copy > span {
+  font-size: 11px;
+  line-height: 1.5;
+}
+.apptify-date-picker .apple-steps > li.is-disabled > span.apple-steps__number,
+.apptify-date-picker .apple-steps > li.is-disabled .apple-steps__copy > span,
+.apptify-date-picker .apple-steps > li.is-disabled strong {
+  opacity: 0.45;
+}
+.apptify-date-picker .apple-timeline {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.apptify-date-picker .apple-timeline > li {
+  position: relative;
+  display: flex;
+  gap: 16px;
+  min-height: 70px;
+  padding-bottom: 26px;
+}
+.apptify-date-picker .apple-timeline > li:last-child {
+  padding-bottom: 0;
+}
+.apptify-date-picker .apple-timeline > li:not(:last-child)::before {
+  position: absolute;
+  top: 15px;
+  bottom: -3px;
+  left: 4px;
+  width: 1px;
+  content: "";
+  background: var(--apple-border);
+}
+.apptify-date-picker .apple-timeline__point {
+  position: relative;
+  flex: 0 0 9px;
+  width: 9px;
+  height: 9px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--apple-tone, var(--apple-accent));
+}
+.apptify-date-picker .apple-timeline__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.apptify-date-picker .apple-timeline time {
+  color: var(--apple-secondary);
+  font-size: 11px;
+}
+.apptify-date-picker .apple-timeline strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.apptify-date-picker .apple-timeline p {
+  margin: 0;
+  color: var(--apple-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-timeline--horizontal {
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+}
+.apptify-date-picker .apple-timeline--horizontal > li {
+  flex: 1 0 150px;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 0 20px 0 0;
+}
+.apptify-date-picker .apple-timeline--horizontal > li:not(:last-child)::before {
+  top: 10px;
+  bottom: auto;
+  left: 15px;
+  width: calc(100% - 18px);
+  height: 1px;
+}
+
+.apptify-date-picker .apple-pull-refresh__indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  color: var(--apple-secondary);
+  font-size: 12px;
+  transition: height var(--apple-duration) var(--apple-ease);
+}
+.apptify-date-picker
+  .apple-pull-refresh[aria-busy="true"]
+  .apple-pull-refresh__indicator
+  svg {
+  animation: apple-spin 1s linear infinite;
+}
+.apptify-date-picker .apple-pull-refresh__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  margin: 8px auto 0;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--apple-accent);
+  font-size: 12px !important;
+}
+.apptify-date-picker .apple-infinite-scroll__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 64px;
+  color: var(--apple-secondary);
+  font-size: 12px;
+}
+.apptify-date-picker .apple-infinite-scroll__status button {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--apple-accent);
+  font-size: 12px;
+}
+.apptify-date-picker .apple-floating-group {
+  position: fixed;
+  z-index: 25;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-height: calc(100dvh - 40px);
+}
+.apptify-date-picker .apple-back-top {
+  position: relative;
+  order: 1000;
+  display: inline-flex;
+  flex: 0 0 44px;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--apple-border);
+  border-radius: 50%;
+  background: var(--apple-surface);
+  color: var(--apple-text);
+  box-shadow: var(--apple-shadow);
+  transition:
+    color var(--apple-fast),
+    background-color var(--apple-fast),
+    border-color var(--apple-fast);
+}
+.apptify-date-picker .apple-back-top--fixed {
+  position: fixed;
+  z-index: 25;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+}
+.apptify-date-picker
+  .apple-back-top:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  background: var(--apple-surface-alt);
+}
+.apptify-date-picker .apple-back-top:active:not(:disabled) {
+  background: var(--apple-pressed);
+}
+.apptify-date-picker .apple-floating-action-enter-active,
+.apptify-date-picker .apple-floating-action-leave-active {
+  transition:
+    transform var(--apple-duration) var(--apple-ease),
+    opacity var(--apple-fast);
+}
+.apptify-date-picker .apple-floating-action-enter-from,
+.apptify-date-picker .apple-floating-action-leave-to {
+  transform: translateY(24px);
+  opacity: 0;
+}
+.apptify-date-picker .apple-statistic {
+  min-width: 0;
+  max-width: 100%;
+}
+.apptify-date-picker .apple-statistic__label {
+  color: var(--apple-secondary);
+  font-size: 13px;
+}
+.apptify-date-picker .apple-statistic__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 8px;
+  color: var(--apple-text);
+  font-variant-numeric: tabular-nums;
+}
+.apptify-date-picker .apple-statistic__value strong {
+  min-width: 0;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.apptify-date-picker .apple-statistic__value > span {
+  color: var(--apple-secondary);
+  font-size: 14px;
+}
+.apptify-date-picker .apple-statistic p {
+  margin: 8px 0 0;
+  color: var(--apple-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@keyframes apple-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes apple-progress {
+  from {
+    transform: translateX(-110%);
+  }
+  to {
+    transform: translateX(390%);
+  }
+}
+@keyframes apple-skeleton {
+  50% {
+    opacity: 0.45;
+  }
+}
+.apptify-date-picker .apple-spinner[data-motion="none"] > svg,
+.apptify-date-picker .apple-progress[data-motion="none"] .apple-progress__fill,
+.apptify-date-picker .apple-skeleton[data-motion="none"] span,
+.apptify-date-picker
+  .apple-pull-refresh[data-motion="none"]
+  .apple-pull-refresh__indicator
+  svg,
+.apptify-date-picker .apple-spinner[data-motion="reduced"] > svg,
+.apptify-date-picker
+  .apple-progress[data-motion="reduced"]
+  .apple-progress__fill,
+.apptify-date-picker .apple-skeleton[data-motion="reduced"] span,
+.apptify-date-picker
+  .apple-pull-refresh[data-motion="reduced"]
+  .apple-pull-refresh__indicator
+  svg {
+  animation: none;
+}
+.apptify-date-picker
+  :is([data-apple-motion="reduced"], [data-apple-motion="none"])
+  :is(
+    .apple-spinner > svg,
+    .apple-progress__fill,
+    .apple-skeleton span,
+    .apple-pull-refresh__indicator svg
+  ) {
+  animation: none !important;
+}
+@media (max-width: 480px) {
+  .apptify-date-picker .apple-tabs__list {
+    gap: 22px;
+  }
+  .apptify-date-picker .apple-pagination {
+    gap: 2px;
+  }
+  .apptify-date-picker .apple-table th,
+  .apptify-date-picker .apple-table td {
+    padding-inline: 12px;
+  }
+  .apptify-date-picker .apple-table__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .apptify-date-picker .apple-table__footer > span {
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .apptify-date-picker .apple-spinner > svg,
+  .apptify-date-picker .apple-progress.is-indeterminate .apple-progress__fill,
+  .apptify-date-picker .apple-skeleton.is-animated span,
+  .apptify-date-picker
+    .apple-pull-refresh[aria-busy="true"]
+    .apple-pull-refresh__indicator
+    svg {
+    animation: none;
+  }
+}
+
+.apptify-date-picker .apple-date-anchor {
+  position: relative;
+  min-width: 0;
+}
+.apptify-date-picker .apple-date-input {
+  min-height: 48px;
+  padding-inline-start: 12px;
+}
+.apptify-date-picker .apple-date-segments {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 0;
+  min-width: 0;
+  padding-block: 7px;
+  font-variant-numeric: tabular-nums;
+}
+.apptify-date-picker .apple-date-segment {
+  box-sizing: content-box;
+  min-width: 2ch;
+  width: 2ch;
+  max-width: 4ch;
+  height: 30px;
+  border: 0;
+  border-radius: 3px;
+  padding: 0 1px;
+  background: transparent;
+  color: var(--apple-text);
+  text-align: center;
+  font: inherit;
+  font-size: 16px;
+  font-variant-numeric: tabular-nums;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.apptify-date-picker .apple-date-segment[data-part="year"] {
+  width: 4ch;
+}
+.apptify-date-picker .apple-date-segment::placeholder {
+  color: var(--apple-secondary);
+  opacity: 1;
+}
+.apptify-date-picker .apple-date-segment:focus {
+  background: rgb(128 128 128 / 12%);
+}
+.apptify-date-picker .apple-date-separator {
+  flex: 0 0 auto;
+  min-width: 0.35ch;
+  white-space: pre;
+  color: var(--apple-secondary);
+  font-size: 16px;
+}
+.apptify-date-picker .apple-date-menu {
+  position: fixed;
+  top: calc(100% + 8px);
+  inset-inline-start: 0;
+  z-index: 45;
+  box-sizing: border-box;
+  width: 332px;
+  max-width: var(--apple-popup-available-width, calc(100dvw - 16px));
+  max-height: var(--apple-popup-available-height, calc(100dvh - 16px));
+  border: 1px solid var(--apple-border);
+  border-radius: 12px;
+  background: rgb(
+    var(--apple-glass-rgb, 255 255 255) /
+    var(--apple-glass-opacity, 0.31372549)
+  );
+  -webkit-backdrop-filter: blur(var(--apple-glass-blur, 12px)) saturate(2);
+  backdrop-filter: blur(var(--apple-glass-blur, 12px)) saturate(2);
+  box-shadow: var(--apple-shadow);
+  color: var(--apple-text);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  isolation: isolate;
+}
+.apptify-date-picker .apple-calendar {
+  padding: 12px;
+}
+.apptify-date-picker .apple-calendar__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 2px;
+  margin-bottom: 8px;
+}
+.apptify-date-picker .apple-calendar__heading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--apple-text);
+  background: transparent;
+  text-align: center;
+  white-space: nowrap;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.apptify-date-picker .apple-calendar__header .apple-field__icon {
+  width: 40px;
+  height: 40px;
+}
+.apptify-date-picker
+  .apple-calendar__header
+  .apple-field__icon:hover:where(:not([data-apple-touch] *)):not(:disabled) {
+  background: rgb(128 128 128 / 8%);
+}
+.apptify-date-picker
+  .apple-calendar__header
+  .apple-field__icon:active:not(:disabled) {
+  background: rgb(128 128 128 / 12%);
+}
+.apptify-date-picker .apple-calendar__week,
+.apptify-date-picker .apple-calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+.apptify-date-picker .apple-calendar__weekdays {
+  margin-bottom: 6px;
+  color: var(--apple-secondary);
+  font-size: 12px;
+  text-align: center;
+  line-height: 28px;
+}
+.apptify-date-picker .apple-calendar__week {
+  margin-block: 2px;
+}
+.apptify-date-picker .apple-calendar__week > span {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+.apptify-date-picker .apple-calendar__day,
+.apptify-date-picker .apple-calendar__choice {
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--apple-text);
+  font: inherit;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color var(--apple-duration-fast, 120ms) ease,
+    color var(--apple-duration-fast, 120ms) ease;
+}
+.apptify-date-picker .apple-calendar__day {
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  max-height: 40px;
+  position: relative;
+}
+.apptify-date-picker .apple-calendar__day.is-other-month {
+  color: var(--apple-secondary);
+}
+.apptify-date-picker
+  .apple-calendar__day:not(.is-selected):hover:where(
+    :not([data-apple-touch] *)
+  ):not(:disabled),
+.apptify-date-picker
+  .apple-calendar__choice:not(.is-selected):hover:where(
+    :not([data-apple-touch] *)
+  ):not(:disabled),
+.apptify-date-picker
+  .apple-calendar__heading:hover:where(:not([data-apple-touch] *)) {
+  background: rgb(128 128 128 / 8%);
+}
+.apptify-date-picker
+  .apple-calendar__day:not(.is-selected):active:not(:disabled),
+.apptify-date-picker .apple-calendar__choice:active:not(:disabled),
+.apptify-date-picker .apple-calendar__heading:active {
+  background: rgb(128 128 128 / 12%);
+}
+.apptify-date-picker .apple-calendar__day.is-selected {
+  color: var(--apple-accent-text);
+  background: var(--apple-accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.apptify-date-picker .apple-calendar__choice.is-selected {
+  color: var(--apple-text);
+  background: transparent;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.apptify-date-picker .apple-calendar__day:disabled {
+  color: var(--apple-secondary);
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-calendar__day:focus-visible,
+.apptify-date-picker .apple-calendar__choice:focus-visible,
+.apptify-date-picker .apple-calendar__heading:focus-visible,
+.apptify-date-picker .apple-calendar__tabs button:focus-visible {
+  outline: 2px solid var(--apple-accent);
+  outline-offset: -2px;
+}
+.apptify-date-picker .apple-calendar__choices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 6px 0;
+}
+.apptify-date-picker .apple-calendar__choice {
+  min-height: 48px;
+}
+/* Keep the shared TabBar indicator and panel motion inside the glass menu. */
+.apptify-date-picker .apple-date-menu .apple-calendar__tabs {
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.apptify-date-picker .apple-date-menu .apple-calendar__tabs .apple-tabs__list {
+  background: rgb(128 128 128 / 8%);
+}
+.apptify-date-picker .apple-date-menu .apple-calendar__tabs .apple-tabs__tab {
+  min-height: 40px;
+  padding: 8px 10px;
+}
+.apptify-date-picker
+  .apple-date-menu
+  .apple-calendar__tabs
+  .apple-tabs__viewport {
+  background: var(--apple-surface);
+}
+.apptify-date-picker .apple-date-menu .apple-calendar__tabs .apple-tabs__panel {
+  padding: 0;
+}
+.apptify-date-picker .apple-calendar__time {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px 16px 12px;
+}
+.apptify-date-picker .apple-calendar__time-labels,
+.apptify-date-picker .apple-calendar__time-wheels {
+  display: flex;
+  gap: 12px;
+}
+.apptify-date-picker .apple-calendar__time-labels {
+  color: var(--apple-secondary);
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+}
+.apptify-date-picker .apple-calendar__time-labels > span,
+.apptify-date-picker .apple-calendar__time-column {
+  flex: 1;
+  min-width: 0;
+}
+.apptify-date-picker .apple-calendar__time-wheels {
+  position: relative;
+}
+.apptify-date-picker .apple-calendar__time-wheels::before {
+  position: absolute;
+  inset: calc(50% - 20px) 0 auto;
+  height: 40px;
+  border-radius: 6px;
+  background: var(--apple-surface-alt);
+  content: "";
+  pointer-events: none;
+}
+.apptify-date-picker .apple-calendar__time-wheel {
+  position: relative;
+  min-width: 0;
+}
+.apptify-date-picker .apple-calendar__time-values {
+  position: relative;
+  height: 200px;
+  padding-block: 80px;
+  overflow: hidden auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  scrollbar-width: none;
+  border: 0;
+  outline: none;
+}
+.apptify-date-picker .apple-calendar__time-values::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.apptify-date-picker .apple-calendar__time-values:focus-visible {
+  outline: 2px solid var(--apple-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.apptify-date-picker .apple-calendar__time-track {
+  position: relative;
+}
+.apptify-date-picker .apple-calendar__time-option {
+  position: absolute;
+  inset-inline: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  border-radius: 6px;
+  color: var(--apple-text);
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+  backface-visibility: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+.apptify-date-picker .apple-calendar__time-option.is-selected {
+  font-weight: 500;
+}
+.apptify-date-picker
+  .apple-calendar__time-option:not(.is-selected):not(.is-disabled):hover:where(
+    :not([data-apple-touch] *)
+  ) {
+  background: rgb(128 128 128 / 8%);
+}
+.apptify-date-picker .apple-calendar__time-option.is-disabled {
+  color: var(--apple-secondary);
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-calendar__footer {
+  background: var(--apple-surface);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--apple-border);
+}
+.apptify-date-picker .apple-calendar__text,
+.apptify-date-picker .apple-calendar__done {
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--apple-accent);
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    color var(--apple-duration-fast, 120ms) ease,
+    background-color var(--apple-duration-fast, 120ms) ease;
+}
+.apptify-date-picker
+  .apple-calendar__text:hover:where(:not([data-apple-touch] *)) {
+  color: color-mix(in srgb, var(--apple-accent) 76%, black);
+}
+.apptify-date-picker .apple-calendar__text:active {
+  color: var(--apple-text);
+}
+.apptify-date-picker .apple-calendar__text:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.apptify-date-picker .apple-calendar__done {
+  margin-inline-start: auto;
+  color: var(--apple-accent-text);
+  background: var(--apple-accent);
+  padding-inline: 16px;
+}
+.apptify-date-picker
+  .apple-calendar__done:hover:where(:not([data-apple-touch] *)) {
+  background: color-mix(in srgb, var(--apple-accent) 90%, black);
+}
+.apptify-date-picker .apple-calendar__done:active {
+  background: color-mix(in srgb, var(--apple-accent) 78%, black);
+}
+.apptify-date-picker .apple-date-pop-enter-active,
+.apptify-date-picker .apple-date-pop-leave-active {
+  transition: none;
+}
+.apptify-date-picker .apple-date-pop-enter-from,
+.apptify-date-picker .apple-date-pop-leave-to {
+  transform: translateY(var(--apple-popup-y, -8px));
+}
+.apptify-date-picker .apple-calendar__viewport {
+  overflow: clip;
+}
+.apptify-date-picker .apple-calendar__pages {
+  position: relative;
+}
+.apptify-date-picker .apple-calendar__page.is-leaving {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+@media (max-width: 380px) {
+  .apptify-date-picker .apple-calendar {
+    padding: 8px;
+  }
+  .apptify-date-picker .apple-calendar__header .apple-field__icon {
+    width: 30px;
+  }
+  .apptify-date-picker .apple-calendar__day {
+    font-size: 13px;
+  }
+  .apptify-date-picker .apple-date-input {
+    padding-inline-start: 8px;
+  }
+}
+
+/* Clip the effect, not its host: focus rings, badges and popovers may overflow. */
+.apptify-date-picker :where([data-apple-ripple-positioned]) {
+  position: relative;
+}
+.apptify-date-picker [data-apple-ripple] {
+  isolation: isolate;
+}
+.apptify-date-picker [data-apple-ripple] > .v-ripple__container {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  contain: strict;
+  pointer-events: none;
+  background: transparent;
+  /* A local negative layer paints above the host background, below all copy,
+     including unwrapped text and SVGs. It cannot escape the isolated host. */
+  z-index: -1;
+  color: rgb(128 128 128);
+}
+.apptify-date-picker
+  [data-apple-ripple]
+  > .v-ripple__container
+  > .v-ripple__animation {
+  border-radius: 50%;
+  background: currentColor;
+  color: inherit;
+  pointer-events: none;
+}
+.apptify-date-picker
+  [data-apple-ripple]
+  > .v-ripple__container
+  > .v-ripple__animation--in {
+  opacity: 0.1;
+}
+.apptify-date-picker
+  [data-apple-ripple]
+  > .v-ripple__container
+  > .v-ripple__animation--out {
+  opacity: 0;
+}
