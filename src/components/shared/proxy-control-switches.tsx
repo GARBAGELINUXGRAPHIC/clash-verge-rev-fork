@@ -85,7 +85,7 @@ const SwitchRow = ({
         justifyContent: 'space-between',
         minHeight: 52,
         py: 1,
-        px: 0.5,
+        px: 1.5,
         gap: 2,
         borderBottom: 1,
         borderColor: 'divider',

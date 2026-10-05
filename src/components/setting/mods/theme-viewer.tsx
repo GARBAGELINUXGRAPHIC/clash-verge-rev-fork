@@ -48,7 +48,7 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
   const textProps = {
     size: 'small',
     autoComplete: 'off',
-    sx: { width: 148 },
+    sx: { width: 132, flexShrink: 0 },
   } as const
 
   const handleChange = (field: keyof typeof theme) => (e: any) => {
@@ -180,7 +180,7 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
     >
       <SettingForm
         sx={{
-          '& > .MuiListItem-root:has(input[type="color"])': {
+          '&& > .MuiListItem-root': {
             flexWrap: 'nowrap',
             '& > .MuiListItemText-root': { flexBasis: 'auto' },
             '& > .apple-field': { width: 132, flexShrink: 0 },
@@ -207,6 +207,7 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
           <Button
             startIcon={<EditRounded />}
             variant="outlined"
+            sx={{ width: 132, flexShrink: 0 }}
             onClick={openCssEditor}
           >
             {t('settings.components.verge.theme.actions.editCss')}

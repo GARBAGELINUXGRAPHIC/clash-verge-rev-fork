@@ -1,11 +1,11 @@
 import { CloseRounded } from '@mui/icons-material'
-import { Box } from '@mui/material'
 import { useLockFn } from 'ahooks'
 import { memo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { closeConnection } from 'tauri-plugin-mihomo-api'
 
 import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { ListRow } from '@/components/base/list-row'
 
 import { RelativeTime } from './connection-relative-time'
 import type { ConnectionRowView } from './connection-row-view'
@@ -82,7 +82,7 @@ export const ConnectionRowItem = memo(
     const showTraffic = row.uploadSpeed >= 100 || row.downloadSpeed >= 100
 
     return (
-      <Box style={itemStyle} sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+      <ListRow style={itemStyle}>
         <div style={contentStyle} onClick={handleShowDetail}>
           <div style={primaryStyle}>{row.host}</div>
           <div style={tagsStyle}>
@@ -112,7 +112,7 @@ export const ConnectionRowItem = memo(
             <CloseRounded fontSize="small" />
           </IconButton>
         )}
-      </Box>
+      </ListRow>
     )
   },
   (prev, next) =>

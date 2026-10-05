@@ -1,11 +1,22 @@
 import { alpha, type Components, type Theme } from '@mui/material'
 
+import { listItemTransition } from '@/components/base/list-row'
+
 export const componentTheme = (theme: Theme): Components<Theme> => {
   const { palette } = theme
   const focusRing = `0 0 0 3px ${alpha(palette.primary.main, 0.24)}`
   const border = `1px solid ${palette.divider}`
 
   return {
+    MuiListItem: {
+      styleOverrides: { root: { transition: listItemTransition } },
+    },
+    MuiListItemButton: {
+      styleOverrides: { root: { transition: listItemTransition } },
+    },
+    MuiTableRow: {
+      styleOverrides: { root: { transition: listItemTransition } },
+    },
     MuiButtonBase: {
       styleOverrides: {
         root: {
@@ -134,8 +145,8 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
               : palette.background.paper,
             0.7,
           ),
-          backdropFilter: 'blur(2px) saturate(200%)',
-          WebkitBackdropFilter: 'blur(2px) saturate(200%)',
+          backdropFilter: 'blur(12px) saturate(200%)',
+          WebkitBackdropFilter: 'blur(12px) saturate(200%)',
           boxShadow: '0 8px 28px rgba(0, 0, 0, 0.14)',
         },
         list: { padding: 5 },
@@ -168,7 +179,11 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
     },
     MuiMenuItem: {
       styleOverrides: {
-        root: { minHeight: 32, borderRadius: 4 },
+        root: {
+          minHeight: 32,
+          borderRadius: 4,
+          transition: listItemTransition,
+        },
       },
     },
     MuiTooltip: {

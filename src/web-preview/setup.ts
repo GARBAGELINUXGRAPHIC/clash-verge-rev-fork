@@ -76,6 +76,49 @@ const profiles: IProfilesConfig = {
   current: 'preview',
   items: [
     { uid: 'preview', name: 'Web Preview', type: 'local', updated: 1767225600 },
+    {
+      uid: 'preview-daily',
+      name: '日常订阅 · 演示',
+      type: 'remote',
+      url: 'https://example.com/daily.yaml',
+      desc: '日常浏览与办公使用的演示订阅',
+      updated: 1767225600,
+      extra: {
+        upload: 2 * 1024 ** 3,
+        download: 28 * 1024 ** 3,
+        total: 200 * 1024 ** 3,
+        expire: 1893456000,
+      },
+      option: { allow_auto_update: true, update_interval: 1440 },
+    },
+    {
+      uid: 'preview-streaming',
+      name: 'Streaming · 演示',
+      type: 'remote',
+      url: 'https://example.com/streaming.yaml',
+      updated: 1767225600,
+      extra: {
+        upload: 5 * 1024 ** 3,
+        download: 85 * 1024 ** 3,
+        total: 100 * 1024 ** 3,
+        expire: 1893456000,
+      },
+    },
+    {
+      uid: 'preview-backup',
+      name: '备用订阅 · 演示',
+      type: 'remote',
+      url: 'https://example.com/backup.yaml',
+      updated: 1767225600,
+      desc: '未提供流量信息的演示订阅',
+    },
+    {
+      uid: 'preview-local',
+      name: '本地配置 · 演示',
+      type: 'local',
+      desc: '用于查看本地配置卡片的显示效果',
+      updated: 1767225600,
+    },
   ],
 }
 const hy2Settings = new Map<string, Hy2Settings>()

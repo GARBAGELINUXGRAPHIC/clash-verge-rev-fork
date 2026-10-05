@@ -1,7 +1,9 @@
 import { styled, Box, Typography } from '@mui/material'
 import { Rule } from 'tauri-plugin-mihomo-api'
 
-const Item = styled(Box)(({ theme }) => ({
+import { ListRow } from '@/components/base/list-row'
+
+const Item = styled(ListRow)(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: '40px minmax(0, 1fr)',
   alignItems: 'center',
@@ -11,7 +13,6 @@ const Item = styled(Box)(({ theme }) => ({
   gap: 16,
   color: theme.palette.text.primary,
   borderBottom: `1px solid ${theme.palette.divider}`,
-  '&:hover': { backgroundColor: theme.palette.action.hover },
 }))
 
 interface Props {

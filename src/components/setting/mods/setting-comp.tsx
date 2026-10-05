@@ -98,7 +98,12 @@ export const SettingItem: React.FC<ItemProps> = ({
       <ListItemButton
         onClick={handleClick}
         disabled={isLoading}
-        sx={{ minHeight: 52, px: 1.5, gap: 2, borderRadius: '8px' }}
+        sx={{
+          minHeight: 52,
+          px: 1.5,
+          gap: 2,
+          borderRadius: '8px',
+        }}
       >
         <ListItemText primary={primary} secondary={secondary} />
         {isLoading ? (
@@ -113,7 +118,7 @@ export const SettingItem: React.FC<ItemProps> = ({
       sx={{
         minHeight: 52,
         py: 1,
-        px: 0.5,
+        px: 1.5,
         gap: 2,
         borderBottom: 1,
         borderColor: 'divider',
@@ -140,7 +145,7 @@ export const SettingList: React.FC<{
           background: 'transparent',
           fontSize: 16,
           fontWeight: 600,
-          px: 0.5,
+          px: 1.5,
           py: 1,
           lineHeight: 2,
         },

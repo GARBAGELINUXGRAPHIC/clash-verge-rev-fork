@@ -14,6 +14,8 @@ import {
 } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { ListRow } from '@/components/base/list-row'
+
 import {
   ConnectionColumnManager,
   type ConnectionColumnOption,
@@ -270,7 +272,7 @@ const RowComponent = memo(
     const snapshot = getSnapshot(row)
 
     return (
-      <div
+      <ListRow
         className="connection-table-row"
         style={{
           display: 'flex',
@@ -307,7 +309,7 @@ const RowComponent = memo(
             {renderCell(column, row, snapshot)}
           </div>
         ))}
-      </div>
+      </ListRow>
     )
   },
   (prev, next) =>
@@ -753,7 +755,6 @@ export const ConnectionTable = (props: Props) => {
   return (
     <>
       <Box
-        sx={{ '& .connection-table-row:hover': { bgcolor: 'action.hover' } }}
         style={{
           display: 'flex',
           flexDirection: 'column',

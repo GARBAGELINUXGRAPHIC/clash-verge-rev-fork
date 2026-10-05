@@ -1,9 +1,10 @@
-import { alpha, styled, Box } from '@mui/material'
+import { alpha, styled } from '@mui/material'
 import type { ReactNode } from 'react'
 
 import type { SearchState } from '@/components/base'
+import { ListRow } from '@/components/base/list-row'
 
-const Item = styled(Box)(({ theme: { palette, breakpoints } }) => ({
+const Item = styled(ListRow)(({ theme: { palette, breakpoints } }) => ({
   display: 'grid',
   gridTemplateColumns: '180px minmax(0, 1fr)',
   alignItems: 'baseline',
@@ -14,7 +15,6 @@ const Item = styled(Box)(({ theme: { palette, breakpoints } }) => ({
   fontSize: '0.875rem',
   fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
   userSelect: 'text',
-  '&:hover': { backgroundColor: palette.action.hover },
   [breakpoints.down('md')]: { gridTemplateColumns: '1fr', gap: 3 },
   '& > div': { minWidth: 0 },
   '& .time': {

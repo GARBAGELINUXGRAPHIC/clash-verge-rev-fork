@@ -33,7 +33,7 @@ export const ProfileBox = styled(AppleCard)<{ component?: 'div' }>(
         'transform 150ms cubic-bezier(0,0,.5,1), border-color 160ms ease, background-color 160ms ease, box-shadow 300ms cubic-bezier(0,0,.5,1)',
       '&:hover': {
         transform: 'scale(1.01)',
-        backgroundColor: alpha(primary.main, selected ? 0.11 : 0.025),
+        backgroundColor: `color-mix(in srgb, ${text.primary} 4%, ${background.paper})`,
       },
       '@media (prefers-reduced-motion: reduce)': {
         transition: 'none',

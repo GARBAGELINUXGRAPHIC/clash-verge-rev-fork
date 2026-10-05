@@ -190,6 +190,7 @@ export const StickyVirtualList = forwardRef(function StickyVirtualListInner<
       const height = body.offsetHeight
       const start = body.offsetTop
       const end = start + height
+      body.style.overflow = 'clip'
       const scroller = scrollParentRef.current
       // Avoid scroll clamping driving the virtualizer on every collapse frame.
       content.style.minHeight = `${(scroller?.scrollTop ?? 0) + (scroller?.clientHeight ?? 0)}px`
@@ -237,6 +238,7 @@ export const StickyVirtualList = forwardRef(function StickyVirtualListInner<
         finishTransitionRef.current = null
         const cleanup = () => {
           for (const animation of animations) animation.cancel()
+          body.style.overflow = ''
           content.style.minHeight = ''
           animationsRef.current = []
         }
@@ -345,7 +347,6 @@ export const StickyVirtualList = forwardRef(function StickyVirtualListInner<
           height: rowVirtualizer.getTotalSize(),
           position: 'relative',
           width: '100%',
-          paddingBottom: 10,
         }}
       >
         <div
@@ -447,7 +448,6 @@ export const StickyVirtualList = forwardRef(function StickyVirtualListInner<
                 left: 0,
                 width: '100%',
                 height: end - start,
-                overflow: 'clip',
               }}
             >
               <div
@@ -479,6 +479,7 @@ export const StickyVirtualList = forwardRef(function StickyVirtualListInner<
           )
         })}
       </div>
+      <div aria-hidden="true" style={{ height: 10 }} />
     </div>
   )
 }) as <TItem>(
