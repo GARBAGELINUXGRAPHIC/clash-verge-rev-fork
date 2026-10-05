@@ -175,6 +175,7 @@
           "startupScript": "Startskript",
           "themeSetting": "Thema-Einstellungen",
           "layoutSetting": "Layout-Einstellungen",
+          "traySetting": "Tray-Einstellungen",
           "misc": "Sonstige Einstellungen",
           "hotkeySetting": "Tastenkombinationseinstellungen"
         }

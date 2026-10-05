@@ -175,6 +175,7 @@
           "startupScript": "起動スクリプト",
           "themeSetting": "テーマ設定",
           "layoutSetting": "レイアウト設定",
+          "traySetting": "トレイ設定",
           "misc": "その他の設定",
           "hotkeySetting": "ホットキー設定"
         }

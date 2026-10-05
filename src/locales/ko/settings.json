@@ -175,6 +175,7 @@
           "startupScript": "시작 스크립트",
           "themeSetting": "테마 설정",
           "layoutSetting": "레이아웃 설정",
+          "traySetting": "트레이 설정",
           "misc": "기타",
           "hotkeySetting": "단축키 설정"
         }

@@ -175,6 +175,7 @@
           "startupScript": "启动脚本",
           "themeSetting": "主题设置",
           "layoutSetting": "界面设置",
+          "traySetting": "托盘设置",
           "misc": "杂项设置",
           "hotkeySetting": "热键设置"
         }

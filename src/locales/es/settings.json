@@ -175,6 +175,7 @@
           "startupScript": "Script de inicio",
           "themeSetting": "Configuración de tema",
           "layoutSetting": "Configuración de la interfaz",
+          "traySetting": "Configuración de la bandeja",
           "misc": "Ajustes varios",
           "hotkeySetting": "Configuración de atajos de teclado"
         }

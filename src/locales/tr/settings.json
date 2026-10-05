@@ -175,6 +175,7 @@
           "startupScript": "Başlangıç Betiği",
           "themeSetting": "Tema Ayarı",
           "layoutSetting": "Düzen Ayarı",
+          "traySetting": "Sistem Tepsisi Ayarları",
           "misc": "Çeşitli",
           "hotkeySetting": "Kısayol Tuşu Ayarı"
         }

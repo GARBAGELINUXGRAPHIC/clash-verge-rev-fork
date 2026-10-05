@@ -7,6 +7,9 @@ export const OverlayScrollbar = () => {
   const targetRef = useRef<HTMLElement | null>(null)
   const dragRef = useRef<{ y: number; scrollTop: number } | null>(null)
   const [geometry, setGeometry] = useState<{
+    opacity: number
+    zIndex: number
+    scale: number
     left: number
     top: number
     height: number
@@ -25,20 +28,44 @@ export const OverlayScrollbar = () => {
       target.clientHeight,
       Math.max(24, target.clientHeight ** 2 / target.scrollHeight),
     )
-    setGeometry({
-      left: rect.left + target.clientLeft + target.clientWidth - 8,
-      top: rect.top + target.clientTop,
+    const scale = rect.height / target.offsetHeight || 1
+    let opacity = 1
+    let zIndex = 1200
+    for (
+      let ancestor: HTMLElement | null = target;
+      ancestor;
+      ancestor = ancestor.parentElement
+    ) {
+      const style = getComputedStyle(ancestor)
+      opacity *= Number(style.opacity)
+      if (ancestor.matches('.MuiModal-root')) zIndex = Number(style.zIndex) + 1
+    }
+    const next = {
+      opacity,
+      zIndex,
+      scale,
+      left: rect.left + (target.clientLeft + target.clientWidth - 8) * scale,
+      top: rect.top + target.clientTop * scale,
       height: target.clientHeight,
       thumbHeight,
       thumbTop:
         (target.scrollTop / (target.scrollHeight - target.clientHeight)) *
         (target.clientHeight - thumbHeight),
-    })
+    }
+    setGeometry((previous) =>
+      previous &&
+      Object.keys(next).every(
+        (key) =>
+          previous[key as keyof typeof next] === next[key as keyof typeof next],
+      )
+        ? previous
+        : next,
+    )
   }
 
   useEffect(() => {
     targetRef.current = null
-    const observer = new ResizeObserver(update)
+    const observer = new ResizeObserver(() => schedule())
     const select = (target: HTMLElement) => {
       if (targetRef.current === target) return
       observer.disconnect()
@@ -47,15 +74,65 @@ export const OverlayScrollbar = () => {
       if (target.firstElementChild) observer.observe(target.firstElementChild)
       update()
     }
+    const isScrollable = (element: HTMLElement) =>
+      element.scrollHeight > element.clientHeight &&
+      element.clientHeight > 0 &&
+      /auto|scroll/.test(getComputedStyle(element).overflowY)
+    const activeScope = () =>
+      Array.from(document.querySelectorAll<HTMLElement>('.MuiModal-root'))
+        .filter(
+          (element) =>
+            element.getAttribute('aria-hidden') !== 'true' &&
+            getComputedStyle(element).visibility !== 'hidden',
+        )
+        .at(-1) ?? document.querySelector<HTMLElement>('.base-page')
+    let frame = 0
+    const refresh = () => {
+      frame = 0
+      const scope = activeScope()
+      if (!scope) {
+        targetRef.current = null
+        update()
+        return
+      }
+      if (
+        !targetRef.current ||
+        !scope.contains(targetRef.current) ||
+        !isScrollable(targetRef.current)
+      ) {
+        const target = [
+          scope,
+          ...scope.querySelectorAll<HTMLElement>('*'),
+        ].find(isScrollable)
+        if (target) select(target)
+        else targetRef.current = null
+      }
+      update()
+      // Track the actual fade/scale/slide, including exit transitions.
+      let ancestor = targetRef.current
+      while (ancestor) {
+        if (
+          ancestor
+            .getAnimations()
+            .some((animation) => animation.playState === 'running')
+        ) {
+          schedule()
+          break
+        }
+        ancestor = ancestor.parentElement
+      }
+    }
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(refresh)
+    }
     const onPointerOver = (event: PointerEvent) => {
       if (dragRef.current) return
+      const scope = activeScope()
       let element = event.target instanceof HTMLElement ? event.target : null
-      while (element) {
-        if (
-          element.scrollHeight > element.clientHeight &&
-          /auto|scroll/.test(getComputedStyle(element).overflowY)
-        ) {
+      while (element && scope?.contains(element)) {
+        if (isScrollable(element)) {
           select(element)
+          schedule()
           return
         }
         element = element.parentElement
@@ -64,31 +141,45 @@ export const OverlayScrollbar = () => {
     const onScroll = (event: Event) => {
       if (
         event.target instanceof HTMLElement &&
-        /auto|scroll/.test(getComputedStyle(event.target).overflowY)
+        activeScope()?.contains(event.target) &&
+        isScrollable(event.target)
       )
         select(event.target)
-      update()
+      schedule()
     }
-    const frame = requestAnimationFrame(() => {
-      const target = Array.from(
-        document.querySelectorAll<HTMLElement>('.base-page *'),
-      ).find(
-        (element) =>
-          element.scrollHeight > element.clientHeight &&
-          /auto|scroll/.test(getComputedStyle(element).overflowY),
+    const mutations = new MutationObserver((records) => {
+      if (
+        records.some(
+          (record) =>
+            !(
+              record.target instanceof Element &&
+              record.target.closest('[data-overlay-scrollbar]')
+            ),
+        )
       )
-      if (target) select(target)
-      else update()
+        schedule()
     })
+    mutations.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['style', 'class', 'aria-hidden'],
+    })
+    document.addEventListener('transitionrun', schedule, true)
+    document.addEventListener('animationstart', schedule, true)
+    schedule()
     document.addEventListener('pointerover', onPointerOver)
     document.addEventListener('scroll', onScroll, true)
-    window.addEventListener('resize', update)
+    window.addEventListener('resize', schedule)
     return () => {
       cancelAnimationFrame(frame)
       observer.disconnect()
+      mutations.disconnect()
+      document.removeEventListener('transitionrun', schedule, true)
+      document.removeEventListener('animationstart', schedule, true)
       document.removeEventListener('pointerover', onPointerOver)
       document.removeEventListener('scroll', onScroll, true)
-      window.removeEventListener('resize', update)
+      window.removeEventListener('resize', schedule)
     }
   }, [pathname])
 
@@ -96,13 +187,17 @@ export const OverlayScrollbar = () => {
 
   return createPortal(
     <div
+      data-overlay-scrollbar
       style={{
         position: 'fixed',
         left: geometry.left,
         top: geometry.top,
         height: geometry.height,
         width: 8,
-        zIndex: 1200,
+        zIndex: geometry.zIndex,
+        opacity: geometry.opacity,
+        transform: `scale(${geometry.scale})`,
+        transformOrigin: 'top left',
       }}
       onWheel={(event) => {
         if (targetRef.current) targetRef.current.scrollTop += event.deltaY
@@ -135,7 +230,7 @@ export const OverlayScrollbar = () => {
           if (!target || !drag) return
           target.scrollTop =
             drag.scrollTop +
-            ((event.clientY - drag.y) *
+            (((event.clientY - drag.y) / geometry.scale) *
               (target.scrollHeight - target.clientHeight)) /
               (geometry.height - geometry.thumbHeight)
         }}

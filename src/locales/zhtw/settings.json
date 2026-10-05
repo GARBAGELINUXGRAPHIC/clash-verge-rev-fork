@@ -175,6 +175,7 @@
           "startupScript": "啟動指令碼",
           "themeSetting": "主題設定",
           "layoutSetting": "介面設定",
+          "traySetting": "系統匣設定",
           "misc": "雜項設定",
           "hotkeySetting": "快速鍵設定"
         }

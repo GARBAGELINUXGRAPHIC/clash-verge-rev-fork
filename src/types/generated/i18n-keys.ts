@@ -523,6 +523,7 @@ export const translationKeys = [
   'settings.components.verge.basic.fields.startupScript',
   'settings.components.verge.basic.fields.themeSetting',
   'settings.components.verge.basic.fields.layoutSetting',
+  'settings.components.verge.basic.fields.traySetting',
   'settings.components.verge.basic.fields.misc',
   'settings.components.verge.basic.fields.hotkeySetting',
   'settings.components.verge.advanced.title',

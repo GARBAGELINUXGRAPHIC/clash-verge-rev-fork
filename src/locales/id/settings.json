@@ -175,6 +175,7 @@
           "startupScript": "Skrip Startup",
           "themeSetting": "Pengaturan Tema",
           "layoutSetting": "Pengaturan Tata Letak",
+          "traySetting": "Pengaturan Tray",
           "misc": "Lain-lain",
           "hotkeySetting": "Pengaturan Pintasan"
         }

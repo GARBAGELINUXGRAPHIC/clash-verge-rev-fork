@@ -175,6 +175,7 @@
           "startupScript": "سكريبت بدء التشغيل",
           "themeSetting": "إعدادات السمة",
           "layoutSetting": "إعدادات التخطيط",
+          "traySetting": "إعدادات علبة النظام",
           "misc": "متفرقات",
           "hotkeySetting": "إعدادات الاختصارات"
         }

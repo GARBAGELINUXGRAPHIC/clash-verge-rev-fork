@@ -67,6 +67,7 @@ const SettingVergeBasic = ({ onError }: Props) => {
   const hotkeyRef = useRef<DialogRef>(null)
   const miscRef = useRef<DialogRef>(null)
   const themeRef = useRef<DialogRef>(null)
+  const trayRef = useRef<DialogRef>(null)
   const layoutRef = useRef<DialogRef>(null)
   const updateRef = useRef<DialogRef>(null)
   const backupRef = useRef<DialogRef>(null)
@@ -87,6 +88,7 @@ const SettingVergeBasic = ({ onError }: Props) => {
       <HotkeyViewer ref={hotkeyRef} />
       <MiscViewer ref={miscRef} />
       <LayoutViewer ref={layoutRef} />
+      <LayoutViewer ref={trayRef} section="tray" />
       <UpdateViewer ref={updateRef} />
       <BackupViewer ref={backupRef} />
 
@@ -271,6 +273,11 @@ const SettingVergeBasic = ({ onError }: Props) => {
       <SettingItem
         onClick={() => layoutRef.current?.open()}
         label={t('settings.components.verge.basic.fields.layoutSetting')}
+      />
+
+      <SettingItem
+        onClick={() => trayRef.current?.open()}
+        label={t('settings.components.verge.basic.fields.traySetting')}
       />
 
       <SettingItem

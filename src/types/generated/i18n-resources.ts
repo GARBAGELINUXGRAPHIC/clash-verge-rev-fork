@@ -760,6 +760,7 @@ export interface TranslationResources {
               themeMode: string
               themeSetting: string
               trayClickEvent: string
+              traySetting: string
             }
             title: string
             trayOptions: {
