@@ -138,7 +138,14 @@ export const SettingList: React.FC<{
   title: string
   children: ReactNode
 }> = ({ title, children }) => (
-  <List sx={{ py: 0, '& > .MuiListItem-root:last-child': { borderBottom: 0 } }}>
+  <List
+    sx={{
+      py: 0,
+      '& > .MuiListItem-root, & > .MuiBox-root > .MuiBox-root': {
+        borderBottom: 0,
+      },
+    }}
+  >
     <ListSubheader
       sx={[
         {
