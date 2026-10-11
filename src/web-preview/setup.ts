@@ -122,6 +122,7 @@ const profiles: IProfilesConfig = {
   ],
 }
 const hy2Settings = new Map<string, Hy2Settings>()
+let nextProfileId = 0
 let proxyChainConfig: string | null = null
 const previewConnections: IConnectionsItem[] = [
   'example.com',
@@ -315,6 +316,65 @@ mockIPC(
     if (command === 'plugin:resources|close' && payload.rid === 9001) return
     if (command === 'plugin:path|join') return payload.paths.join('/')
     if (command === 'get_clash_mode') return config.mode
+    if (command === 'create_profile') {
+      const item = payload.item as Partial<IProfileItem>
+      if (!['remote', 'local'].includes(item.type ?? ''))
+        throw new Error('Web preview: unsupported profile type')
+      if (item.type === 'remote' && !item.url)
+        throw new Error('Web preview: subscription URL is required')
+      profiles.items ??= []
+      profiles.items.push({
+        ...structuredClone(item),
+        uid: `preview-created-${++nextProfileId}`,
+        name: item.name || `${item.type} file`,
+        type: item.type,
+        updated: Math.floor(Date.now() / 1000),
+      })
+      await emit('verge://refresh-profiles', '')
+      return
+    }
+    if (command === 'patch_profiles_config') {
+      const current = payload.profiles.current
+      if (current && !profiles.items?.some((item) => item.uid === current))
+        throw new Error('Web preview: profile not found')
+      Object.assign(profiles, payload.profiles)
+      await emit('verge://refresh-profiles', '')
+      return { status: 'valid' }
+    }
+    if (command === 'delete_profile') {
+      if (profiles.current === payload.index)
+        throw new Error('Web preview: cannot delete the active profile')
+      const index =
+        profiles.items?.findIndex((item) => item.uid === payload.index) ?? -1
+      if (index < 0) throw new Error('Web preview: profile not found')
+      profiles.items!.splice(index, 1)
+      await emit('verge://refresh-profiles', '')
+      return
+    }
+    if (command === 'reorder_profile') {
+      const items = profiles.items ?? []
+      const from = items.findIndex((item) => item.uid === payload.activeId)
+      const to = items.findIndex((item) => item.uid === payload.overId)
+      if (from < 0 || to < 0) throw new Error('Web preview: profile not found')
+      items.splice(to, 0, items.splice(from, 1)[0])
+      await emit('verge://refresh-profiles', '')
+      return
+    }
+    if (command === 'update_profile') {
+      const item = profiles.items?.find((item) => item.uid === payload.index)
+      if (!item || item.type !== 'remote')
+        throw new Error('Web preview: remote profile not found')
+      await emit('profile-update-started', { uid: item.uid })
+      item.updated = Math.floor(Date.now() / 1000)
+      await emit('profile-update-completed', { uid: item.uid })
+      await emit('verge://refresh-profiles', '')
+      return
+    }
+    // The preview only updates UI state; it does not apply a real core config.
+    if (command === 'plugin:mihomo|close_all_connections') {
+      previewConnections.splice(0)
+      return
+    }
     if (command === 'patch_profile') {
       const profile = profiles.items?.find((item) => item.uid === payload.index)
       if (!profile) throw new Error('Web preview: profile not found')

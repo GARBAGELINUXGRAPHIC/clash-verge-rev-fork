@@ -202,102 +202,106 @@ export const BaseSearchBox = ({
 
   return (
     <Tooltip title={effectiveErrorMessage || ''} placement="top-start">
-      <StyledTextField
-        inputRef={inputRef}
-        autoComplete="new-password"
-        hiddenLabel
-        fullWidth
-        size="small"
-        variant="outlined"
-        autoFocus={autoFocus}
-        spellCheck="false"
-        placeholder={placeholder ?? t('shared.placeholders.filter')}
-        value={text}
-        onClick={onClick}
-        onChange={handleChangeText}
-        error={!!effectiveErrorMessage}
-        slotProps={{
-          input: {
-            sx: { pr: 1 },
-            startAdornment: (
-              <SearchRounded sx={{ fontSize: 18, color: 'text.secondary' }} />
-            ),
-            endAdornment: (
-              <Box sx={{ display: 'flex', flexShrink: 0, gap: 0.25 }}>
-                {!!text && (
-                  <Tooltip title={t('shared.placeholders.resetInput')}>
+      <Box sx={{ flex: '1 1 180px', minWidth: 0 }}>
+        <StyledTextField
+          inputRef={inputRef}
+          autoComplete="new-password"
+          hiddenLabel
+          fullWidth
+          size="small"
+          variant="outlined"
+          autoFocus={autoFocus}
+          spellCheck="false"
+          placeholder={placeholder ?? t('shared.placeholders.filter')}
+          value={text}
+          onClick={onClick}
+          onChange={handleChangeText}
+          error={!!effectiveErrorMessage}
+          slotProps={{
+            input: {
+              sx: { pr: 1 },
+              startAdornment: (
+                <SearchRounded sx={{ fontSize: 18, color: 'text.secondary' }} />
+              ),
+              endAdornment: (
+                <Box sx={{ display: 'flex', flexShrink: 0, gap: 0.25 }}>
+                  {!!text && (
+                    <Tooltip title={t('shared.placeholders.resetInput')}>
+                      <IconButton
+                        size="small"
+                        aria-label={t('shared.placeholders.resetInput')}
+                        onClick={handleClearInput}
+                      >
+                        <ClearRounded fontSize="inherit" />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  <Tooltip title={t('shared.placeholders.matchCase')}>
                     <IconButton
                       size="small"
-                      aria-label={t('shared.placeholders.resetInput')}
-                      onClick={handleClearInput}
+                      aria-label={t('shared.placeholders.matchCase')}
+                      aria-pressed={matchCase}
+                      onClick={handleToggleMatchCase}
+                      sx={{
+                        p: 0.5,
+                        bgcolor: matchCase ? 'action.selected' : 'transparent',
+                      }}
                     >
-                      <ClearRounded fontSize="inherit" />
+                      <SvgIcon
+                        component={matchCaseIcon}
+                        {...iconStyle}
+                        aria-label={matchCase ? 'active' : 'inactive'}
+                      />
                     </IconButton>
                   </Tooltip>
-                )}
-                <Tooltip title={t('shared.placeholders.matchCase')}>
-                  <IconButton
-                    size="small"
-                    aria-label={t('shared.placeholders.matchCase')}
-                    aria-pressed={matchCase}
-                    onClick={handleToggleMatchCase}
-                    sx={{
-                      p: 0.5,
-                      bgcolor: matchCase ? 'action.selected' : 'transparent',
-                    }}
-                  >
-                    <SvgIcon
-                      component={matchCaseIcon}
-                      {...iconStyle}
-                      aria-label={matchCase ? 'active' : 'inactive'}
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t('shared.placeholders.matchWholeWord')}>
-                  <IconButton
-                    size="small"
-                    aria-label={t('shared.placeholders.matchWholeWord')}
-                    aria-pressed={matchWholeWord}
-                    onClick={handleToggleMatchWholeWord}
-                    sx={{
-                      p: 0.5,
-                      bgcolor: matchWholeWord
-                        ? 'action.selected'
-                        : 'transparent',
-                    }}
-                  >
-                    <SvgIcon
-                      component={matchWholeWordIcon}
-                      {...iconStyle}
-                      aria-label={matchWholeWord ? 'active' : 'inactive'}
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t('shared.placeholders.useRegex')}>
-                  <IconButton
-                    size="small"
-                    aria-label={t('shared.placeholders.useRegex')}
-                    aria-pressed={useRegularExpression}
-                    onClick={handleToggleUseRegularExpression}
-                    sx={{
-                      p: 0.5,
-                      bgcolor: useRegularExpression
-                        ? 'action.selected'
-                        : 'transparent',
-                    }}
-                  >
-                    <SvgIcon
-                      component={UseRegularExpressionIcon}
-                      {...iconStyle}
-                      aria-label={useRegularExpression ? 'active' : 'inactive'}
-                    />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            ),
-          },
-        }}
-      />
+                  <Tooltip title={t('shared.placeholders.matchWholeWord')}>
+                    <IconButton
+                      size="small"
+                      aria-label={t('shared.placeholders.matchWholeWord')}
+                      aria-pressed={matchWholeWord}
+                      onClick={handleToggleMatchWholeWord}
+                      sx={{
+                        p: 0.5,
+                        bgcolor: matchWholeWord
+                          ? 'action.selected'
+                          : 'transparent',
+                      }}
+                    >
+                      <SvgIcon
+                        component={matchWholeWordIcon}
+                        {...iconStyle}
+                        aria-label={matchWholeWord ? 'active' : 'inactive'}
+                      />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={t('shared.placeholders.useRegex')}>
+                    <IconButton
+                      size="small"
+                      aria-label={t('shared.placeholders.useRegex')}
+                      aria-pressed={useRegularExpression}
+                      onClick={handleToggleUseRegularExpression}
+                      sx={{
+                        p: 0.5,
+                        bgcolor: useRegularExpression
+                          ? 'action.selected'
+                          : 'transparent',
+                      }}
+                    >
+                      <SvgIcon
+                        component={UseRegularExpressionIcon}
+                        {...iconStyle}
+                        aria-label={
+                          useRegularExpression ? 'active' : 'inactive'
+                        }
+                      />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              ),
+            },
+          }}
+        />
+      </Box>
     </Tooltip>
   )
 }

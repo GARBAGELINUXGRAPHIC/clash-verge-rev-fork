@@ -159,6 +159,16 @@ export default defineConfig([
     },
   },
   {
+    files: ['tests/frontend/**/*.ts', 'playwright.config.ts'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+      parserOptions: {
+        projectService: false,
+        project: './tests/frontend/tsconfig.json',
+      },
+    },
+  },
+  {
     files: ['scripts/perf/*.{mjs,mts}'],
     languageOptions: {
       globals: globals.node,

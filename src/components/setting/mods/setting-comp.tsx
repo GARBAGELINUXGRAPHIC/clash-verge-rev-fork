@@ -71,7 +71,7 @@ export const SettingItem: React.FC<ItemProps> = ({
         display: 'flex',
         alignItems: 'center',
         flexWrap: 'wrap',
-        fontSize: 14,
+        typography: 'body1',
         gap: 0.5,
         overflowWrap: 'anywhere',
       }}

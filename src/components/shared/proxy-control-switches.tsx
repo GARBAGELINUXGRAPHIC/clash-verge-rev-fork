@@ -107,9 +107,7 @@ const SwitchRow = ({
         ) : (
           <PauseCircleOutlineRounded sx={{ color: 'text.disabled', mr: 1 }} />
         )}
-        <Typography variant="subtitle1" sx={{ fontWeight: 400, fontSize: 13 }}>
-          {label}
-        </Typography>
+        <Typography variant="body1">{label}</Typography>
         <TooltipIcon
           title={infoTitle}
           icon={SettingsRounded}

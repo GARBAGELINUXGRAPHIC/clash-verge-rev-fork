@@ -920,12 +920,10 @@ const ProfilePage = () => {
             sx={{
               mb: 2.5,
               display: 'grid',
-              overflow: 'hidden',
               // Up to 4 columns until a column would pass 480px, then more; 24px is the 3 gaps from `gap: 1`.
               gridTemplateColumns:
-                'repeat(auto-fill, minmax(clamp(260px, calc((100% - 24px) / 4), 480px), 1fr))',
+                'repeat(auto-fill, minmax(min(100%, clamp(260px, calc((100% - 24px) / 4), 480px)), 1fr))',
               gap: 1,
-              px: 0.5,
             }}
           >
             {profileItems.map((item, index) => (

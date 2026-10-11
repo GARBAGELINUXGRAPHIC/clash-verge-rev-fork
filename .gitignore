@@ -17,3 +17,5 @@ target
 .vfox
 .claude
 .zed
+test-results/
+playwright-report/

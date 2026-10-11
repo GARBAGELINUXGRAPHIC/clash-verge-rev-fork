@@ -77,10 +77,13 @@ export const BaseDialog: React.FC<Props> = ({
     >
       <DialogTitle
         component="div"
-        id={titleId}
+        id={`${titleId}-container`}
         sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
       >
-        <Box sx={{ minWidth: 0, flex: 1, overflowWrap: 'anywhere' }}>
+        <Box
+          id={titleId}
+          sx={{ minWidth: 0, flex: 1, overflowWrap: 'anywhere' }}
+        >
           {typeof title === 'string' ? (
             <Typography component="h2" sx={{ fontSize: 18, fontWeight: 600 }}>
               {title}

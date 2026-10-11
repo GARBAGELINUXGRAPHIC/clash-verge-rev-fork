@@ -169,6 +169,7 @@ const LogPage = () => {
           bgcolor: 'background.default',
           display: 'flex',
           alignItems: 'center',
+          flexWrap: 'wrap',
         }}
       >
         <BaseStyledSelect

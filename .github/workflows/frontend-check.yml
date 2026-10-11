@@ -2,10 +2,13 @@ name: Frontend Check
 
 on:
   pull_request:
+  push:
+    branches: [personal-fork]
   workflow_dispatch:
 
 permissions:
   contents: read
+  pull-requests: read
 
 env:
   HUSKY: 0
@@ -37,6 +40,9 @@ jobs:
               - 'eslint.config.ts'
               - 'tsconfig.json'
               - 'vite.config.*'
+              - 'playwright.config.ts'
+              - 'tests/frontend/**'
+              - '.github/workflows/frontend-check.yml'
 
       - name: Skip if no frontend changes
         if: steps.check_frontend.outputs.frontend != 'true'
@@ -81,6 +87,30 @@ jobs:
       - name: Run tests
         if: steps.check_frontend.outputs.frontend == 'true'
         run: pnpm test
+
+      - name: Check browser tests
+        if: steps.check_frontend.outputs.frontend == 'true'
+        run: |
+          pnpm test:frontend:typecheck
+          pnpm exec eslint -c eslint.config.ts --max-warnings=0 playwright.config.ts tests/frontend
+
+      - name: Install frontend test browsers
+        if: steps.check_frontend.outputs.frontend == 'true'
+        run: pnpm exec playwright install --with-deps chromium webkit
+
+      - name: Run frontend browser regressions
+        if: steps.check_frontend.outputs.frontend == 'true'
+        run: pnpm test:frontend
+
+      - name: Upload frontend failure diagnostics
+        if: failure() && steps.check_frontend.outputs.frontend == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-test-results
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
 
       - name: Run Knip
         if: steps.check_frontend.outputs.frontend == 'true'
