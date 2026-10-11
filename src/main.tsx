@@ -19,7 +19,8 @@ import {
   getPreloadConfig,
 } from './services/preload'
 import { swrConfig } from './services/query-client'
-import { LoadingCacheProvider, ThemeModeProvider } from './services/states'
+import { ThemeModeProvider, UpdateStateProvider } from './services/states'
+import { AppStoreProvider } from './store/app-store'
 import { disableWebViewShortcuts } from './utils/disable-webview-shortcuts'
 
 if (!window.ResizeObserver) {
@@ -38,7 +39,8 @@ disableWebViewShortcuts()
 const initializeApp = (initialThemeMode: 'light' | 'dark') => {
   const contexts = [
     <ThemeModeProvider key="theme" initialState={initialThemeMode} />,
-    <LoadingCacheProvider key="loading" />,
+    <AppStoreProvider key="app-store" />,
+    <UpdateStateProvider key="update" />,
   ]
 
   const root = createRoot(container)

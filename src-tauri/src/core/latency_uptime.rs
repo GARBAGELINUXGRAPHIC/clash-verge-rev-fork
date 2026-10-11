@@ -11,7 +11,12 @@ use serde::Serialize;
 use tauri_plugin_mihomo::models::{Proxies, Proxy, ProxyProviders, ProxyType, VehicleType};
 use tokio::{sync::mpsc, time::sleep};
 
-use crate::{config::Config, core::handle::Handle, module::lightweight, process::AsyncHandler, singleton};
+use crate::{
+    config::Config,
+    core::{handle::Handle, lightweight},
+    process::AsyncHandler,
+    singleton,
+};
 
 const DEFAULT_TEST_URL: &str = "http://cp.cloudflare.com/generate_204";
 const DEFAULT_TIMEOUT_MS: u32 = 10_000;

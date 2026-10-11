@@ -1,14 +1,15 @@
+pub mod auto_backup;
 pub mod autostart;
 pub mod backup;
-pub mod handle;
 pub mod hotkey;
 pub mod latency_uptime;
+pub mod lightweight;
 pub mod listener;
 pub mod logger;
 pub mod manager;
 #[cfg(target_os = "macos")]
 pub mod network_watch;
-pub mod notification;
+pub mod notify;
 pub(crate) mod owner_identity;
 pub mod proxy_control;
 pub mod proxy_view;
@@ -23,3 +24,4 @@ pub mod validate;
 pub mod win_uwp;
 
 pub use self::{latency_uptime::LatencyUptimeMonitor, manager::CoreManager, timer::Timer, updater::SilentUpdater};
+pub use notify::{handle, notification};

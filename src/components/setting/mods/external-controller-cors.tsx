@@ -10,6 +10,7 @@ import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { useClash } from '@/hooks/use-clash'
 import { restartCore } from '@/services/cmds'
+import { mutate } from '@/services/mutate'
 import { showNotice } from '@/services/notice-service'
 
 import { SettingForm } from './setting-comp'
@@ -108,7 +109,10 @@ export const HeaderConfiguration = forwardRef<ClashHeaderConfigingRef>(
             ),
           },
         })
-        await restartCore()
+        await mutate(() => restartCore(), {
+          id: 'restart-core',
+          errorNotice: false,
+        })
         await mutateClash()
       },
       {

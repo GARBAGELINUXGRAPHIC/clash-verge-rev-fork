@@ -14,6 +14,7 @@ import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { useVerge } from '@/hooks/use-verge'
 import { entry_lightweight_mode } from '@/services/cmds'
+import { mutate } from '@/services/mutate'
 import { showNotice } from '@/services/notice-service'
 
 import { SettingForm } from './setting-comp'
@@ -69,7 +70,12 @@ export function LiteModeViewer({ ref }: { ref?: Ref<DialogRef> }) {
           />
           <Button
             variant="outlined"
-            onClick={async () => await entry_lightweight_mode()}
+            onClick={async () =>
+              await mutate(() => entry_lightweight_mode(), {
+                id: 'entry-lightweight-mode',
+                errorNotice: false,
+              })
+            }
           >
             {t('shared.actions.enable')}
           </Button>

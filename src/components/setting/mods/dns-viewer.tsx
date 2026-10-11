@@ -10,7 +10,6 @@ import {
   Tabs,
   Tab,
 } from '@mui/material'
-import { invoke } from '@tauri-apps/api/core'
 import { useLockFn } from 'ahooks'
 import * as yaml from 'js-yaml'
 import type { Ref } from 'react'
@@ -40,6 +39,13 @@ import { AppleOption, AppleSelect } from '@/components/base/apple-select'
 import { useClash } from '@/hooks/use-clash'
 import { useProfiles } from '@/hooks/use-profiles'
 import { useVerge } from '@/hooks/use-verge'
+import {
+  applyDnsConfig,
+  getDnsConfigContent,
+  saveDnsConfig,
+  validateDnsConfig,
+} from '@/services/cmds'
+import { mutate } from '@/services/mutate'
 import { showNotice } from '@/services/notice-service'
 import { useThemeMode } from '@/services/states'
 import type { MonacoEditorInstance } from '@/types/monaco'
@@ -472,10 +478,7 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
 
   const initDnsConfig = useCallback(async () => {
     try {
-      const dnsConfig = await invoke<string | null>(
-        'get_dns_config_content',
-        {},
-      )
+      const dnsConfig = await getDnsConfigContent()
 
       if (dnsConfig !== null) {
         const config = yaml.load(dnsConfig) as any
@@ -524,12 +527,12 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
         config = parsedConfig as Record<string, any>
       }
 
-      await invoke('save_dns_config', { dnsConfig: config })
+      await mutate(() => saveDnsConfig(config), {
+        id: 'save-dns-config',
+        errorNotice: false,
+      })
 
-      const validation = await invoke<ValidationOutcome>(
-        'validate_dns_config',
-        {},
-      )
+      const validation = await validateDnsConfig()
 
       if (validation.status !== 'valid') {
         const errorMsg =
@@ -566,7 +569,10 @@ export function DnsViewer({ ref }: { ref?: Ref<DialogRef> }) {
       }
 
       if (dnsEnabled) {
-        await invoke('apply_dns_config', { apply: true })
+        await mutate(() => applyDnsConfig(true), {
+          id: 'apply-dns-config',
+          errorNotice: false,
+        })
         mutateClash()
       }
 

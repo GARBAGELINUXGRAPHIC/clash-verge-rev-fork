@@ -200,6 +200,7 @@ const values: Record<string, unknown> = {
     })),
   },
   get_pending_failures: [],
+  get_sidecar_failure: { revision: 0, detail: null },
   get_clash_logs: [
     'time="2026-10-04T12:00:00+08:00" level=info msg="Web preview: synthetic configuration loaded"',
     'time="2026-10-04T12:00:01+08:00" level=info msg="[TCP] 127.0.0.1:50000 --> example.com:443 match DomainSuffix using Select Proxy"',
@@ -314,6 +315,13 @@ mockIPC(
     if (command === 'plugin:resources|close' && payload.rid === 9001) return
     if (command === 'plugin:path|join') return payload.paths.join('/')
     if (command === 'get_clash_mode') return config.mode
+    if (command === 'patch_profile') {
+      const profile = profiles.items?.find((item) => item.uid === payload.index)
+      if (!profile) throw new Error('Web preview: profile not found')
+      Object.assign(profile, payload.profile)
+      await emit('verge://refresh-profiles', '')
+      return
+    }
     if (command === 'patch_verge_config') {
       Object.assign(verge, payload.payload)
       await emit('verge://refresh-verge-config', '')

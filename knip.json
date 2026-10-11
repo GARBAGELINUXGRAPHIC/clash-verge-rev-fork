@@ -4,6 +4,11 @@
   "project": ["src/**/*.{js,jsx,ts,tsx,sass,scss}!", "scripts/**/*.{js,mjs}!"],
   "include": ["unlisted", "unresolved", "binaries", "duplicates", "cycles"],
   "ignoreBinaries": ["rustc", "cc"],
+  "ignoreDependencies": ["lint-staged"],
+  "ignoreIssues": {
+    "src/types/generated/**": ["exports", "types"],
+    "src/services/contract.ts": ["exports", "types"]
+  },
   "cycles": {
     "dynamicImports": true
   }

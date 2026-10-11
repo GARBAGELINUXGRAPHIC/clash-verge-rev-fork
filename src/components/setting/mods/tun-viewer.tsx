@@ -15,6 +15,7 @@ import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { useClash } from '@/hooks/use-clash'
 import { enhanceProfiles } from '@/services/cmds'
+import { mutate } from '@/services/mutate'
 import { showNotice } from '@/services/notice-service'
 import getSystem from '@/utils/get-system'
 import { areValidIpCidrs } from '@/utils/network'
@@ -37,7 +38,7 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
 
   const [open, setOpen] = useState(false)
   const [values, setValues] = useState({
-    stack: 'mixed',
+    stack: 'mips',
     device: OS === 'macos' ? 'utun1024' : 'Mihomo',
     autoRoute: true,
     routeExcludeAddress: '',
@@ -67,7 +68,7 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
       const computedAutoRedirect =
         OS === 'linux' ? (nextAutoRoute ? rawAutoRedirect : false) : false
       setValues({
-        stack: clash?.tun.stack ?? 'gvisor',
+        stack: clash?.tun.stack ?? 'mips',
         device: clash?.tun.device ?? (OS === 'macos' ? 'utun1024' : 'Mihomo'),
         autoRoute: nextAutoRoute,
         routeExcludeAddress: (clash?.tun['route-exclude-address'] ?? []).join(
@@ -124,7 +125,10 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
       )
       setOpen(false)
       showNotice.success('settings.modals.tun.messages.applied')
-      void enhanceProfiles().catch((err: any) => {
+      void mutate(() => enhanceProfiles(), {
+        id: 'enhance-profiles',
+        errorNotice: false,
+      }).catch((err: any) => {
         showNotice.error(err)
       })
     } catch (err: any) {
@@ -151,7 +155,7 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
             size="small"
             onClick={async () => {
               const tun: IConfigData['tun'] = {
-                stack: 'gvisor',
+                stack: 'mips',
                 device: OS === 'macos' ? 'utun1024' : 'Mihomo',
                 'auto-route': true,
                 ...(OS === 'linux'
@@ -166,7 +170,7 @@ export function TunViewer({ ref }: { ref?: Ref<DialogRef> }) {
                 mtu: 1500,
               }
               setValues({
-                stack: 'gvisor',
+                stack: 'mips',
                 device: OS === 'macos' ? 'utun1024' : 'Mihomo',
                 autoRoute: true,
                 routeExcludeAddress: '',

@@ -1,11 +1,15 @@
+use super::NoticeStatus;
 use crate::{APP_HANDLE, singleton};
 use smartstring::alias::String;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{
+    Arc,
+    atomic::{AtomicBool, Ordering},
+};
 use tauri::AppHandle;
 use tauri_plugin_mihomo::{Mihomo, MihomoExt as _};
 
-use super::latency_uptime::LatencyUptimeSnapshot;
 use super::notification::{FrontendEvent, NotificationSystem};
+use crate::core::latency_uptime::LatencyUptimeSnapshot;
 
 #[derive(Debug)]
 pub struct Handle {
@@ -37,19 +41,11 @@ impl Handle {
     }
 
     pub fn refresh_clash() {
-        Self::send_event(FrontendEvent::RefreshClash);
+        super::announce(super::Refresh::Clash);
     }
 
     pub fn refresh_verge() {
-        Self::send_event(FrontendEvent::RefreshVerge);
-    }
-
-    pub fn refresh_profiles() {
-        Self::send_event(FrontendEvent::RefreshProfiles);
-    }
-
-    pub fn refresh_proxy_config() {
-        Self::send_event(FrontendEvent::RefreshProxyConfig);
+        super::announce(super::Refresh::Verge);
     }
 
     /// Push a Run State snapshot to the frontend.
@@ -85,13 +81,10 @@ impl Handle {
         Self::send_event(FrontendEvent::LatencyUptimeUpdated { snapshot });
     }
 
-    pub fn notice_message<S: AsRef<str>, M: Into<String>>(status: S, msg: M) {
-        let status_str = status.as_ref();
-        let msg_str = msg.into();
-
+    pub fn notice(status: NoticeStatus, message: impl Into<Arc<str>>) {
         Self::send_event(FrontendEvent::NoticeMessage {
-            status: status_str,
-            message: msg_str,
+            status,
+            message: message.into(),
         });
     }
 
@@ -107,7 +100,7 @@ impl Handle {
         self.is_exiting.load(Ordering::Acquire)
     }
 
-    fn send_event(event: FrontendEvent) {
+    pub(super) fn send_event(event: FrontendEvent) {
         let handle = Self::global();
         if handle.is_exiting() {
             return;

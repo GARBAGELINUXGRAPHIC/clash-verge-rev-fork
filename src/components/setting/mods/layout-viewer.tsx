@@ -20,6 +20,7 @@ import { DEFAULT_HOVER_DELAY } from '@/components/proxy/proxy-group-navigator'
 import { useVerge } from '@/hooks/use-verge'
 import { useWindowDecorations } from '@/hooks/use-window'
 import { copyIconFile, getAppDir } from '@/services/cmds'
+import { mutate } from '@/services/mutate'
 import { showNotice } from '@/services/notice-service'
 import getSystem from '@/utils/get-system'
 
@@ -568,7 +569,10 @@ export const LayoutViewer = forwardRef<
                       })
 
                       if (selected) {
-                        await copyIconFile(`${selected}`, 'common')
+                        await mutate(
+                          () => copyIconFile(`${selected}`, 'common'),
+                          { id: 'copy-icon:common' },
+                        )
                         await initIconPath()
                         onChangeData({ common_tray_icon: true })
                         patchVerge({ common_tray_icon: true })
@@ -620,7 +624,10 @@ export const LayoutViewer = forwardRef<
                         ],
                       })
                       if (selected) {
-                        await copyIconFile(`${selected}`, 'sysproxy')
+                        await mutate(
+                          () => copyIconFile(`${selected}`, 'sysproxy'),
+                          { id: 'copy-icon:sysproxy' },
+                        )
                         await initIconPath()
                         onChangeData({ sysproxy_tray_icon: true })
                         patchVerge({ sysproxy_tray_icon: true })
@@ -672,7 +679,9 @@ export const LayoutViewer = forwardRef<
                         ],
                       })
                       if (selected) {
-                        await copyIconFile(`${selected}`, 'tun')
+                        await mutate(() => copyIconFile(`${selected}`, 'tun'), {
+                          id: 'copy-icon:tun',
+                        })
                         await initIconPath()
                         onChangeData({ tun_tray_icon: true })
                         patchVerge({ tun_tray_icon: true })

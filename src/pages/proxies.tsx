@@ -15,6 +15,7 @@ import {
   useClashConfigData,
 } from '@/providers/app-data-context'
 import { patchClashMode } from '@/services/cmds'
+import { mutate } from '@/services/mutate'
 import { showNotice } from '@/services/notice-service'
 
 const MODES = ['rule', 'global', 'direct'] as const
@@ -35,7 +36,10 @@ const ProxyPage = () => {
   const onChangeMode = useLockFn(async (mode: Mode) => {
     try {
       // patchClashMode 在后端 PATCH 失败时会 reject，需提示用户而非静默失败
-      await patchClashMode(mode)
+      await mutate(() => patchClashMode(mode), {
+        id: 'patch-clash-mode',
+        errorNotice: false,
+      })
       refreshClashConfig()
     } catch (error) {
       showNotice.error(error)
