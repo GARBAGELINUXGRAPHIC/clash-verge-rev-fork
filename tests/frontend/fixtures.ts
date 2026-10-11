@@ -66,6 +66,10 @@ export async function settle(page: Page) {
 export async function openPage(page: Page, path: string) {
   await page.goto(path)
   await expect(page).toHaveTitle('Clash Verge · Web Preview')
+  // Vite's HTML response precedes the dynamic bootstrap and route imports.
+  // A cold CI server needs a separate initial-mount budget; interaction and
+  // geometry assertions still use the normal 7-second expectation timeout.
+  await expect(page.locator('.base-page h1')).toBeVisible({ timeout: 25_000 })
   await settle(page)
 }
 

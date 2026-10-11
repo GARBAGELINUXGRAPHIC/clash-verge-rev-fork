@@ -21,6 +21,12 @@ Playwright starts `pnpm web:preview` on `127.0.0.1:3001`. Locally it may reuse
 the existing preview, which must be this checkout running in `web-preview` mode.
 CI always starts its own server. Keep pnpm at `11.28.3`.
 
+The HTML response does not mean that Vite has finished the dynamic bootstrap
+and route imports. Initial page mounting has a 25-second budget within the
+30-second test timeout. Subsequent interaction/layout assertions keep their
+7-second budget, with no automatic retries or fixed sleeps. CI verifies this
+against a freshly started server rather than relying on a warm local preview.
+
 ## Coverage
 
 61 scenarios run in both engines (122 browser checks), alongside the existing
