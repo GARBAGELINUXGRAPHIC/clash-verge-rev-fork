@@ -114,8 +114,6 @@ export function ProxyProtocol({
     <Box
       component="span"
       sx={{ display: 'contents' }}
-      onClick={contextOnly ? undefined : (event) => event.stopPropagation()}
-      onKeyDown={contextOnly ? undefined : (event) => event.stopPropagation()}
       onContextMenu={(event) => {
         if (!isHy2) return
         event.preventDefault()
@@ -143,6 +141,7 @@ export function ProxyProtocol({
         anchorPosition={position ?? undefined}
         onClose={busy ? undefined : () => setPosition(null)}
         onClick={(event) => event.stopPropagation()}
+        onKeyDown={(event) => event.stopPropagation()}
       >
         {(['original', 'standard', 'conservative', 'aggressive'] as const).map(
           (mode) => (
@@ -278,6 +277,8 @@ function Hy2Dialog({
   return (
     <Dialog
       open
+      onClick={(event) => event.stopPropagation()}
+      onKeyDown={(event) => event.stopPropagation()}
       onClose={busy ? undefined : onClose}
       fullWidth
       maxWidth="xs"
