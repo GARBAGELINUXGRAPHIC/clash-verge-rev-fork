@@ -176,7 +176,7 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
       >
         <ProxyGroupTools
           side={toolsOnLeft ? 'left' : 'right'}
-          url={group.testUrl}
+          url={group.testUrl!}
           groupName={group.name}
           headState={headState!}
           onLocation={() => onLocation(group)}
@@ -276,7 +276,7 @@ export const ProxyRender = memo(function ProxyRender(props: RenderProps) {
     return (
       <ProxyHead
         sx={{ px: 2.5, mt: 0.5, mb: 1 }}
-        url={group.testUrl}
+        url={group.testUrl ?? undefined}
         groupName={group.name}
         headState={headState!}
         onLocation={() => onLocation(group)}

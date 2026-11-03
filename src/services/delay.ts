@@ -12,7 +12,7 @@ import {
 } from '@/types/proxy-view'
 import { debugLog } from '@/utils/debug'
 import { classifyDelay, DEFAULT_DELAY_TIMEOUT } from '@/utils/delay'
-import { isValidLatencyTestUrl } from '@/utils/network'
+import { isValidUrl } from '@/utils/network'
 
 export type DelaySnapshot = {
   of: (member: ResolvedProxyMember) => number
@@ -39,7 +39,7 @@ export interface DelayUpdate {
 const CACHE_TTL = 30 * 60 * 1000
 
 class DelayManager {
-  private cache = new Map<string, DelayUpdate & { url: string }>()
+  private cache = new Map<string, DelayUpdate>()
   private urlMap = new Map<string, string>()
 
   private listenerMap = new Map<string, (update: DelayUpdate) => void>()
@@ -163,13 +163,13 @@ class DelayManager {
   }
 
   setUrl(group: string, url: string) {
-    const previous = this.getUrl(group)
-    if (isValidLatencyTestUrl(url)) {
-      this.urlMap.set(group, url.trim())
-    } else {
+    if (!isValidUrl(url)) {
+      debugLog(`[DelayManager] 拒绝无效测试URL，组: ${group}, URL: ${url}`)
       this.urlMap.delete(group)
+      return
     }
-    if (previous !== this.getUrl(group)) this.queueGroupNotification(group)
+    debugLog(`[DelayManager] 设置测试URL，组: ${group}, URL: ${url}`)
+    this.urlMap.set(group, url)
   }
 
   getUrl(group: string) {
@@ -212,20 +212,19 @@ class DelayManager {
     member: ResolvedProxyMember,
     group: string,
     delay: number,
-    meta?: { elapsed?: number; url?: string },
+    meta?: { elapsed?: number },
   ): DelayUpdate {
     const key = hashKey(member, group)
     debugLog(
       `[DelayManager] 设置延迟，代理: ${member.ref.name}, 组: ${group}, 延迟: ${delay}`,
     )
-    return this.setDelayByKey(key, group, delay, meta)
+    return this.setDelayByKey(key, delay, meta)
   }
 
   private setDelayByKey(
     key: string,
-    group: string,
     delay: number,
-    meta?: { elapsed?: number; url?: string },
+    meta?: { elapsed?: number },
   ): DelayUpdate {
     const update: DelayUpdate = {
       delay,
@@ -233,9 +232,7 @@ class DelayManager {
       updatedAt: Date.now(),
     }
 
-    const url = meta?.url ?? this.getUrl(group)
-    if (url !== this.getUrl(group)) return update
-    this.cache.set(key, { ...update, url })
+    this.cache.set(key, update)
 
     const queue = this.pendingItemUpdates.get(key)
     if (queue) {
@@ -249,15 +246,8 @@ class DelayManager {
   }
 
   getDelayUpdate(member: ResolvedProxyMember, group: string) {
-    const history = this.getHistory(member, group)
     const key = hashKey(member, group)
-    const cached = this.cache.get(key)
-    const entry = cached?.url === this.getUrl(group) ? cached : undefined
-    const latest = history?.at(-1)
-    const updatedAt = latest ? Date.parse(latest.time) : 0
-    if (latest && entry?.delay !== -2 && updatedAt > (entry?.updatedAt ?? 0)) {
-      return { delay: latest.delay || 1e6, updatedAt }
-    }
+    const entry = this.cache.get(key)
     if (!entry) return undefined
 
     if (Date.now() - entry.updatedAt > CACHE_TTL) {
@@ -273,20 +263,17 @@ class DelayManager {
     return update ? update.delay : -1
   }
 
-  getHistory(member: ResolvedProxyMember, group: string) {
-    return memberDetails(member)?.extra?.[this.getUrl(group)]?.history
-  }
-
   getDelayFix(member: ResolvedProxyMember, group: string) {
     if (member.kind === 'unresolved') return -1
-    const history =
-      this.getHistory(member, group) ?? memberDetails(member)?.history
+    const details = memberDetails(member)
     const update = this.getDelayUpdate(member, group)
     if (update && (update.delay >= 0 || update.delay === -2)) {
       return update.delay
     }
 
-    if (history?.length) return history[history.length - 1].delay || 1e6
+    if (details?.history && details.history.length > 0) {
+      return details.history[details.history.length - 1].delay || 1e6
+    }
     return -1
   }
 
@@ -299,7 +286,7 @@ class DelayManager {
           node.providerName ?? null,
           node.name,
         ])
-        this.setDelayByKey(key, group, node.delay)
+        this.setDelayByKey(key, node.delay)
         this.queueGroupNotification(group)
       })
     })
@@ -343,12 +330,12 @@ class DelayManager {
       `[DelayManager] 开始测试延迟，代理: ${name}, 组: ${group}, 超时: ${timeout}ms`,
     )
 
-    const url = this.getUrl(group)
-    this.setDelay(member, group, -2, { url })
+    this.setDelay(member, group, -2)
 
     const startTime = Date.now()
 
     try {
+      const url = this.getUrl(group)
       debugLog(`[DelayManager] 调用API测试延迟，代理: ${name}, URL: ${url}`)
 
       const timeoutPromise = new Promise<ProxyDelay>((resolve) => {
@@ -369,14 +356,14 @@ class DelayManager {
       const elapsed = elapsedTime
       debugLog(`[DelayManager] 延迟测试完成，代理: ${name}, 结果: ${delay}ms`)
 
-      return this.setDelay(member, group, delay, { elapsed, url })
+      return this.setDelay(member, group, delay, { elapsed })
     } catch (error) {
       await new Promise((resolve) => setTimeout(resolve, 500))
       console.error(`[DelayManager] 延迟测试出错，代理: ${name}`, error)
       const delay = 1e6 // error
       const elapsed = Date.now() - startTime
 
-      return this.setDelay(member, group, delay, { elapsed, url })
+      return this.setDelay(member, group, delay, { elapsed })
     }
   }
 

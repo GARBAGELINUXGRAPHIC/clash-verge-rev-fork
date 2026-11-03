@@ -144,7 +144,9 @@ export function ThemeViewer(props: { ref?: React.Ref<DialogRef> }) {
             type="color"
             aria-label={label}
             value={
-              /^#[\da-f]{6}$/i.test(theme[key] || '') ? theme[key] : dt[key]
+              /^#[\da-f]{6}$/i.test(theme[key] || '')
+                ? theme[key]!
+                : (dt[key] ?? undefined)
             }
             onChange={handleChange(key)}
             style={{

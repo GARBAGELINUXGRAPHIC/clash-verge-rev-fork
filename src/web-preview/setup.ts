@@ -75,8 +75,15 @@ const config = {
 const profiles: IProfilesConfig = {
   current: 'preview',
   items: [
-    { uid: 'preview', name: 'Web Preview', type: 'local', updated: 1767225600 },
     {
+      uid: 'preview',
+      file: 'preview.yaml',
+      name: 'Web Preview',
+      type: 'local',
+      updated: 1767225600,
+    },
+    {
+      file: null,
       uid: 'preview-daily',
       name: '日常订阅 · 演示',
       type: 'remote',
@@ -89,9 +96,18 @@ const profiles: IProfilesConfig = {
         total: 200 * 1024 ** 3,
         expire: 1893456000,
       },
-      option: { allow_auto_update: true, update_interval: 1440 },
+      option: {
+        allow_auto_update: true,
+        update_interval: 1440,
+        merge: null,
+        script: null,
+        rules: null,
+        proxies: null,
+        groups: null,
+      },
     },
     {
+      file: null,
       uid: 'preview-streaming',
       name: 'Streaming · 演示',
       type: 'remote',
@@ -105,6 +121,7 @@ const profiles: IProfilesConfig = {
       },
     },
     {
+      file: null,
       uid: 'preview-backup',
       name: '备用订阅 · 演示',
       type: 'remote',
@@ -113,6 +130,7 @@ const profiles: IProfilesConfig = {
       desc: '未提供流量信息的演示订阅',
     },
     {
+      file: null,
       uid: 'preview-local',
       name: '本地配置 · 演示',
       type: 'local',
@@ -193,6 +211,7 @@ const values: Record<string, unknown> = {
     profileId: 'preview',
     nodes: names.map((name, i) => ({
       name,
+      providerName: null,
       groups: [...groups.map((group) => group.name), 'GLOBAL'],
       delay: 40 + i * 7,
       updatedAt: 1767225600,
@@ -277,7 +296,7 @@ mockIPC(
     if (command === 'get_runtime_proxy_chain_config') return proxyChainConfig
     if (command === 'update_proxy_chain_config_in_runtime') {
       proxyChainConfig = payload.proxyChainConfig
-      return
+      return { status: 'valid' }
     }
     if (command === 'get_hy2_settings') {
       const source = payload.source as Hy2Target['source']
@@ -318,19 +337,20 @@ mockIPC(
     if (command === 'get_clash_mode') return config.mode
     if (command === 'create_profile') {
       const item = payload.item as Partial<IProfileItem>
-      if (!['remote', 'local'].includes(item.type ?? ''))
+      if (item.type !== 'remote' && item.type !== 'local')
         throw new Error('Web preview: unsupported profile type')
       if (item.type === 'remote' && !item.url)
         throw new Error('Web preview: subscription URL is required')
       profiles.items ??= []
       profiles.items.push({
         ...structuredClone(item),
+        file: null,
         uid: `preview-created-${++nextProfileId}`,
         name: item.name || `${item.type} file`,
         type: item.type,
         updated: Math.floor(Date.now() / 1000),
       })
-      await emit('verge://refresh-profiles', '')
+      await emit('verge://refresh-profiles', null)
       return
     }
     if (command === 'patch_profiles_config') {
@@ -338,7 +358,7 @@ mockIPC(
       if (current && !profiles.items?.some((item) => item.uid === current))
         throw new Error('Web preview: profile not found')
       Object.assign(profiles, payload.profiles)
-      await emit('verge://refresh-profiles', '')
+      await emit('verge://refresh-profiles', null)
       return { status: 'valid' }
     }
     if (command === 'delete_profile') {
@@ -348,7 +368,7 @@ mockIPC(
         profiles.items?.findIndex((item) => item.uid === payload.index) ?? -1
       if (index < 0) throw new Error('Web preview: profile not found')
       profiles.items!.splice(index, 1)
-      await emit('verge://refresh-profiles', '')
+      await emit('verge://refresh-profiles', null)
       return
     }
     if (command === 'reorder_profile') {
@@ -357,7 +377,7 @@ mockIPC(
       const to = items.findIndex((item) => item.uid === payload.overId)
       if (from < 0 || to < 0) throw new Error('Web preview: profile not found')
       items.splice(to, 0, items.splice(from, 1)[0])
-      await emit('verge://refresh-profiles', '')
+      await emit('verge://refresh-profiles', null)
       return
     }
     if (command === 'update_profile') {
@@ -367,7 +387,7 @@ mockIPC(
       await emit('profile-update-started', { uid: item.uid })
       item.updated = Math.floor(Date.now() / 1000)
       await emit('profile-update-completed', { uid: item.uid })
-      await emit('verge://refresh-profiles', '')
+      await emit('verge://refresh-profiles', null)
       return
     }
     // The preview only updates UI state; it does not apply a real core config.
@@ -379,17 +399,17 @@ mockIPC(
       const profile = profiles.items?.find((item) => item.uid === payload.index)
       if (!profile) throw new Error('Web preview: profile not found')
       Object.assign(profile, payload.profile)
-      await emit('verge://refresh-profiles', '')
+      await emit('verge://refresh-profiles', null)
       return
     }
     if (command === 'patch_verge_config') {
       Object.assign(verge, payload.payload)
-      await emit('verge://refresh-verge-config', '')
+      await emit('verge://refresh-verge-config', null)
       return
     }
     if (command === 'patch_clash_mode') {
       config.mode = payload.payload
-      await emit('verge://refresh-clash-config', '')
+      await emit('verge://refresh-clash-config', null)
       return
     }
     if (
@@ -397,7 +417,7 @@ mockIPC(
       command === 'plugin:mihomo|patch_base_config'
     ) {
       Object.assign(config, payload.payload ?? payload.data)
-      await emit('verge://refresh-clash-config', '')
+      await emit('verge://refresh-clash-config', null)
       return
     }
     if (command === 'plugin:mihomo|select_node_for_group') {

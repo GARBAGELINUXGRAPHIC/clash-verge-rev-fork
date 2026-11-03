@@ -40,7 +40,7 @@ const ProxyPage = () => {
         id: 'patch-clash-mode',
         errorNotice: false,
       })
-      refreshClashConfig()
+      await refreshClashConfig()
     } catch (error) {
       showNotice.error(error)
     }
@@ -48,7 +48,7 @@ const ProxyPage = () => {
 
   useEffect(() => {
     if (normalizedMode && !isMode(normalizedMode)) {
-      onChangeMode('rule')
+      onChangeMode('rule').catch(() => {})
     }
   }, [normalizedMode, onChangeMode])
 

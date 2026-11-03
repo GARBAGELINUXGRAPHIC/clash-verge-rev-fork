@@ -24,7 +24,7 @@ const DEFAULT_INTERVAL_MINUTES: u64 = 5;
 const MAX_CONCURRENCY: usize = 10;
 const LIGHTWEIGHT_POLL_INTERVAL: Duration = Duration::from_secs(5);
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct LatencyUptimeNode {
     pub name: String,
@@ -36,7 +36,7 @@ pub struct LatencyUptimeNode {
     pub samples: u64,
 }
 
-#[derive(Clone, Debug, Serialize)]
+#[derive(Clone, Debug, Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct LatencyUptimeSnapshot {
     pub enabled: bool,

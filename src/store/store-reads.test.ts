@@ -13,7 +13,7 @@ import { createStoreReads } from './store-reads'
 vi.mock('@/services/cmds', () => ({
   getLatencyUptimeSnapshot: vi
     .fn()
-    .mockResolvedValue({ enabled: false, nodes: [] }),
+    .mockResolvedValue({ enabled: false, profileId: null, nodes: [] }),
   getRuntimeState: vi.fn(),
   getPendingFailures: vi.fn().mockResolvedValue([]),
   getSidecarFailure: vi.fn().mockResolvedValue({ revision: 0, detail: null }),
@@ -36,7 +36,7 @@ it('keeps a live uptime event when an older snapshot returns', async () => {
   reads.readLatencyUptime()
   const snapshot = { enabled: true, profileId: 'current', nodes: [] }
   reads.acceptLatencyUptime(snapshot)
-  resolve({ enabled: false, nodes: [] })
+  resolve({ enabled: false, profileId: null, nodes: [] })
   await Promise.resolve()
   expect(state.latencyUptime).toBe(snapshot)
 })

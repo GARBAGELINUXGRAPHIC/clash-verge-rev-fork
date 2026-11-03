@@ -49,6 +49,7 @@ type ProxyGroupOption = ProxyGroupView
 interface ProxyGroupsChainProps {
   mode: string
   chainConfigData?: string | null
+  onExitChainMode?: () => void
   availableGroups: any[]
   activeSelectedGroup: string | null
   showScrollTop: boolean
@@ -199,6 +200,7 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
   const {
     mode,
     chainConfigData,
+    onExitChainMode,
     availableGroups,
     activeSelectedGroup,
     showScrollTop,
@@ -274,19 +276,25 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
     message: string
   }>({ open: false, message: '' })
 
-  const handleGroupSelect = (groupName: string) => {
-    onGroupSelect(groupName)
-
+  const handleGroupSelect = async (groupName: string) => {
     if (mode === 'rule') {
-      mutate(() => updateProxyChainConfigInRuntime(null), {
-        id: 'update-proxy-chain-runtime',
-        errorNotice: false,
-      })
+      try {
+        const result = await mutate(
+          () => updateProxyChainConfigInRuntime(null),
+          {
+            id: 'update-proxy-chain-runtime',
+          },
+        )
+        if (!result.ok) return
+      } catch {
+        return
+      }
       localStorage.removeItem('proxy-chain-group')
       localStorage.removeItem('proxy-chain-exit-node')
       localStorage.removeItem('proxy-chain-items')
       setProxyChain([])
     }
+    onGroupSelect(groupName)
   }
 
   const handleCloseDuplicateWarning = useCallback(() => {
@@ -407,6 +415,7 @@ export function ProxyGroupsChain(props: ProxyGroupsChainProps) {
             chainConfigData={chainConfigData}
             mode={mode}
             selectedGroup={activeSelectedGroup}
+            onExitChainMode={onExitChainMode}
           />
         </Box>
       </Box>

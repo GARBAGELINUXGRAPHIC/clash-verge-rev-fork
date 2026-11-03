@@ -24,7 +24,7 @@ export interface AppStoreState {
 }
 
 export const initialAppStoreState: AppStoreState = {
-  latencyUptime: { enabled: false, nodes: [] },
+  latencyUptime: { enabled: false, profileId: null, nodes: [] },
   runState: null,
   pendingFailures: [],
   sidecarFailure: null,
@@ -69,6 +69,7 @@ const withLoading = (
       next.delete(uid)
     }
   }
+  if (next.size === state.profileUpdates.loading.size) return state
   return {
     ...state,
     profileUpdates: { ...state.profileUpdates, loading: next },

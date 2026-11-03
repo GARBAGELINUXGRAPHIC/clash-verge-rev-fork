@@ -20,9 +20,10 @@ export const ProxyUptime = ({ member }: Props) => {
   const node =
     nodesByKey.get(latencyUptimeNodeKey(proxyName, providerName)) ??
     (!providerName ? nodesByName.get(proxyName) : undefined)
-  if (!node || node.samples < 1) return null
+  const uptime = node?.uptime
+  if (!node || uptime == null || node.samples < 1) return null
 
-  const percentage = `${(node.uptime * 100).toFixed(2)}%`
+  const percentage = `${(uptime * 100).toFixed(2)}%`
 
   return (
     <Box
@@ -30,9 +31,9 @@ export const ProxyUptime = ({ member }: Props) => {
       title={`Uptime ${percentage} (${node.samples})`}
       sx={({ palette }) => {
         const color =
-          node.uptime >= 0.99
+          uptime >= 0.99
             ? palette.success.main
-            : node.uptime >= 0.95
+            : uptime >= 0.95
               ? palette.warning.main
               : palette.error.main
 

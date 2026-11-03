@@ -17,13 +17,13 @@ import { useTranslation } from 'react-i18next'
 
 import { BaseSearchBox } from '@/components/base'
 import { AppleIconButton as IconButton } from '@/components/base/apple-button'
+import { AppleInput as TextField } from '@/components/base/apple-input'
 import { useVerge } from '@/hooks/use-verge'
 import delayManager from '@/services/delay'
 import { showNotice } from '@/services/notice-service'
 import { debugLog } from '@/utils/debug'
-import { isValidLatencyTestUrl } from '@/utils/network'
+import { isValidUrl } from '@/utils/network'
 
-import { ProxyTestUrlInput } from './proxy-test-url-input'
 import type { ProxySortType } from './use-filter-sort'
 import type { HeadState } from './use-head-state'
 
@@ -74,10 +74,7 @@ export const ProxyHead = ({
     'http://cp.cloudflare.com/generate_204'
 
   useEffect(() => {
-    delayManager.setUrl(
-      groupName,
-      testUrl?.trim() || url?.trim() || defaultLatencyUrl,
-    )
+    delayManager.setUrl(groupName, testUrl?.trim() || url || defaultLatencyUrl)
   }, [groupName, testUrl, defaultLatencyUrl, url])
 
   return (
@@ -102,7 +99,7 @@ export const ProxyHead = ({
             debugLog(`[ProxyHead] 使用自定义测试URL: ${testUrl}`)
             onHeadState({ textState: 'url' })
           }
-          if (testUrl?.trim() && !isValidLatencyTestUrl(testUrl)) {
+          if (testUrl?.trim() && !isValidUrl(testUrl)) {
             showNotice.warning('proxies.feedback.warnings.invalidTestUrl')
             return
           }
@@ -193,8 +190,7 @@ export const ProxyHead = ({
       )}
 
       {textState === 'url' && (
-        <ProxyTestUrlInput
-          name={groupName}
+        <TextField
           autoComplete="new-password"
           autoFocus={autoFocus}
           hiddenLabel
@@ -203,7 +199,7 @@ export const ProxyHead = ({
           size="small"
           variant="outlined"
           placeholder={t('proxies.page.placeholders.delayCheckUrl')}
-          onCommit={(testUrl) => onHeadState({ testUrl })}
+          onChange={(e) => onHeadState({ testUrl: e.target.value })}
           sx={{ ml: 0.5, flex: '1 1 auto', input: { py: 0.65, px: 1 } }}
         />
       )}

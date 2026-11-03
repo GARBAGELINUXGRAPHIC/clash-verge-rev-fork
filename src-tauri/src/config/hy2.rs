@@ -15,14 +15,14 @@ use crate::{
     utils::{dirs, help},
 };
 
-#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Deserialize, Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct Hy2Target {
     pub profile: Option<String>,
     pub source: ProxyNodeSource,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, specta::Type)]
 #[serde(tag = "mode", rename_all = "camelCase")]
 pub enum Hy2Congestion {
     Standard,
@@ -31,7 +31,7 @@ pub enum Hy2Congestion {
     Brutal { up: f64, down: f64 },
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, specta::Type)]
 #[serde(rename_all = "camelCase")]
 pub struct Hy2Settings {
     pub congestion: Hy2Congestion,

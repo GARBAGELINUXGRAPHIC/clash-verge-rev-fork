@@ -18,6 +18,7 @@ use std::{
 
 /// Merges one selection pair into fresh backend state to avoid stale-list overwrites.
 #[tauri::command]
+#[specta::specta]
 pub async fn record_selected_node(group_name: String, node: String) -> CmdResult<()> {
     crate::config::profiles::record_selected_node(&group_name, &node)
         .await
@@ -25,6 +26,7 @@ pub async fn record_selected_node(group_name: String, node: String) -> CmdResult
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn forget_selected_node(group_name: String) -> CmdResult<()> {
     crate::config::profiles::forget_selected_node(&group_name)
         .await
@@ -34,13 +36,14 @@ pub async fn forget_selected_node(group_name: String) -> CmdResult<()> {
 static TRAY_SYNC_RUNNING: AtomicBool = AtomicBool::new(false);
 static TRAY_SYNC_PENDING: AtomicBool = AtomicBool::new(false);
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, specta::Type)]
 pub struct Hy2SettingsResponse {
     target: crate::config::hy2::Hy2Target,
     settings: Option<crate::config::hy2::Hy2Settings>,
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn get_hy2_settings(source: crate::core::proxy_view::ProxyNodeSource) -> CmdResult<Hy2SettingsResponse> {
     use crate::config::hy2;
     let profile = Config::profiles()
@@ -60,6 +63,7 @@ pub async fn get_hy2_settings(source: crate::core::proxy_view::ProxyNodeSource) 
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn set_hy2_settings(
     target: crate::config::hy2::Hy2Target,
     settings: Option<crate::config::hy2::Hy2Settings>,
@@ -146,37 +150,27 @@ fn runtime_group_scopes(config: Option<&Mapping>) -> BTreeMap<String, GroupScope
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn get_proxy_view() -> CmdResult<ProxyViewV1> {
-    proxy_view(None).await
-}
-
-pub(crate) async fn proxy_view(provider_timeout: Option<std::time::Duration>) -> CmdResult<ProxyViewV1> {
     let runtime = Config::runtime().await;
     let latest_runtime = runtime.latest_arc();
     let runtime_group_order = runtime_group_order(latest_runtime.config.as_ref());
     let group_scopes = runtime_group_scopes(latest_runtime.config.as_ref());
 
     let mihomo = Handle::mihomo();
-    let (proxies, providers) = tokio::join!(mihomo.get_proxies(), async {
-        match provider_timeout {
-            Some(timeout) => tokio::time::timeout(timeout, mihomo.get_proxy_providers())
-                .await
-                .ok()
-                .and_then(Result::ok),
-            None => mihomo.get_proxy_providers().await.ok(),
-        }
-    });
+    let (proxies, providers) = tokio::join!(mihomo.get_proxies(), mihomo.get_proxy_providers(),);
     let proxies = proxies.stringify_err()?;
 
     Ok(ProxyViewBuilder::build(ProxyViewInput {
         runtime_group_order,
         group_scopes,
         proxies,
-        providers,
+        providers: providers.ok(),
     }))
 }
 
 #[tauri::command]
+#[specta::specta]
 pub async fn sync_tray_proxy_selection() -> CmdResult<()> {
     if TRAY_SYNC_RUNNING
         .compare_exchange(false, true, Ordering::AcqRel, Ordering::Acquire)

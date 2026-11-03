@@ -13,18 +13,15 @@ const node = (memberIndex: number, delay: number, name = `${memberIndex}`) =>
       kind: 'node',
       ref: { kind: 'node', name, recordId: `${memberIndex}` },
       node: {
-        recordId: `${memberIndex}`,
         history: [{ delay }],
-        extra: {
-          'http://cp.cloudflare.com/generate_204': {
-            alive: true,
-            history: [{ time: new Date(0).toISOString(), delay }],
-          },
+        source: {
+          kind: 'provider',
+          providerName: `${memberIndex}`,
+          proxyName: name,
         },
-        source: { kind: 'provider', providerName: `${memberIndex}` },
       },
     },
-  }) as unknown as ResolvedMemberOccurrence
+  }) as ResolvedMemberOccurrence
 
 afterEach(() => vi.restoreAllMocks())
 
