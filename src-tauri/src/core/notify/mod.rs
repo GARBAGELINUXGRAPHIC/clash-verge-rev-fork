@@ -7,6 +7,7 @@ pub mod notification;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, specta::Type)]
 pub enum NoticeStatus {
     #[serde(rename = "info")]
+    #[cfg_attr(not(test), expect(dead_code, reason = "Retained for the frontend notice contract"))]
     Info,
     #[serde(rename = "import_sub_url::ok")]
     ImportSubUrlOk,

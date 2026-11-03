@@ -23,5 +23,5 @@ pub mod updater;
 pub mod validate;
 pub mod win_uwp;
 
-pub use self::{latency_uptime::LatencyUptimeMonitor, manager::CoreManager, timer::Timer, updater::SilentUpdater};
+pub use self::{latency_uptime::LatencyUptimeMonitor, manager::CoreManager, timer::Timer, updater::AppUpdater};
 pub use notify::{handle, notification};

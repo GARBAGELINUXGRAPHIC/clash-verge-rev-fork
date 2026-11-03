@@ -1,7 +1,7 @@
 use super::CmdResult;
 use crate::{
     cmd::StringifyErr as _,
-    core::{SilentUpdater, updater::DownloadEvent},
+    core::{AppUpdater, updater::DownloadEvent},
     feat,
     utils::dirs,
 };
@@ -63,7 +63,7 @@ pub async fn install_update(
     on_event: Channel<DownloadEvent>,
 ) -> CmdResult<bool> {
     let version: String = version.into();
-    SilentUpdater::global()
+    AppUpdater::global()
         .install_update(&app_handle, &version, |event| {
             let _ = on_event.send(event);
         })
@@ -74,7 +74,7 @@ pub async fn install_update(
 #[tauri::command]
 #[specta::specta]
 pub fn cancel_update_download() {
-    SilentUpdater::global().cancel_download();
+    AppUpdater::global().cancel_download();
 }
 
 #[tauri::command]
