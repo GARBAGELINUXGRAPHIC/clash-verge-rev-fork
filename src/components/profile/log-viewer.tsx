@@ -1,8 +1,8 @@
+import { CloseRounded } from '@mui/icons-material'
 import {
   Box,
   Chip,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Typography,
@@ -10,7 +10,7 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { BaseEmpty } from '@/components/base'
-import { AppleButton as Button } from '@/components/base/apple-button'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 
 interface Props {
   open: boolean
@@ -25,7 +25,17 @@ export const LogViewer = (props: Props) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{t('profiles.modals.logViewer.title')}</DialogTitle>
+      <DialogTitle sx={{ pr: 8, position: 'relative' }}>
+        {t('profiles.modals.logViewer.title')}
+        <IconButton
+          size="small"
+          aria-label={t('shared.actions.close')}
+          onClick={onClose}
+          sx={{ position: 'absolute', right: 24, top: 20 }}
+        >
+          <CloseRounded />
+        </IconButton>
+      </DialogTitle>
 
       <DialogContent
         sx={{
@@ -74,12 +84,6 @@ export const LogViewer = (props: Props) => {
 
         {logInfo.length === 0 && <BaseEmpty />}
       </DialogContent>
-
-      <DialogActions>
-        <Button onClick={onClose} variant="outlined">
-          {t('shared.actions.close')}
-        </Button>
-      </DialogActions>
     </Dialog>
   )
 }

@@ -171,10 +171,8 @@ export function ClashCoreViewer({ ref }: { ref?: Ref<DialogRef> }) {
         overflowY: 'auto',
         userSelect: 'text',
       }}
-      disableOk
-      cancelBtn={t('shared.actions.close')}
+      disableFooter
       onClose={() => setOpen(false)}
-      onCancel={() => setOpen(false)}
     >
       <List
         disablePadding
@@ -196,6 +194,10 @@ export function ClashCoreViewer({ ref }: { ref?: Ref<DialogRef> }) {
               borderBottom: 1,
               borderColor: 'divider',
               '&:last-child': { borderBottom: 0 },
+              '&, &.Mui-selected': {
+                bgcolor: 'transparent',
+                '&:hover, &.Mui-focusVisible': { bgcolor: 'transparent' },
+              },
             }}
           >
             <Radio

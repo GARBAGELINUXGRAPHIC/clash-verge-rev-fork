@@ -1,5 +1,6 @@
 import {
   CloseFullscreenRounded,
+  CloseRounded,
   ContentPasteRounded,
   FormatPaintRounded,
   OpenInFullRounded,
@@ -201,7 +202,17 @@ export const EditorViewer = ({
         paper: { sx: { height: 'min(820px, calc(100dvh - 48px))' } },
       }}
     >
-      <DialogTitle>{resolvedTitle}</DialogTitle>
+      <DialogTitle sx={{ pr: 8, position: 'relative' }}>
+        {resolvedTitle}
+        <IconButton
+          size="small"
+          aria-label={t('shared.actions.close')}
+          onClick={handleClose}
+          sx={{ position: 'absolute', right: 24, top: 20 }}
+        >
+          <CloseRounded />
+        </IconButton>
+      </DialogTitle>
 
       <DialogContent
         sx={{
@@ -317,9 +328,11 @@ export const EditorViewer = ({
             {t('shared.actions.resetToDefault')}
           </Button>
         )}
-        <Button onClick={handleClose} variant="outlined">
-          {t(readOnly ? 'shared.actions.close' : 'shared.actions.cancel')}
-        </Button>
+        {!readOnly && (
+          <Button onClick={handleClose} variant="outlined">
+            {t('shared.actions.cancel')}
+          </Button>
+        )}
         {!readOnly && (
           <Button
             onClick={() => {

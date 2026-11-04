@@ -611,18 +611,22 @@ export interface TranslationResources {
       protocol: {
         aggressive: string
         aggressiveUntilMidnight: string
+        bandwidthRange: string
         brutalAndMore: string
         congestion: string
         conservative: string
         conservativeUntilMidnight: string
+        current: string
         custom: string
         download: string
+        downloadLabel: string
         duration: string
         expiresAt: string
         halfHour: string
         invalidExpiry: string
         keepExpiry: string
         midnight: string
+        midnightShort: string
         oneDay: string
         oneHour: string
         original: string
@@ -633,6 +637,7 @@ export interface TranslationResources {
         title: string
         unavailable: string
         upload: string
+        uploadLabel: string
       }
     }
     rules: {

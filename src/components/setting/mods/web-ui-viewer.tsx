@@ -138,10 +138,8 @@ export function WebUIViewer({ ref }: { ref?: Ref<DialogRef> }) {
         overflowY: 'auto',
         userSelect: 'text',
       }}
-      cancelBtn={t('shared.actions.close')}
-      disableOk
+      disableFooter
       onClose={() => setOpen(false)}
-      onCancel={() => setOpen(false)}
     >
       {!editing && webUIList.length === 0 && <BaseEmpty />}
 

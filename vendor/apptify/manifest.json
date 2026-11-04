@@ -14,6 +14,14 @@
     "src/styles/base.css": "f124496025d4da23202b1025bf29b3231fe96268a3840ded4b00e1bf442abcaf",
     "src/styles/forms.css": "4474eb5482b7ad4e8601a7b6b8963068e87e1508b18522f314dd2a2bd3e4a42d",
     "src/styles/content.css": "c38a3e24a4f297012145f226939c4c908608df8b72020b62c19827ad292c73d4",
-    "src/styles/date-picker.css": "562cf38c66c8a0ce932c68f665f5955334a11380676988efec2d5fd9e9b600f6"
+    "src/styles/date-picker.css": "562cf38c66c8a0ce932c68f665f5955334a11380676988efec2d5fd9e9b600f6",
+    "src/components/slider.ts": "9dffb81ea47911c87310676a8b75bc948ff223e9d7227aafe6e33a30a40c594e",
+    "src/styles/slider.css": "251b374a54bad3f95268e2e510563728f2886448a16b2c69f8d54b2895a49e73"
+  },
+  "sliderSource": {
+    "component": "Apptify src/components/forms.ts: AppleSlider and field helpers, unchanged excerpts",
+    "componentSha256": "90ae25b7c2200b8292a7f94e8219a553a1c834472a5e34480ffbb6cccf270825",
+    "styles": "Apptify src/styles/forms.css: slider and field rules, unchanged excerpts",
+    "stylesSha256": "35bfbe5a1d729d89dddc9c62882d1971cc12b0859131d46d356e044d20bdcae5"
   }
 }

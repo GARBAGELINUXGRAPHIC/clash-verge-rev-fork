@@ -1,4 +1,9 @@
-import { Button, ButtonGroup } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+
+import {
+  AppleSegment,
+  AppleSegmentedControl,
+} from '@/components/base/apple-segmented-control'
 
 interface Props {
   value?: string
@@ -7,37 +12,23 @@ interface Props {
 
 export const DnsModeSwitch = (props: Props) => {
   const { value, onChange } = props
+  const { t } = useTranslation()
 
   return (
-    <ButtonGroup size="small" sx={{ my: '4px' }}>
-      <Button
-        variant={!value ? 'contained' : 'outlined'}
-        onClick={() => onChange?.('')}
-        sx={{ textTransform: 'capitalize' }}
-      >
-        Auto
-      </Button>
-      <Button
-        variant={value === 'disabled' ? 'contained' : 'outlined'}
-        onClick={() => onChange?.('disabled')}
-        sx={{ textTransform: 'capitalize' }}
-      >
-        Disabled
-      </Button>
-      <Button
-        variant={value === 'native' ? 'contained' : 'outlined'}
-        onClick={() => onChange?.('native')}
-        sx={{ textTransform: 'capitalize' }}
-      >
-        Native
-      </Button>
-      <Button
-        variant={value === 'hijack' ? 'contained' : 'outlined'}
-        onClick={() => onChange?.('hijack')}
-        sx={{ textTransform: 'capitalize' }}
-      >
-        Hijack
-      </Button>
-    </ButtonGroup>
+    <AppleSegmentedControl
+      exclusive
+      size="small"
+      value={value ?? ''}
+      aria-label={t('settings.modals.tun.fields.dnsMode')}
+      onChange={(_, next: string | null) => {
+        if (next !== null) onChange?.(next)
+      }}
+      sx={{ my: 0.5, flexWrap: 'wrap' }}
+    >
+      <AppleSegment value="">Auto</AppleSegment>
+      <AppleSegment value="disabled">Disabled</AppleSegment>
+      <AppleSegment value="native">Native</AppleSegment>
+      <AppleSegment value="hijack">Hijack</AppleSegment>
+    </AppleSegmentedControl>
   )
 }

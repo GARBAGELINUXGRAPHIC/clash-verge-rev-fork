@@ -1,0 +1,21 @@
+.apptify-slider .apple-field { display: flex; flex-direction: column; gap: 8px; min-width: 0; color: var(--apple-text); font: inherit; }
+.apptify-slider .apple-field__label { font-size: 14px; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere; }
+.apptify-slider .apple-field__required, .apptify-slider .apple-field__message.is-error { color: var(--apple-danger); }
+.apptify-slider .apple-field__message { margin: 0; color: var(--apple-secondary); font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; }
+.apptify-slider .apple-field .apple-control { font-size: 16px; }
+.apptify-slider .apple-field .apple-control:disabled { background: var(--apple-surface-alt); border-color: var(--apple-surface-alt); }
+.apptify-slider .apple-field .apple-input-wrap:has(input:disabled) { background: var(--apple-surface-alt); border-color: var(--apple-surface-alt); }
+.apptify-slider .apple-slider-row { display: flex; align-items: center; gap: 16px; min-width: 0; min-height: 44px; }
+.apptify-slider .apple-slider { appearance: none; flex: 1; min-width: 0; height: 44px; margin: 0; background: transparent; cursor: pointer; }
+.apptify-slider .apple-slider::-webkit-slider-runnable-track { height: 6px; border-radius: 4px; background: linear-gradient(to right, var(--apple-accent) var(--apple-slider-progress), var(--apple-surface-alt) var(--apple-slider-progress)); }
+.apptify-slider .apple-slider::-moz-range-track { height: 6px; border-radius: 4px; background: linear-gradient(to right, var(--apple-accent) var(--apple-slider-progress), var(--apple-surface-alt) var(--apple-slider-progress)); }
+.apptify-slider .apple-slider::-webkit-slider-thumb { appearance: none; width: 24px; height: 24px; margin-top: -9px; border-radius: 50%; border: 1px solid #c4c4c8; background: #fff; box-shadow: none; transition: background-color var(--apple-duration-fast, 120ms) ease, border-color var(--apple-duration-fast, 120ms) ease, box-shadow var(--apple-duration-fast, 120ms) ease; }
+.apptify-slider .apple-slider::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #c4c4c8; background: #fff; box-shadow: none; transition: background-color var(--apple-duration-fast, 120ms) ease, border-color var(--apple-duration-fast, 120ms) ease, box-shadow var(--apple-duration-fast, 120ms) ease; }
+.apptify-slider .apple-slider:hover:not(:disabled)::-webkit-slider-thumb { background: #f0f0f2; }
+.apptify-slider .apple-slider:hover:not(:disabled)::-moz-range-thumb { background: #f0f0f2; }
+.apptify-slider .apple-slider:active:not(:disabled)::-webkit-slider-thumb { background: #d2d2d7; }
+.apptify-slider .apple-slider:active:not(:disabled)::-moz-range-thumb { background: #d2d2d7; }
+.apptify-slider .apple-slider:focus-visible { outline: 3px solid var(--apple-accent); outline-offset: 9px; }
+.apptify-slider .apple-slider:disabled { opacity: .4; cursor: not-allowed; }
+.apptify-slider .apple-slider__value { flex-shrink: 0; min-width: 3ch; max-width: 35%; text-align: end; font-size: 14px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.apptify-slider .apple-field .apple-otp__digit { min-width: 0; width: 100%; padding: 10px 0; text-align: center; font-size: 21px; font-weight: 500; font-variant-numeric: tabular-nums; }

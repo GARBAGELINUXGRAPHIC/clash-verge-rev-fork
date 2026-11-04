@@ -1,5 +1,5 @@
-import { AddRounded, CodeRounded, ViewModuleRounded } from '@mui/icons-material'
-import { Box, Chip, FormHelperText, Tooltip, Typography } from '@mui/material'
+import { AddRounded } from '@mui/icons-material'
+import { Box, Chip, FormHelperText, Tooltip } from '@mui/material'
 import type { ReactNode } from 'react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -27,7 +27,6 @@ interface BaseSplitChipEditorProps {
   showModeToggle?: boolean
   ariaLabel?: string
   addLabel?: ReactNode
-  emptyLabel?: ReactNode
   modeLabels?: Partial<Record<BaseSplitChipEditorMode, ReactNode>>
   renderHeader?: (modeToggle: ReactNode) => ReactNode
 }
@@ -54,7 +53,6 @@ export const BaseSplitChipEditor = ({
   showModeToggle = true,
   ariaLabel,
   addLabel,
-  emptyLabel,
   modeLabels,
   renderHeader,
 }: BaseSplitChipEditorProps) => {
@@ -67,9 +65,8 @@ export const BaseSplitChipEditor = ({
       visual: modeLabels?.visual ?? t('shared.editorModes.visualization'),
       advanced: modeLabels?.advanced ?? t('shared.editorModes.advanced'),
       add: addLabel ?? t('shared.actions.new'),
-      empty: emptyLabel ?? t('shared.statuses.empty'),
     }),
-    [t, modeLabels, addLabel, emptyLabel],
+    [t, modeLabels, addLabel],
   )
 
   const values = useMemo(
@@ -130,7 +127,7 @@ export const BaseSplitChipEditor = ({
             : undefined
         }
       >
-        <ViewModuleRounded sx={{ fontSize: 18 }} />
+        {resolvedLabels.visual}
       </AppleSegment>
 
       <AppleSegment
@@ -146,7 +143,7 @@ export const BaseSplitChipEditor = ({
             : undefined
         }
       >
-        <CodeRounded sx={{ fontSize: 18 }} />
+        {resolvedLabels.advanced}
       </AppleSegment>
     </AppleSegmentedControl>
   ) : null
@@ -156,36 +153,7 @@ export const BaseSplitChipEditor = ({
       {renderHeader ? renderHeader(modeToggle) : modeToggle}
       {mode === 'visual' ? (
         <Box sx={{ padding: '0 2px 5px' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 1,
-              minHeight: 32,
-            }}
-          >
-            {items.length ? (
-              items.map((item, index) => (
-                <Chip
-                  key={item.key}
-                  label={item.value}
-                  title={item.value}
-                  size="small"
-                  sx={{ maxWidth: '100%' }}
-                  onDelete={
-                    disabled ? undefined : () => handleRemoveItem(index)
-                  }
-                />
-              ))
-            ) : (
-              <Typography variant="body2" color="text.secondary">
-                {resolvedLabels.empty}
-              </Typography>
-            )}
-          </Box>
-          <Box
-            sx={{ display: 'flex', gap: 1, marginTop: 1, alignItems: 'center' }}
-          >
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <AppleInput
               disabled={disabled}
               size="small"
@@ -225,6 +193,22 @@ export const BaseSplitChipEditor = ({
           </Box>
           {helperText && (
             <FormHelperText error={error}>{helperText}</FormHelperText>
+          )}
+          {items.length > 0 && (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+              {items.map((item, index) => (
+                <Chip
+                  key={item.key}
+                  label={item.value}
+                  title={item.value}
+                  size="small"
+                  sx={{ maxWidth: '100%' }}
+                  onDelete={
+                    disabled ? undefined : () => handleRemoveItem(index)
+                  }
+                />
+              ))}
+            </Box>
           )}
         </Box>
       ) : (

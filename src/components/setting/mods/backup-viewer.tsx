@@ -118,9 +118,7 @@ export function BackupViewer({ ref }: { ref?: Ref<DialogRef> }) {
       open={open}
       title={t('settings.modals.backup.title')}
       contentSx={{ width: 560, maxWidth: '100%' }}
-      disableOk
-      cancelBtn={t('shared.actions.close')}
-      onCancel={() => setOpen(false)}
+      disableFooter
       onClose={() => setOpen(false)}
     >
       <Stack spacing={2}>

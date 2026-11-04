@@ -121,10 +121,8 @@ export const LayoutViewer = forwardRef<
           : 'settings.components.verge.layout.title',
       )}
       contentSx={{ width: 560, maxWidth: '100%' }}
-      disableOk
-      cancelBtn={t('shared.actions.close')}
+      disableFooter
       onClose={() => setOpen(false)}
-      onCancel={() => setOpen(false)}
     >
       {section === 'layout' && (
         <Box>

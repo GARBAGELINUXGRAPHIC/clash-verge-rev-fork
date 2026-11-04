@@ -1,14 +1,9 @@
-import {
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from '@mui/material'
+import { CloseRounded } from '@mui/icons-material'
+import { Box, Dialog, DialogContent, DialogTitle } from '@mui/material'
 import { QRCodeSVG } from 'qrcode.react'
 import { useTranslation } from 'react-i18next'
 
-import { AppleButton as Button } from '@/components/base/apple-button'
+import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 
 interface Props {
   open: boolean
@@ -23,7 +18,17 @@ export const QrViewer = (props: Props) => {
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>{title ?? t('profiles.modals.qrViewer.title')}</DialogTitle>
+      <DialogTitle sx={{ pr: 8, position: 'relative' }}>
+        {title ?? t('profiles.modals.qrViewer.title')}
+        <IconButton
+          size="small"
+          aria-label={t('shared.actions.close')}
+          onClick={onClose}
+          sx={{ position: 'absolute', right: 24, top: 20 }}
+        >
+          <CloseRounded />
+        </IconButton>
+      </DialogTitle>
       <DialogContent sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
         <Box
           sx={{
@@ -41,11 +46,6 @@ export const QrViewer = (props: Props) => {
           <QRCodeSVG value={value} size={256} level="M" />
         </Box>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} variant="outlined">
-          {t('shared.actions.close')}
-        </Button>
-      </DialogActions>
     </Dialog>
   )
 }

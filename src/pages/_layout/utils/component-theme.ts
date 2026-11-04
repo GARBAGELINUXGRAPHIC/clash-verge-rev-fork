@@ -87,10 +87,33 @@ export const componentTheme = (theme: Theme): Components<Theme> => {
     },
     MuiRadio: { defaultProps: { size: 'small' } },
     MuiChip: {
-      defaultProps: { size: 'small' },
+      defaultProps: {
+        size: 'small',
+        variant: 'outlined',
+      },
       styleOverrides: {
-        root: { borderRadius: 5, fontWeight: 500, height: 24 },
-        label: { paddingLeft: 7, paddingRight: 7 },
+        root: ({ ownerState }) => ({
+          '--chip-ink':
+            ownerState.color && ownerState.color !== 'default'
+              ? palette[ownerState.color].main
+              : palette.text.secondary,
+          border: '1px solid var(--chip-ink)',
+          borderRadius: 999,
+          backgroundColor: 'transparent',
+          color: `color-mix(in srgb, var(--chip-ink) 50%, ${palette.text.primary} 50%)`,
+          fontSize: 11,
+          fontWeight: 500,
+          lineHeight: 1.5,
+          height: 26,
+        }),
+        label: { paddingLeft: 10, paddingRight: 10 },
+        deleteIcon: {
+          color: 'var(--chip-ink)',
+          fontSize: 13,
+          marginRight: 7,
+          marginLeft: -3,
+          '&:hover': { color: 'var(--chip-ink)' },
+        },
       },
     },
     MuiToggleButtonGroup: {

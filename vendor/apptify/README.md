@@ -19,3 +19,17 @@ React `.apple-field` styles. Dependencies are pinned to the upstream runtime.
 
 Current integration: Hysteria2 temporary settings, custom expiration date/time.
 Preview verification uses mock IPC only; it does not operate the running core.
+
+## Original AppleSlider
+
+`src/components/slider.ts` contains unchanged declarations copied from the
+local Apptify `src/components/forms.ts`: `AppleSlider`, its field helpers and
+shared props. Only the Vue import is narrowed to the required symbols.
+`src/styles/slider.css` contains the original slider and field CSS rules.
+The manifest records both the copied files and the complete source-file hashes.
+
+`node vendor/apptify/build-slider.cjs` generates `apptify/slider.js` and scopes its CSS to
+`.apptify-slider`. `src/components/base/apple-slider.tsx` synchronizes React
+props and theme tokens; the original Vue component owns the range input,
+keyboard interaction and progress calculation. Hysteria2 settings pair it with
+an editable numeric input.

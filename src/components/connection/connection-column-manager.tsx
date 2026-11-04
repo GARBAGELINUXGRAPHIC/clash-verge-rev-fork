@@ -5,7 +5,7 @@ import {
   type DragEndEvent,
 } from '@dnd-kit/react'
 import { isSortable, useSortable } from '@dnd-kit/react/sortable'
-import { DragIndicatorRounded } from '@mui/icons-material'
+import { CloseRounded, DragIndicatorRounded } from '@mui/icons-material'
 import {
   Checkbox,
   Dialog,
@@ -80,8 +80,16 @@ export const ConnectionColumnManager = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
-      <DialogTitle>
+      <DialogTitle sx={{ pr: 8, position: 'relative' }}>
         {t('connections.components.columnManager.title')}
+        <IconButton
+          size="small"
+          aria-label={t('shared.actions.close')}
+          onClick={onClose}
+          sx={{ position: 'absolute', right: 24, top: 20 }}
+        >
+          <CloseRounded />
+        </IconButton>
       </DialogTitle>
       <DialogContent sx={{ p: 0 }}>
         <DragDropProvider
@@ -111,9 +119,6 @@ export const ConnectionColumnManager = ({
       <DialogActions sx={{ justifyContent: 'space-between', gap: 1 }}>
         <Button variant="text" onClick={onReset}>
           {t('shared.actions.resetToDefault')}
-        </Button>
-        <Button variant="contained" onClick={onClose}>
-          {t('shared.actions.close')}
         </Button>
       </DialogActions>
     </Dialog>

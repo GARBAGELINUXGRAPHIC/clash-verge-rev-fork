@@ -102,6 +102,7 @@ export default defineConfig([
   {
     ignores: [
       'src/components/base/apptify/date-picker.js',
+      'src/components/base/apptify/slider.js',
       'vendor/apptify/**',
     ],
   },

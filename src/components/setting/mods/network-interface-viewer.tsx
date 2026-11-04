@@ -58,10 +58,8 @@ export function NetworkInterfaceViewer({ ref }: { ref?: Ref<DialogRef> }) {
         </Box>
       }
       contentSx={{ width: 560, maxWidth: '100%' }}
-      disableOk
-      cancelBtn={t('shared.actions.close')}
+      disableFooter
       onClose={() => setOpen(false)}
-      onCancel={() => setOpen(false)}
     >
       {loading && isEmpty ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>

@@ -194,7 +194,17 @@ export const SysproxyPrivilegeDialog = () => {
       onCancel={close}
       onClose={close}
     >
-      <Alert severity={loading ? 'info' : 'warning'} sx={{ mb: 1.5 }}>
+      <Alert
+        severity={loading ? 'info' : 'warning'}
+        sx={{
+          mb: 1.5,
+          ...(!loading && {
+            bgcolor: 'transparent',
+            color: 'text.primary',
+            '& .MuiAlert-icon': { color: 'text.secondary' },
+          }),
+        }}
+      >
         {t(step !== 'idle' ? STEP_MESSAGE[step] : EXPLANATION[reason])}
       </Alert>
       {loading && <LinearProgress />}

@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 
 import { BaseDialog, Switch } from '@/components/base'
 import { AppleIconButton as IconButton } from '@/components/base/apple-button'
-import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleInput } from '@/components/base/apple-input'
 import { useClash } from '@/hooks/use-clash'
 import { restartCore } from '@/services/cmds'
@@ -188,8 +187,27 @@ export const HeaderConfiguration = forwardRef<ClashHeaderConfigingRef>(
 
           <ListItem sx={{ padding: '8px 0' }}>
             <div style={{ width: '100%' }}>
-              <div style={{ marginBottom: 8, fontWeight: 'bold' }}>
-                {t('settings.sections.externalCors.fields.allowedOrigins')}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 8,
+                  fontWeight: 'bold',
+                }}
+              >
+                <span>
+                  {t('settings.sections.externalCors.fields.allowedOrigins')}
+                </span>
+                <IconButton
+                  size="small"
+                  color="primary"
+                  title={t('settings.sections.externalCors.actions.add')}
+                  aria-label={t('settings.sections.externalCors.actions.add')}
+                  onClick={handleAddOrigin}
+                >
+                  <AddRounded fontSize="small" />
+                </IconButton>
               </div>
               {corsConfig.allowOrigins.map(({ key, value: origin }, index) => (
                 <div
@@ -228,15 +246,6 @@ export const HeaderConfiguration = forwardRef<ClashHeaderConfigingRef>(
                   </IconButton>
                 </div>
               ))}
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<AddRounded />}
-                onClick={handleAddOrigin}
-              >
-                {t('settings.sections.externalCors.actions.add')}
-              </Button>
-
               <Box
                 sx={{
                   mt: 1.5,

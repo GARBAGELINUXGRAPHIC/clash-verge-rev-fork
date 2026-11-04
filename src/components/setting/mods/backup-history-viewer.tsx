@@ -317,9 +317,7 @@ export const BackupHistoryViewer = ({
       open={open}
       title={t('settings.modals.backup.history.title')}
       contentSx={{ width: 620, maxWidth: '100%' }}
-      disableOk
-      cancelBtn={t('shared.actions.close')}
-      onCancel={onClose}
+      disableFooter
       onClose={onClose}
     >
       <Box sx={{ position: 'relative', minHeight: 320 }}>

@@ -1,8 +1,11 @@
-import { RefreshRounded, StorageOutlined } from '@mui/icons-material'
+import {
+  CloseRounded,
+  RefreshRounded,
+  StorageOutlined,
+} from '@mui/icons-material'
 import {
   Box,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   List,
@@ -143,7 +146,7 @@ export const ProviderButton = () => {
       </Button>
 
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>
+        <DialogTitle sx={{ pr: 8, position: 'relative' }}>
           <Box
             sx={{
               display: 'flex',
@@ -164,6 +167,14 @@ export const ProviderButton = () => {
               {t('rules.page.provider.actions.updateAll')}
             </Button>
           </Box>
+          <IconButton
+            size="small"
+            aria-label={t('shared.actions.close')}
+            onClick={handleClose}
+            sx={{ position: 'absolute', right: 24, top: 20 }}
+          >
+            <CloseRounded />
+          </IconButton>
         </DialogTitle>
 
         <DialogContent sx={{ px: 0, py: 0 }}>
@@ -289,12 +300,6 @@ export const ProviderButton = () => {
               })}
           </List>
         </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleClose} variant="outlined">
-            {t('shared.actions.close')}
-          </Button>
-        </DialogActions>
       </Dialog>
     </>
   )

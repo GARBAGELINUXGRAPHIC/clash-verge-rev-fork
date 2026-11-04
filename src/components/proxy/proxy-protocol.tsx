@@ -2,7 +2,6 @@ import { CloseRounded } from '@mui/icons-material'
 import {
   Alert,
   Box,
-  Chip,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -14,14 +13,21 @@ import {
   Typography,
   useTheme,
 } from '@mui/material'
-import { useEffect, useState, type HTMLAttributes, type ReactNode } from 'react'
+import {
+  useEffect,
+  useState,
+  type HTMLAttributes,
+  type KeyboardEvent,
+  type ReactNode,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { AppleIconButton as IconButton } from '@/components/base/apple-button'
 import { AppleButton as Button } from '@/components/base/apple-button'
 import { AppleDatePicker } from '@/components/base/apple-date-picker'
 import { AppleInput } from '@/components/base/apple-input'
-import { AppleOption } from '@/components/base/apple-select'
+import { AppleOption, AppleSelect } from '@/components/base/apple-select'
+import { AppleSlider } from '@/components/base/apple-slider'
 import { useHy2Override } from '@/hooks/use-hy2-override'
 import {
   getHy2Settings,
@@ -36,6 +42,120 @@ import {
 } from '@/types/proxy-view'
 
 type Mode = 'original' | Hy2Congestion['mode']
+
+const BANDWIDTH_MAX = 2000
+const bandwidthStops = [1, 5, 10, 30, 50, 100, 200, 300, 500, 1000, 2000]
+const bandwidthIndex = (value: number) =>
+  bandwidthStops.reduce(
+    (nearest, stop, index) =>
+      Math.abs(stop - value) < Math.abs(bandwidthStops[nearest] - value)
+        ? index
+        : nearest,
+    0,
+  )
+const formatBandwidth = (index: number) => `${bandwidthStops[index]} Mbps`
+const bandwidthValid = (value: string) =>
+  Number.isFinite(Number(value)) && Number(value) > 0
+
+const fieldRowSx = {
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 240px)',
+  alignItems: 'center',
+  gap: 2,
+  '@media (max-width: 420px)': { gridTemplateColumns: '1fr', gap: 1 },
+}
+
+function BandwidthControl({
+  label,
+  value,
+  onChange,
+  disabled,
+}: {
+  label: string
+  value: string
+  onChange: (value: string) => void
+  disabled: boolean
+}) {
+  const { t } = useTranslation()
+  const invalid = value !== '' && !bandwidthValid(value)
+
+  return (
+    <Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Typography variant="body2" sx={{ flex: 1 }}>
+          {label}
+        </Typography>
+        <AppleInput
+          type="number"
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          disabled={disabled}
+          error={invalid}
+          placeholder="—"
+          suffix="Mbps"
+          slotProps={{
+            htmlInput: {
+              'aria-label': `${label} (Mbps)`,
+              min: 0,
+              step: 'any',
+              onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
+                if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') return
+                event.preventDefault()
+                const current = Number(value) || 0
+                const next =
+                  event.key === 'ArrowUp'
+                    ? (bandwidthStops.find((stop) => stop > current) ??
+                      current + 100)
+                    : current > BANDWIDTH_MAX
+                      ? Math.max(BANDWIDTH_MAX, current - 100)
+                      : (bandwidthStops
+                          .filter((stop) => stop < current)
+                          .at(-1) ?? 1)
+                onChange(String(next))
+              },
+            },
+          }}
+          sx={{
+            width: 136,
+            '& .apple-input-wrap': {
+              borderColor: 'transparent',
+              bgcolor: 'transparent',
+              '&:hover': { borderColor: 'divider' },
+              '&:focus-within': { borderColor: 'primary.main' },
+            },
+            '& .apple-control': {
+              textAlign: 'right',
+              fontSize: 14,
+              fontVariantNumeric: 'tabular-nums',
+              px: 0.75,
+            },
+            '& .apple-input__affix': {
+              pl: 0,
+              pr: 0.75,
+              maxWidth: 'none',
+              fontSize: 14,
+            },
+          }}
+        />
+      </Box>
+      <AppleSlider
+        aria-label={label}
+        min={0}
+        max={bandwidthStops.length - 1}
+        step={1}
+        value={bandwidthIndex(Number(value) || 1)}
+        formatValue={formatBandwidth}
+        onChange={(next) => onChange(String(bandwidthStops[next]))}
+        disabled={disabled}
+      />
+      {invalid && (
+        <Typography variant="caption" color="error" role="alert">
+          {t('proxies.protocol.bandwidthRange')}
+        </Typography>
+      )}
+    </Box>
+  )
+}
 
 function localDateTime(date: Date) {
   const pad = (value: number) => String(value).padStart(2, '0')
@@ -208,9 +328,10 @@ function Hy2Dialog({
         setData(result)
         if (result.settings) {
           const { congestion, expiresAt } = result.settings
+          setMode(congestion.mode)
           if (congestion.mode === 'brutal') {
-            setUp(String(congestion.up))
-            setDown(String(congestion.down))
+            setUp(congestion.up === null ? '' : String(congestion.up))
+            setDown(congestion.down === null ? '' : String(congestion.down))
           }
           setDuration('keep')
           setCustom(localDateTime(new Date(expiresAt * 1000)))
@@ -227,12 +348,26 @@ function Hy2Dialog({
     }
   }, [node.source])
 
-  const bandwidthValid = (value: string) =>
-    Number.isFinite(Number(value)) &&
-    Number(value) >= 0.01 &&
-    Number(value) <= 1_000_000
   const upInvalid = mode === 'brutal' && !bandwidthValid(up)
   const downInvalid = mode === 'brutal' && !bandwidthValid(down)
+  const applied = data?.settings
+  const currentStatus = !data
+    ? t('proxies.protocol.unavailable')
+    : !applied
+      ? t('proxies.protocol.original')
+      : [
+          applied.congestion.mode === 'brutal'
+            ? `Brutal · ↑${applied.congestion.up ?? '—'} / ↓${applied.congestion.down ?? '—'} Mbps`
+            : t(`proxies.protocol.${applied.congestion.mode}`),
+          t('proxies.protocol.keepExpiry', {
+            time: new Date(applied.expiresAt * 1000).toLocaleString(undefined, {
+              month: 'numeric',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            }),
+          }),
+        ].join(' · ')
   const expiry = () => {
     if (duration === 'keep') return data?.settings?.expiresAt ?? 0
     if (duration === 'midnight')
@@ -242,7 +377,7 @@ function Hy2Dialog({
     return Math.floor(Date.now() / 1000) + Number(duration) * 3600
   }
   const save = async () => {
-    if (!data || busy) return
+    if (!data || busy || upInvalid || downInvalid) return
     const expiresAt = expiry()
     if (
       mode !== 'original' &&
@@ -281,121 +416,98 @@ function Hy2Dialog({
       onKeyDown={(event) => event.stopPropagation()}
       onClose={busy ? undefined : onClose}
       fullWidth
-      maxWidth="xs"
+      maxWidth={false}
+      slotProps={{
+        paper: { sx: { width: 500, maxWidth: 'calc(100% - 32px)' } },
+      }}
       aria-labelledby="hy2-settings-title"
     >
-      <DialogTitle id="hy2-settings-title" sx={{ pr: 6, position: 'relative' }}>
+      <DialogTitle
+        id="hy2-settings-title"
+        sx={{ pl: 4, pr: 8, pt: 3, pb: 1, position: 'relative' }}
+      >
         {t('proxies.protocol.title')}
         <IconButton
           aria-label={t('shared.actions.close')}
           onClick={onClose}
           disabled={busy}
-          sx={{ position: 'absolute', right: 8, top: 8 }}
+          size="small"
+          sx={{ position: 'absolute', right: 24, top: 20 }}
         >
           <CloseRounded />
         </IconButton>
       </DialogTitle>
-      <Box
-        sx={{
-          px: 2.5,
-          py: 1.75,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1.5,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          bgcolor: 'action.hover',
-        }}
-      >
+      <Box sx={{ px: 4, pt: 2, pb: 1 }}>
         <Typography
           variant="body2"
-          sx={{
-            flex: 1,
-            minWidth: 0,
-            fontWeight: 600,
-            overflowWrap: 'anywhere',
-          }}
+          sx={{ fontWeight: 500, overflowWrap: 'anywhere' }}
         >
           {node.name}
         </Typography>
-        <Chip
-          label="Hysteria2"
-          variant="outlined"
-          size="small"
-          sx={{ flexShrink: 0 }}
-        />
+        {!loading && (
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            sx={{ display: 'block', mt: 0.5, overflowWrap: 'anywhere' }}
+          >
+            {t('proxies.protocol.current', { value: currentStatus })}
+          </Typography>
+        )}
       </Box>
-      <DialogContent sx={{ py: 2.5 }}>
+      <DialogContent sx={{ px: 4, pt: 3, pb: 2 }}>
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
             <CircularProgress size={24} />
           </Box>
         ) : (
-          <Stack spacing={2}>
+          <Stack spacing={3.5}>
             {error && (
               <Alert severity="error" sx={{ overflowWrap: 'anywhere' }}>
                 {error}
               </Alert>
             )}
-            <AppleInput
-              select
-              label={t('proxies.protocol.congestion')}
-              value={mode}
-              disabled={busy || !data}
-              onChange={(event) => setMode(event.target.value as Mode)}
-              fullWidth
-              size="small"
-            >
-              <AppleOption value="original">
-                {t('proxies.protocol.original')}
-              </AppleOption>
-              <AppleOption value="standard">
-                {t('proxies.protocol.standard')}
-              </AppleOption>
-              <AppleOption value="conservative">
-                {t('proxies.protocol.conservative')}
-              </AppleOption>
-              <AppleOption value="aggressive">
-                {t('proxies.protocol.aggressive')}
-              </AppleOption>
-              <AppleOption value="brutal">Brutal</AppleOption>
-            </AppleInput>
-            {mode === 'brutal' && (
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: {
-                    xs: 'minmax(0, 1fr)',
-                    sm: 'repeat(2, minmax(0, 1fr))',
-                  },
-                  gap: 2,
-                }}
+            <Box sx={fieldRowSx}>
+              <Typography variant="body2">
+                {t('proxies.protocol.congestion')}
+              </Typography>
+              <AppleSelect
+                aria-label={t('proxies.protocol.congestion')}
+                value={mode}
+                disabled={busy || !data}
+                onChange={(event) => setMode(event.target.value as Mode)}
+                fullWidth
+                size="small"
               >
-                <AppleInput
-                  label={t('proxies.protocol.upload')}
-                  type="number"
-                  size="small"
+                <AppleOption value="original">
+                  {t('proxies.protocol.original')}
+                </AppleOption>
+                <AppleOption value="standard">
+                  {t('proxies.protocol.standard')}
+                </AppleOption>
+                <AppleOption value="conservative">
+                  {t('proxies.protocol.conservative')}
+                </AppleOption>
+                <AppleOption value="aggressive">
+                  {t('proxies.protocol.aggressive')}
+                </AppleOption>
+                <AppleOption value="brutal">Brutal</AppleOption>
+              </AppleSelect>
+            </Box>
+            {mode === 'brutal' && (
+              <Stack spacing={3}>
+                <BandwidthControl
+                  label={t('proxies.protocol.uploadLabel')}
                   value={up}
-                  onChange={(event) => setUp(event.target.value)}
+                  onChange={setUp}
                   disabled={busy}
-                  error={Boolean(up) && upInvalid}
-                  slotProps={{
-                    htmlInput: { min: 0.01, max: 1000000, step: 'any' },
-                  }}
                 />
-                <AppleInput
-                  label={t('proxies.protocol.download')}
-                  type="number"
-                  size="small"
+                <BandwidthControl
+                  label={t('proxies.protocol.downloadLabel')}
                   value={down}
-                  onChange={(event) => setDown(event.target.value)}
+                  onChange={setDown}
                   disabled={busy}
-                  error={Boolean(down) && downInvalid}
-                  slotProps={{
-                    htmlInput: { min: 0.01, max: 1000000, step: 'any' },
-                  }}
                 />
-              </Box>
+              </Stack>
             )}
             {mode !== 'original' && (
               <Box
@@ -403,48 +515,49 @@ function Hy2Dialog({
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 2,
-                  pt: 2,
-                  borderTop: '1px solid',
-                  borderColor: 'divider',
                 }}
               >
-                <AppleInput
-                  select
-                  label={t('proxies.protocol.duration')}
-                  value={duration}
-                  onChange={(event) => setDuration(event.target.value)}
-                  size="small"
-                  disabled={busy}
-                  fullWidth
-                >
-                  {data?.settings && (
-                    <AppleOption value="keep">
-                      {t('proxies.protocol.keepExpiry', {
-                        time: new Date(
-                          data.settings.expiresAt * 1000,
-                        ).toLocaleString(),
-                      })}
+                <Box sx={fieldRowSx}>
+                  <Typography variant="body2">
+                    {t('proxies.protocol.duration')}
+                  </Typography>
+                  <AppleSelect
+                    aria-label={t('proxies.protocol.duration')}
+                    value={duration}
+                    onChange={(event) => setDuration(event.target.value)}
+                    size="small"
+                    disabled={busy}
+                    fullWidth
+                  >
+                    {data?.settings && (
+                      <AppleOption value="keep">
+                        {t('proxies.protocol.keepExpiry', {
+                          time: new Date(
+                            data.settings.expiresAt * 1000,
+                          ).toLocaleString(),
+                        })}
+                      </AppleOption>
+                    )}
+                    <AppleOption value="midnight">
+                      {t('proxies.protocol.midnightShort')}
                     </AppleOption>
-                  )}
-                  <AppleOption value="midnight">
-                    {t('proxies.protocol.midnight')}
-                  </AppleOption>
-                  <AppleOption value="0.5">
-                    {t('proxies.protocol.halfHour')}
-                  </AppleOption>
-                  <AppleOption value="1">
-                    {t('proxies.protocol.oneHour')}
-                  </AppleOption>
-                  <AppleOption value="6">
-                    {t('proxies.protocol.sixHours')}
-                  </AppleOption>
-                  <AppleOption value="24">
-                    {t('proxies.protocol.oneDay')}
-                  </AppleOption>
-                  <AppleOption value="custom">
-                    {t('proxies.protocol.custom')}
-                  </AppleOption>
-                </AppleInput>
+                    <AppleOption value="0.5">
+                      {t('proxies.protocol.halfHour')}
+                    </AppleOption>
+                    <AppleOption value="1">
+                      {t('proxies.protocol.oneHour')}
+                    </AppleOption>
+                    <AppleOption value="6">
+                      {t('proxies.protocol.sixHours')}
+                    </AppleOption>
+                    <AppleOption value="24">
+                      {t('proxies.protocol.oneDay')}
+                    </AppleOption>
+                    <AppleOption value="custom">
+                      {t('proxies.protocol.custom')}
+                    </AppleOption>
+                  </AppleSelect>
+                </Box>
                 {duration === 'custom' && (
                   <AppleDatePicker
                     label={t('proxies.protocol.expiresAt')}
@@ -459,8 +572,13 @@ function Hy2Dialog({
           </Stack>
         )}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={busy}>
+      <DialogActions sx={{ px: 4, pt: 2, pb: 3, gap: 1.5 }}>
+        <Button
+          variant="text"
+          color="inherit"
+          onClick={onClose}
+          disabled={busy}
+        >
           {t('shared.actions.cancel')}
         </Button>
         <Button
