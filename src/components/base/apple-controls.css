@@ -112,6 +112,8 @@ textarea.apple-control {
   position: relative;
 }
 .apple-select {
+  position: relative;
+  flex: 1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -124,6 +126,7 @@ textarea.apple-control {
 }
 .apple-select__chevron {
   position: absolute;
+  top: calc(50% - 8.5px);
   right: 14px;
   pointer-events: none;
   color: var(--apple-secondary);
@@ -131,6 +134,12 @@ textarea.apple-control {
 }
 .apple-select__chevron.is-open {
   transform: rotate(180deg);
+}
+.apple-select__suffix {
+  border-inline-start: 1px solid var(--apple-border);
+}
+.apple-select-wrap[data-disabled="true"] .apple-select__suffix {
+  opacity: 0.5;
 }
 .apple-field-menu {
   position: fixed;

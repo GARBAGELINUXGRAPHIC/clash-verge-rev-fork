@@ -110,6 +110,7 @@ export const AppleInput = forwardRef<
         fullWidth={fullWidth}
         sx={sx}
         className={className}
+        suffix={suffix ?? endAdornment ?? SelectProps?.suffix}
       >
         {children}
       </AppleSelect>

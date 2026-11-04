@@ -171,13 +171,6 @@ const SettingVergeBasic = ({ onError }: Props) => {
 
       <SettingItem
         label={t('settings.components.verge.basic.fields.copyEnvType')}
-        extra={
-          <TooltipIcon
-            icon={ContentCopyRounded}
-            title={t('settings.sections.externalController.tooltips.copy')}
-            onClick={onCopyClashEnv}
-          />
-        }
       >
         <GuardState
           value={env_type ?? (OS === 'windows' ? 'powershell' : 'bash')}
@@ -186,7 +179,18 @@ const SettingVergeBasic = ({ onError }: Props) => {
           onChange={(e) => onChangeData({ env_type: e })}
           onGuard={(e) => patchVerge({ env_type: e })}
         >
-          <AppleSelect size="small" sx={{ width: 140 }}>
+          <AppleSelect
+            size="small"
+            sx={{ width: 180, flexShrink: 0 }}
+            aria-label={t('settings.components.verge.basic.fields.copyEnvType')}
+            suffix={
+              <TooltipIcon
+                icon={ContentCopyRounded}
+                title={t('settings.sections.externalController.tooltips.copy')}
+                onClick={onCopyClashEnv}
+              />
+            }
+          >
             <AppleOption value="bash">Bash</AppleOption>
             <AppleOption value="fish">Fish</AppleOption>
             <AppleOption value="nushell">Nushell</AppleOption>

@@ -26,6 +26,7 @@ export function AppleSelect<Value = unknown>({
   defaultValue,
   onChange,
   children,
+  suffix,
   disabled,
   label,
   id,
@@ -40,12 +41,13 @@ export function AppleSelect<Value = unknown>({
   onBlur,
   onFocus,
   ...props
-}: SelectProps<Value>) {
+}: SelectProps<Value> & { suffix?: ReactNode }) {
   const theme = useTheme() as Theme
   const generatedId = useId()
   const controlId = id ?? generatedId
   const labelId = `${controlId}-label`
   const rootRef = useRef<HTMLDivElement>(null)
+  const controlRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
   const [internal, setInternal] = useState(defaultValue)
@@ -94,7 +96,7 @@ export function AppleSelect<Value = unknown>({
   useLayoutEffect(() => {
     if (!open) return
     const place = () => {
-      const rect = triggerRef.current?.getBoundingClientRect()
+      const rect = controlRef.current?.getBoundingClientRect()
       if (!rect) return
       const height = Math.min(280, options.length * 36 + 14)
       const below = window.innerHeight - rect.bottom - 14
@@ -114,7 +116,7 @@ export function AppleSelect<Value = unknown>({
     }
     const frame = requestAnimationFrame(place)
     const observer = new ResizeObserver(place)
-    if (triggerRef.current) observer.observe(triggerRef.current)
+    if (controlRef.current) observer.observe(controlRef.current)
     window.addEventListener('resize', place)
     window.addEventListener('scroll', place, true)
     return () => {
@@ -158,6 +160,7 @@ export function AppleSelect<Value = unknown>({
         </span>
       )}
       <div
+        ref={controlRef}
         className="apple-input-wrap apple-select-wrap"
         data-disabled={disabled}
         data-open={open}
@@ -227,21 +230,29 @@ export function AppleSelect<Value = unknown>({
             ? renderValue(current as Value)
             : (selected?.props.children ??
               (props.displayEmpty ? options[0]?.props.children : ''))}
+          <svg
+            className={`apple-select__chevron ${open ? 'is-open' : ''}`}
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </button>
-        <svg
-          className={`apple-select__chevron ${open ? 'is-open' : ''}`}
-          width="17"
-          height="17"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="m6 9 6 6 6-6" />
-        </svg>
+        {suffix && (
+          <span
+            className="apple-affix apple-input__affix apple-select__suffix"
+            inert={disabled}
+          >
+            {suffix}
+          </span>
+        )}
         {name && (
           <input
             type="hidden"

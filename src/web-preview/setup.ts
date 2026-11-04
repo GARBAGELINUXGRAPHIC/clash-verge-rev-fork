@@ -3,6 +3,7 @@ import { mockIPC, mockWindows } from '@tauri-apps/api/mocks'
 
 import type { Hy2Settings, Hy2Target } from '@/services/hy2'
 import type { ProxyViewV1 } from '@/types/proxy-view'
+import getSystem from '@/utils/get-system'
 import { version } from '@root/package.json'
 
 const capabilities = {
@@ -405,6 +406,23 @@ mockIPC(
     if (command === 'patch_verge_config') {
       Object.assign(verge, payload.payload)
       await emit('verge://refresh-verge-config', null)
+      return
+    }
+    if (command === 'copy_clash_env') {
+      const env =
+        verge.env_type ?? (getSystem() === 'windows' ? 'powershell' : 'bash')
+      const http = `http://127.0.0.1:${config['mixed-port']}`
+      const socks = `socks5://127.0.0.1:${config['mixed-port']}`
+      const formats: Record<string, string> = {
+        bash: `export https_proxy=${http} http_proxy=${http} all_proxy=${socks}`,
+        fish: `set -x http_proxy ${http}; set -x https_proxy ${http}`,
+        nushell: `load-env { http_proxy: "${http}", https_proxy: "${http}" }`,
+        cmd: `set http_proxy=${http}\r\nset https_proxy=${http}`,
+        powershell: `$env:HTTP_PROXY="${http}"; $env:HTTPS_PROXY="${http}"`,
+      }
+      if (!(env in formats))
+        throw new Error(`Web preview: unsupported environment format: ${env}`)
+      await navigator.clipboard.writeText(formats[env])
       return
     }
     if (command === 'patch_clash_mode') {
