@@ -1,4 +1,4 @@
-name: Personal Fork Latest Release
+name: Personal Fork Release
 
 on:
   push:
@@ -124,7 +124,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPOSITORY: ${{ github.repository }}
           BUILD_SHA: ${{ github.sha }}
-          RELEASE_TAG: personal-fork-latest
+          RELEASE_TAG: personal-fork-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           set -euo pipefail
           current_sha=$(gh api "repos/$REPOSITORY/git/ref/heads/personal-fork" --jq '.object.sha')
@@ -133,20 +133,16 @@ jobs:
             exit 0
           fi
           version=$(node -p "JSON.parse(require('fs').readFileSync('package.json', 'utf8')).version")
-          printf 'Latest personal-fork build.\n\nVersion: %s\nCommit: %s\n\nBuilt from the final commit of the push.\n' "$version" "$BUILD_SHA" > release-notes.txt
+          printf 'Personal-fork build.\n\nVersion: %s\nCommit: %s\n\nBuilt from the final commit of the push.\n' "$version" "$BUILD_SHA" > release-notes.txt
           mapfile -d '' assets < <(find installers -type f -print0)
           if [ "${#assets[@]}" -eq 0 ]; then
             echo 'No installers were produced.' >&2
             exit 1
           fi
-          git tag --force "$RELEASE_TAG" "$BUILD_SHA"
-          git push origin "refs/tags/$RELEASE_TAG" --force
-          if gh release view "$RELEASE_TAG" --repo "$REPOSITORY" >/dev/null 2>&1; then
-            gh release edit "$RELEASE_TAG" --repo "$REPOSITORY" --title "Personal Fork $version (latest commit)" --notes-file release-notes.txt --prerelease=false --latest=true
-            while IFS= read -r asset; do
-              gh release delete-asset "$RELEASE_TAG" "$asset" --repo "$REPOSITORY" --yes
-            done < <(gh release view "$RELEASE_TAG" --repo "$REPOSITORY" --json assets --jq '.assets[].name')
-          else
-            gh release create "$RELEASE_TAG" --repo "$REPOSITORY" --title "Personal Fork $version (latest commit)" --notes-file release-notes.txt --prerelease=false --latest=true
-          fi
-          gh release upload "$RELEASE_TAG" "${assets[@]}" --repo "$REPOSITORY" --clobber
+          gh release create "$RELEASE_TAG" "${assets[@]}" \
+            --repo "$REPOSITORY" \
+            --target "$BUILD_SHA" \
+            --title "Personal Fork $version (build $GITHUB_RUN_NUMBER.$GITHUB_RUN_ATTEMPT)" \
+            --notes-file release-notes.txt \
+            --prerelease=false \
+            --latest=true
